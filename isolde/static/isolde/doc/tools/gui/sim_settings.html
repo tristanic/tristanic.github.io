@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Basic simulation controls &#8212; ISOLDE 1.4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/external_links.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Manipulating your model" href="rebuild.html" />
+    <link rel="prev" title="Visualisation and Navigation" href="navigation.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="basic-simulation-controls">
+<h1>Basic simulation controls<a class="headerlink" href="sim_settings.html#basic-simulation-controls" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="sim_settings.html#starting-a-simulation" id="id4">Starting a simulation</a></p></li>
+<li><p><a class="reference internal" href="sim_settings.html#dealing-with-severe-clashes" id="id5">Dealing with severe clashes</a></p></li>
+<li><p><a class="reference internal" href="sim_settings.html#dealing-with-unrecognised-residues" id="id6">Dealing with unrecognised residues</a></p></li>
+<li><p><a class="reference internal" href="sim_settings.html#general-simulation-controls" id="id7">General simulation controls</a></p></li>
+<li><p><a class="reference internal" href="sim_settings.html#basic-interaction" id="id8">Basic interaction</a></p></li>
+<li><p><a class="reference internal" href="sim_settings.html#adjusting-map-weightings" id="id9">Adjusting map weightings</a></p></li>
+<li><p><a class="reference internal" href="sim_settings.html#adjusting-temperature-and-trajectory-smoothing" id="id10">Adjusting temperature and trajectory smoothing</a></p></li>
+</ul>
+</div>
+<section id="starting-a-simulation">
+<span id="id1"></span><h2><a class="toc-backref" href="sim_settings.html#id4">Starting a simulation</a><a class="headerlink" href="sim_settings.html#starting-a-simulation" title="Permalink to this headline">¶</a></h2>
+<p>Assuming your model meets the requirements (that is, all residues are complete
+with hydrogens and known to the MD forcefield), then starting a simulation is as
+simple as making a selection of atoms in the main ChimeraX window and clicking
+the play button on the left-hand side of the ISOLDE ribbon menu:</p>
+<figure class="align-default">
+<img alt="../../_images/start_sim_button1.png" src="../../_images/start_sim_button1.png" />
+</figure>
+<p>Your selection may be anything from a single atom to all atoms in the model.
+ISOLDE will automatically expand this to give a soft “buffer zone” around your
+region of interest. For the sake of performance your selection should be as
+small as necessary to achieve the desired goal. Of course, the larger the
+selection the slower the simulation.</p>
+<p>The selection size you can make while still achieving reasonably interactive
+performance is primarily dependent on your GPU (which does essentially all of
+the hard work of running the simulation). On a modern Nvidia RTX GPU, you
+should be able to run simulations up to about 1000 mobile residues before
+performance becomes seriously constraining. Note that <em>graphics</em> performance
+(that is, responsiveness of the display when rotating, translating, zooming
+etc.) is only weakly affected by simulation size, and remains above 30 fps
+under most circumstances. At the other end of the scale, small onboard GPUs
+such as those found in pre-M1 MacBooks manage surprisingly well, providing
+usably interactive performance for a few dozen mobile residues. If you have
+good-quality data (better than about 3 Angstroms resolution), you can get
+significantly improved performance at the expense of less realistic
+electrostatic interactions by choosing the Lowest/Fastest option in
+the “Sim Fidelity/Speed” widget on ISOLDE’s General tab.</p>
+<p>The maximum sized model that will successfully run <strong>non</strong> interactively is a
+function of the amount of RAM available to your GPU (built-in RAM in dedicated
+GPUs; system RAM for on-motherboard GPUs). See <a class="reference internal" href="../requirements.html#system-requirements"><span class="std std-ref">System Requirements</span></a> for
+more details. <em>(NOTE: for extremely large models and/or low-end hardware, initial
+energy minimisation of the entire model can take anywhere up to tens of minutes.
+Please be patient - once you see the atoms start moving it is safe to stop the
+simulation and continue working with more manageable selections)</em></p>
+</section>
+<section id="dealing-with-severe-clashes">
+<span id="dealing-with-clashes"></span><h2><a class="toc-backref" href="sim_settings.html#id5">Dealing with severe clashes</a><a class="headerlink" href="sim_settings.html#dealing-with-severe-clashes" title="Permalink to this headline">¶</a></h2>
+<p>Before you go ahead and start a simulation, it’s generally a very good idea to
+do some basic sanity checks (if you skip these ISOLDE will generally back out
+gracefully if it runs into trouble, but it’s best to get in ahead). The most
+important check is for severe clashes of the kind that cannot resolve gracefully.
+As an example, a clash like this:</p>
+<figure class="align-default">
+<img alt="../../_images/ok_clash.jpg" src="../../_images/ok_clash.jpg" />
+</figure>
+<p>... will generally be handled well, since there is a clear “downhill” path
+for the minimiser to push the clashing atoms apart. On the other hand, extreme
+clashes - particularly those with residues passing through each other like this:</p>
+<figure class="align-default">
+<img alt="../../_images/catastrophic_clash.jpg" src="../../_images/catastrophic_clash.jpg" />
+</figure>
+<p>... will generally <em>not</em> resolve automatically - (a) because the energies involved
+will exceed single-precision values; and/or (b) because the nonbonded forces will
+push bonded atoms in opposing directions, leading to extremely distorted geometry.</p>
+<p>Clashes can be found using the Clashes widget on ISOLDE’s Validation tab:</p>
+<figure class="align-default">
+<img alt="../../_images/clashes_widget.png" src="../../_images/clashes_widget.png" />
+</figure>
+<p>If you do not correct severe clashes prior to starting a simulation, it’s usually
+not the end of the world - ISOLDE will try to minimise for a while before bringing
+up this warning:</p>
+<figure class="align-default">
+<img alt="Unresolvable clash warning dialog" src="../../_images/clash_warning.png" />
+</figure>
+<p>... but for very large models this can take a long time, so it’s best to head the
+problems off early.</p>
+<p>To deal with severe clashes like this to allow ISOLDE to start, you have four options:</p>
+<ol class="arabic simple">
+<li><p>adjust sidechains into less badly-clashing rotamers using the tools on ISOLDE’s
+ribbon menu;</p></li>
+<li><p>temporarily truncate a sidechain back to alanine: select the whole residue, then
+<code class="docutils literal notranslate"><span class="pre">del</span> <span class="pre">sel&amp;sideonly&amp;~&#64;CB</span></code>;</p></li>
+<li><p>temporarily exclude one of the clashing residues from simulations by selecting it and
+entering the command <code class="docutils literal notranslate"><span class="pre">isolde</span> <span class="pre">ignore</span> <span class="pre">sel</span></code>;</p></li>
+<li><p>delete one of the clashing residues entirely by selecting it and doing
+<code class="docutils literal notranslate"><span class="pre">del</span> <span class="pre">sel</span></code></p></li>
+</ol>
+<p>Remember, it’ll be much easier to build deleted components back in once the
+surroundings are correctly settled.</p>
+</section>
+<section id="dealing-with-unrecognised-residues">
+<span id="unrecognised-residues"></span><h2><a class="toc-backref" href="sim_settings.html#id6">Dealing with unrecognised residues</a><a class="headerlink" href="sim_settings.html#dealing-with-unrecognised-residues" title="Permalink to this headline">¶</a></h2>
+<p>If ISOLDE encounters a residue it does not recognise while preparing a
+simulation, a dialog box like the following will appear:</p>
+<figure class="align-default">
+<img alt="Unrecognised residue error dialog box" src="../../_images/unrecognised_residue_error.png" />
+</figure>
+<p>On clicking OK ISOLDE will open and populate the “Unparameterised Residues”
+widget on its Validation tab:</p>
+<figure class="align-default">
+<img alt="../../_images/unparam_residues_widget.png" src="../../_images/unparam_residues_widget.png" />
+</figure>
+<p>Clicking on an entry in the top table will show the offending residue in the
+main GUI, and bring up a list of known templates matching by name or similar
+topology in the bottom table. In most cases where there is a matching entry in
+the bottom table (typically where the residue has a known template but is
+unrecognised simply due to missing atoms or incorrect hydrogenation) you can
+correct it by by simply clicking “Rebuild residue to template”. If no template
+is found, that’s not necessarily the end of the world: if your residue is:</p>
+<ul class="simple">
+<li><p>not covalently bound to any other residue; and</p></li>
+<li><p>composed only of the elements C, N, O, S, P, H, F, Cl, Br, and/or I; and</p></li>
+<li><p>not a radical</p></li>
+</ul>
+<p>... then you should be able to generate parameters using the “Residue
+Parameterisation” widget on ISOLDE’s General tab:</p>
+<figure class="align-default">
+<img alt="../../_images/param_widget.png" src="../../_images/param_widget.png" />
+</figure>
+<p><strong>(NOTE: It is critically important that you make sure the residue is correct
+including all hydrogens before you parameterise it)</strong></p>
+<p>If you have existing AMBER-compatible parameters in the <a class="reference external" href="http://docs.openmm.org/7.0.0/userguide/application.html#creating-force-fields">OpenMM ffXML format</a>
+you can also load them here.</p>
+<p>If your ligand/residue does not meet the above criteria but is already well-fitted in the
+density, you can still continue on by selecting it and entering the command
+<code class="docutils literal notranslate"><span class="pre">isolde</span> <span class="pre">ignore</span> <span class="pre">sel</span></code>. As far as ISOLDE’s simulations are concerned it will no
+longer exist (any parameterised residues that covalently bind to it will exist but
+will be fixed in space). Note that this means there is nothing to stop surrounding
+atoms falling into its density - take extra care in this region. If it is <em>not</em>
+well fitted, it may be more sensible to delete it for now and add it back once the
+surroundings are correctly built and refined.</p>
+</section>
+<section id="general-simulation-controls">
+<span id="general-sim-controls"></span><h2><a class="toc-backref" href="sim_settings.html#id7">General simulation controls</a><a class="headerlink" href="sim_settings.html#general-simulation-controls" title="Permalink to this headline">¶</a></h2>
+<p>As mentioned at the top of this page, once your model meets all the requirements
+for successful simulation you can get things moving by clicking the “Start simulation”
+button on ISOLDE’s ribbon menu:</p>
+<figure class="align-default">
+<img alt="../../_images/start_sim_button1.png" src="../../_images/start_sim_button1.png" />
+</figure>
+<p>On successful start, this button will change to a pause button and the adjacent
+control buttons will become activated:</p>
+<figure class="align-default">
+<img alt="../../_images/sim_control_buttons.png" src="../../_images/sim_control_buttons.png" />
+</figure>
+<p>The next two icons (the green and red chequered flags) to the right allow you to
+save and restore, respectively, a snapshot of the model state. These are
+generally used when you want to test a hypothesis - i.e. make a substantial
+rearrangement where you’re not sure if it will be successful. Click the green
+button to store the current coordinates and the states of all relevant
+restraints, try your rearrangement, and if it fails, click the red button to put
+things back as they were. If you haven’t clicked the green button, clicking the
+red one will restore the simulation to the state it was in when you clicked
+“Start simulation”.</p>
+<p>The final two icons (green and red stop signs) are your two choices for stopping
+the simulation. The green icon keeps your work, and is the one that you should
+be using almost all the time. The red icon discards everything you did in this
+simulation, reverting the model to the way it was when you clicked “Start
+simulation”.</p>
+</section>
+<section id="basic-interaction">
+<h2><a class="toc-backref" href="sim_settings.html#id8">Basic interaction</a><a class="headerlink" href="sim_settings.html#basic-interaction" title="Permalink to this headline">¶</a></h2>
+<p>With your simulation running, <strong>right-click-and-drag</strong> on any heavy atom and
+you should see it follow your mouse cursor, with a 3D green arrow showing the
+direction of pull:</p>
+<figure class="align-default" id="id3">
+<img alt="Tugging on a single atom" src="../../_images/tugging.png" />
+<figcaption>
+<p><span class="caption-text">Interactive tugging forces are shown like this green arrow</span><a class="headerlink" href="sim_settings.html#id3" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>ISOLDE offers two other tugging modes, which you can set during simulations
+using buttons on the far right of ISOLDE’s ribbon menu:</p>
+<figure class="align-default">
+<img alt="ISOLDE's tugging modes toolbar" src="../../_images/tugging_toolbar.png" />
+</figure>
+<p>The “tug atom” mouse mode is set every time a simulation starts. You can still
+use the buttons on the ChimeraX mouse modes toolbar to make the right mouse
+button do other things, and come back to tugging using the above buttons. Just
+avoid anything that actually adds or removes atoms while your simulation is
+running - and <strong>never</strong> use these three mouse modes to move a model initialised
+for ISOLDE:</p>
+<figure class="align-default">
+<img alt="../../_images/move_model_buttons.png" src="../../_images/move_model_buttons.png" />
+</figure>
+</section>
+<section id="adjusting-map-weightings">
+<h2><a class="toc-backref" href="sim_settings.html#id9">Adjusting map weightings</a><a class="headerlink" href="sim_settings.html#adjusting-map-weightings" title="Permalink to this headline">¶</a></h2>
+<p>When any qualifying map is associated with the currently selected model, ISOLDE
+automatically prepares it for MDFF and guesses a suitable weighting constant
+(see <a class="reference internal" href="getting_started.html#adding-maps"><span class="std std-ref">Adding maps</span></a>). The algorithm used for this assumes that at least a
+substantial portion of the model is correctly docked in the map, and is not strictly
+deterministic:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>For each non-hydrogen atom in the model, a random position is chosen
+near the atom centre (perturbed up to +/-0.25 Angstroms along each axis),
+and the map gradient at that point is calculated by trilinear interpolation.</p></li>
+<li><p>The resulting gradients are ranked in increasing order of magnitude, and
+the 90th percentile gradient is found.</p></li>
+<li><p>The coupling constant is chosen such that (coupling constant) *
+(90th percentile gradient) = (a heuristically determined scaling
+constant).</p></li>
+</ol>
+</div></blockquote>
+<p>The default weighting tends to work well for models with resolutions better than
+about 3.5 Angstroms. Beyond that you may find it to be too strong (symptoms of
+this are backbone atoms twisting out of stable secondary structure geometry,
+and/or sidechains being “sucked” overly aggressively into the map). If you wish
+to adjust the weighting, you can do so at any time using the relevant Map
+Settings widget on ISOLDE’s General tab.</p>
+</section>
+<section id="adjusting-temperature-and-trajectory-smoothing">
+<h2><a class="toc-backref" href="sim_settings.html#id10">Adjusting temperature and trajectory smoothing</a><a class="headerlink" href="sim_settings.html#adjusting-temperature-and-trajectory-smoothing" title="Permalink to this headline">¶</a></h2>
+<p>Molecular dynamics simulations are designed to closely replicate real-world
+behaviour of molecules, including random thermal motion. The default simulation
+temperature is 20 Kelvin - enough to give you a clear indication of motion and
+help the model “rattle” itself into density, without being overwhelming. In order
+to reduce the “jittery” effect, ISOLDE performs continuous trajectory smoothing
+on the coordinates you see <em>(NOTE: the level of smoothing does not affect the
+simulation itself)</em>. You can adjust the simulation temperature and smoothing
+using the “Simulation Runtime” widget on ISOLDE’s General tab:</p>
+<figure class="align-default">
+<img alt="Temperature and trajectory smoothing controls" src="../../_images/sim_runtime_widget.png" />
+</figure>
+<p>Once the model is very close to finished it is a good idea to reduce the temperature
+to zero Kelvin to remove thermal fluctuation and allow the local geometry to
+settle to equilibrium.</p>
+<p>Anyway, once you are able to successfully start simulations, you
+can move on to <a class="reference internal" href="rebuild.html#manipulating-your-model"><span class="std std-ref">Manipulating your model</span></a>.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../isolde.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../isolde.html">Home</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../ISOLDE.html">The ISOLDE GUI</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../intro.html">What is ISOLDE all about?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requirements.html">System Requirements</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">GUI Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/isolde.html">Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../commands/isolde_restrain.html">Adaptive Restraint Schemes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../commands/isolde_remote.html">Remote Control Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../commands/isolde.html">The ISOLDE Command Line</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/isolde.html">ISOLDE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../isolde.html">Documentation overview</a><ul>
+  <li><a href="../ISOLDE.html">The ISOLDE GUI</a><ul>
+  <li><a href="index.html">GUI Details</a><ul>
+      <li>Previous: <a href="navigation.html" title="previous chapter">Visualisation and Navigation</a></li>
+      <li>Next: <a href="rebuild.html" title="next chapter">Manipulating your model</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016-2022, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/tools/gui/sim_settings.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

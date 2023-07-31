@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Remote Control Options &#8212; ISOLDE 1.0b3.dev7 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ISOLDE Python API" href="../api/isolde.html" />
+    <link rel="prev" title="Adaptive Distance Restraints" href="isolde_restrain.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="remote-control-options">
+<span id="remote-control-cmd"></span><h1>Remote Control Options<a class="headerlink" href="isolde_remote.html#remote-control-options" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="isolde_remote.html#isolde-remote-rest-start" id="id1">isolde remote rest start</a></p></li>
+<li><p><a class="reference internal" href="isolde_remote.html#isolde-remote-rest-stop" id="id2">isolde remote rest stop</a></p></li>
+<li><p><a class="reference internal" href="isolde_remote.html#isolde-remote-rest-info" id="id3">isolde remote rest info</a></p></li>
+</ul>
+</div>
+<div class="section" id="isolde-remote-rest-start">
+<h2><a class="toc-backref" href="isolde_remote.html#id1">isolde remote rest start</a><a class="headerlink" href="isolde_remote.html#isolde-remote-rest-start" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde remote rest start [<strong>port</strong> <em>integer</em>]</p>
+<p>Start a background REST HTTP server to listen for commands. If no port is
+specified, a random available port will be chosen and reported to the log.</p>
+</div>
+<div class="section" id="isolde-remote-rest-stop">
+<h2><a class="toc-backref" href="isolde_remote.html#id2">isolde remote rest stop</a><a class="headerlink" href="isolde_remote.html#isolde-remote-rest-stop" title="Permalink to this headline">¶</a></h2>
+<p>If the REST server is running, stop it.</p>
+</div>
+<div class="section" id="isolde-remote-rest-info">
+<h2><a class="toc-backref" href="isolde_remote.html#id3">isolde remote rest info</a><a class="headerlink" href="isolde_remote.html#isolde-remote-rest-info" title="Permalink to this headline">¶</a></h2>
+<p>Report the host address and port of the server to the log.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../isolde.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../isolde.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/ISOLDE.html">The ISOLDE GUI</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="isolde.html">The ISOLDE Command Line</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="isolde_restrain.html">Adaptive Distance Restraints</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="isolde_remote.html#">Remote Control Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-tutorial">isolde tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-demo">isolde demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-start">isolde start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-sim">isolde sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-pepflip">isolde pepflip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-cisflip">isolde cisflip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-ignore">isolde ignore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#id1">isolde ~ignore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-restrain-distances">isolde restrain distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-release-distances">isolde release distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-adjust-distances">isolde adjust distances</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/isolde.html">ISOLDE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../isolde.html">Documentation overview</a><ul>
+  <li><a href="isolde.html">The ISOLDE Command Line</a><ul>
+      <li>Previous: <a href="isolde_restrain.html" title="previous chapter">Adaptive Distance Restraints</a></li>
+      <li>Next: <a href="../api/isolde.html" title="next chapter">ISOLDE Python API</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016-2019, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/commands/isolde_remote.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,404 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Manipulating your model &#8212; ISOLDE 1.0b3.dev7 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Monitoring the quality of your model" href="validate.html" />
+    <link rel="prev" title="Basic simulation controls" href="sim_settings.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="manipulating-your-model">
+<h1>Manipulating your model<a class="headerlink" href="rebuild.html#manipulating-your-model" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="rebuild.html#overview" id="id10">Overview</a></p></li>
+<li><p><a class="reference internal" href="rebuild.html#the-residue-rebuilding-toolbar" id="id11">The residue rebuilding toolbar</a></p></li>
+<li><p><a class="reference internal" href="rebuild.html#fine-tuning-your-selection" id="id12">Fine-tuning your selection</a></p></li>
+<li><p><a class="reference internal" href="rebuild.html#secondary-structure-toolbar" id="id13">Secondary Structure Toolbar</a></p></li>
+<li><p><a class="reference internal" href="rebuild.html#register-shifter" id="id14">Register Shifter</a></p></li>
+<li><p><a class="reference internal" href="rebuild.html#position-restraint-toolbar" id="id15">Position Restraint Toolbar</a></p></li>
+<li><p><a class="reference internal" href="rebuild.html#distance-restraint-toolbar" id="id16">Distance Restraint Toolbar</a></p></li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="rebuild.html#id10">Overview</a><a class="headerlink" href="rebuild.html#overview" title="Permalink to this headline">¶</a></h2>
+<p>In most cases, most of your time spent with ISOLDE will be on the <em>Rebuild</em> tab:</p>
+<div class="figure align-default" id="id1">
+<img alt="ISOLDE rebuild tab" src="../../_images/rebuild_tab.png" />
+<p class="caption"><span class="caption-text">Where the magic happens.</span><a class="headerlink" href="rebuild.html#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>The buttons on this tab are enabled/disabled depending whether a simulation is
+running, and whether the current selection of atoms is suitable for their use.
+For example, when the above screenshot was taken a simulation was running, and
+a single atom (from Gln180 on chain A) was selected.</p>
+<p>There’s a lot happening on this tab, so let’s break it down bit by bit.</p>
+</div>
+<div class="section" id="the-residue-rebuilding-toolbar">
+<h2><a class="toc-backref" href="rebuild.html#id11">The residue rebuilding toolbar</a><a class="headerlink" href="rebuild.html#the-residue-rebuilding-toolbar" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-default" id="id2">
+<img alt="the residue rebuild toolbar" src="../../_images/rebuild_residue_toolbar.png" />
+<p class="caption"><span class="caption-text">This toolbar is only active when all selected atoms come from a single
+protein residue.</span><a class="headerlink" href="rebuild.html#id2" title="Permalink to this image">¶</a></p>
+<div class="legend">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 77%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Top line</p></td>
+<td><p>Basic information about the selected residue: chain ID,
+residue number, residue name, peptide bond conformation
+(if applicable), rotamer (if applicable). The rotamer
+information provides the name of the nearest named
+rotamer, its frequency of occurrence in the <a class="reference external" href="http://kinemage.biochem.duke.edu/databases/top8000.php">Top8000
+database</a>, and an estimated Z score for each <em>chi</em>
+(χ) This information updates with every coordinate
+update, and changes colour according to the rotamer
+probability (favoured=green, allowed=yellow,
+outlier=red).</p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="pep_flip" src="../../_images/pep-flip-icon1.png" /></p></td>
+<td><p>Attempt to flip the peptide bond <em>N</em>-terminal to the
+selected residue by 180°. This is achieved by applying
+temporary dihedral restraints to the φ and ψ dihedrals
+flanking the target bond. These will be automatically
+removed when satisfied, or if unable to be satisfied
+after a few dozen simulation updates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><img alt="cis_trans" src="../../_images/cis-trans-icon.png" /></p></td>
+<td><p>Flip a peptide bond from <em>cis</em> to <em>trans</em> or
+vice-versa. By design this is the <strong>only</strong> way to
+perform this particular flip: all peptide bonds are
+restrained to the nearest planar configuration at the
+start of each simulation, to avoid accidental
+introduction of flips while aggressively tugging atoms.</p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="rot_i" src="../../_images/rotamer-preview-icon.png" /></p></td>
+<td><p>Clicking the left and right arrows flanking this icon
+cycles through previews of alternative rotamer
+configurations for the selected residue, sorted in
+order of prevalence. The following buttons act on the
+current preview. (<em>NOTE: when selecting a rotamer, pay
+more attention to how well its shape matches the
+shape of the density than whether it is actually IN
+the density. Often some adjustment of the backbone
+needs to happen to settle it into place - this will
+happen after you make your choice</em>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><img alt="rot_d" src="../../_images/rotamer-clear-icon.png" /></p></td>
+<td><p>Clear and discard the preview.</p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="rot_c" src="../../_images/rotamer-commit-icon.png" /></p></td>
+<td><p>Commit the rotamer directly (set the atoms to the new
+coordinates). <strong>(IMPORTANT: Don’t do this if there is
+any sign of a serious clash between the new coordinates
+and surrounding atoms. Use the following option
+instead.)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><img alt="rot_t" src="../../_images/rotamer-set-target-icon.png" /></p></td>
+<td><p>Push the sidechain towards the desired rotamer using
+restraints on each χ dihedral. This approach avoids any
+chance of introducing destabilising clashes. The
+restraint on each dihedral cuts off at two times the
+estimated standard deviation of its angle for the given
+target, allowing the residue to relax within its
+natural range of motion. In most cases where your
+map density is reasonable, you can and should release
+the restraints once the sidechain has settled to the
+new configuration.</p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="rot_r" src="../../_images/rotamer-release-icon.png" /></p></td>
+<td><p>Release all χ dihedral restraints on this sidechain.</p></td>
+</tr>
+<tr class="row-odd"><td><p><img alt="brb" src="../../_images/backrub_button.png" /></p></td>
+<td><p>Attempt to auto-fit the sidechain to the density using
+the <a class="reference external" href="https://academic.oup.com/bioinformatics/article/24/13/i196/233217">backrub algorithm</a>. If multiple MDFF potentials
+are loaded, you can choose which one to use for this
+using the drop-down menu on the right.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>All user-applied dihedral restraints (other than the always-on restraints on the
+peptide bonds) are displayed on the model using a ring-and-post motif as shown
+for this lysine rotamer:</p>
+<div class="figure align-default" id="id3">
+<img alt="Dihedral restraint visualisation" src="../../_images/dihedral_restraints.png" />
+<p class="caption"><span class="caption-text">The difference between the current dihedral angle and the target is
+indicated by the angle between the posts, and the level of satisfaction of
+the restraints is further indicated by colour. The thickness of each
+indicator is proportional to the strength of the restraint.</span><a class="headerlink" href="rebuild.html#id3" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="fine-tuning-your-selection">
+<h2><a class="toc-backref" href="rebuild.html#id12">Fine-tuning your selection</a><a class="headerlink" href="rebuild.html#fine-tuning-your-selection" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-default" id="id4">
+<img alt="Extend or shrink a selection along a chain" src="../../_images/extend_or_shrink_selection.png" />
+<p class="caption"><span class="caption-text">This toolbar is available if:</span><a class="headerlink" href="rebuild.html#id4" title="Permalink to this image">¶</a></p>
+<div class="legend">
+<blockquote>
+<div><ul class="simple">
+<li><p>the current selection encompasses a single residue; or</p></li>
+<li><p>the current selection covers a single continuous chain of amino acid
+residues.</p></li>
+</ul>
+</div></blockquote>
+<p>The blue (red) arrow on the top row shrinks the selection by one residue at
+a time from the <em>N-</em> (<em>C-</em>) terminus. The arrows on the bottom row grow the
+selection by one residue at a time.</p>
+</div>
+</div>
+</div>
+<div class="section" id="secondary-structure-toolbar">
+<h2><a class="toc-backref" href="rebuild.html#id13">Secondary Structure Toolbar</a><a class="headerlink" href="rebuild.html#secondary-structure-toolbar" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-default" id="id5">
+<img alt="the secondary structure toolbar" src="../../_images/secondary_structure_toolbar.png" />
+<p class="caption"><span class="caption-text">This toolbar is only available when the current selection encompasses a
+continuous stretch of amino acid residues. Secondary structure restraints
+are implemented as dihedral restraints on φ and ψ dihedrals, as well as
+distance restraints on CA<sub>n</sub> - CA<sub>n+2</sub> and O<sub>n</sub> -
+N<sub>n+4</sub>.</span><a class="headerlink" href="rebuild.html#id5" title="Permalink to this image">¶</a></p>
+<div class="legend">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 77%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><img alt="sec_helix" src="../../_images/helix-icon.png" /></p></td>
+<td><p>Restrain the selected residues to α-helix.</p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="sec_anti" src="../../_images/antiparallel-beta-icon.png" /></p></td>
+<td><p>Restrain the selected residues to anti-parallel
+β-strand.</p></td>
+</tr>
+<tr class="row-odd"><td><p><img alt="sec_par" src="../../_images/parallel-beta-icon.png" /></p></td>
+<td><p>Restrain the selected residues to parallel β-strand.</p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="red_x" src="../../_images/red-x-icon.png" /></p></td>
+<td><p>Clear secondary structure restraints for the selection.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>When applied, secondary structure restraints appear similar to the example
+below (for an α-helix).</p>
+<div class="figure align-default">
+<img alt="α-helical secondary structure restraints" src="../../_images/helix_restraints.png" />
+</div>
+</div>
+<div class="section" id="register-shifter">
+<h2><a class="toc-backref" href="rebuild.html#id14">Register Shifter</a><a class="headerlink" href="rebuild.html#register-shifter" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-default" id="id6">
+<img alt="The register shifting toolbar" src="../../_images/register_shift_toolbar.png" />
+<p class="caption"><span class="caption-text">This tool is only available when a simulation is running <strong>and</strong> your
+current selection is a continuous chain of amino acid residues.</span><a class="headerlink" href="rebuild.html#id6" title="Permalink to this image">¶</a></p>
+<div class="legend">
+<p>When building into low-resolution density, it is not unusual to come across
+a situation where you discover that you (or your automatic building
+software) have gotten out of step with the density - that is, where some
+stretch of your peptide chain turns out to be one or more positions forward
+or back along the sequence from where it should be. Such stretches are said
+to be “out of register”, and can be a real pain to fix by traditional
+methods.</p>
+<p>The residue shifting tool activated by the above toolbar can help with that.
+Make a selection encompassing the stretch in question, dial up the number of
+residues you wish to move by (where a negative number indicates a shift
+towards the <em>N</em>-terminus), and hit the button on the left. <em>(NOTE: this is
+a rather aggressive change you’re about to make. Might be a good idea to hit
+the</em> <a class="reference internal" href="sim_settings.html#general-sim-controls"><span class="std std-ref">checkpoint button</span></a> <em>first.)</em></p>
+<p>The register shifter first releases all existing custom restraints on the
+stretch in question, then applies a set of moving position restraints to the
+N, CA, CB and C atoms. These restraints move smoothly along the path of the
+peptide chain, dragging the atoms along as they go. Once they reach their
+destination the restraints will remain active until you press the red “X” on
+the right, allowing you to check and perform any necessary small cleanups
+before releasing. Pay particular attention to the bulkier sidechains - these
+often need a little human help getting past obstacles.</p>
+<p>While the register shifter is in play, checkpointing is disabled - if you
+decide it was a mistake, clicking the red “X” will re-enable the checkpoint
+buttons allowing you to revert to the last saved checkpoint.</p>
+<p>While in principle any length of peptide chain can be shifted by the
+register shifter, in most cases it’s preferable to break the task down into
+manageable chunks of 1-2 secondary structure elements at a time (making sure
+your selection ends at flexible loops to give the shifted residues space to
+move into). In the vast majority of cases this will be enough to cover the
+whole error anyway.</p>
+<p>It is up to you to ensure that there is nothing fundamentally making the
+shift impossible. If the selection you want to shift ends near a fixed
+residue or contains a disulphide bond, for example, the register shifter
+will dutifully attempt to do your bidding anyway - but results will be
+somewhat unpredictable.</p>
+</div>
+</div>
+</div>
+<div class="section" id="position-restraint-toolbar">
+<h2><a class="toc-backref" href="rebuild.html#id15">Position Restraint Toolbar</a><a class="headerlink" href="rebuild.html#position-restraint-toolbar" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-default" id="id7">
+<img alt="The position restraint toolbar" src="../../_images/position_restraint_toolbar.png" />
+<p class="caption"><span class="caption-text">Position restraint addition is only available when a single atom is
+selected. Removal is available when at least one atom is selected.</span><a class="headerlink" href="rebuild.html#id7" title="Permalink to this image">¶</a></p>
+<div class="legend">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 81%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><img alt="pr_cur" src="../../_images/pin-to-current-icon.png" /></p></td>
+<td><p>Restrain the selected atom to its current position with
+the given spring constant.</p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="pr_cen" src="../../_images/pin-to-pivot-icon.png" /></p></td>
+<td><p>Restrain to the current origin of the pivot indicator with
+the given spring constant.</p></td>
+</tr>
+<tr class="row-odd"><td><p><img alt="red_x" src="../../_images/red-x-icon.png" /></p></td>
+<td><p>Disable all position restraints for the selected atoms.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="section" id="distance-restraint-toolbar">
+<h2><a class="toc-backref" href="rebuild.html#id16">Distance Restraint Toolbar</a><a class="headerlink" href="rebuild.html#distance-restraint-toolbar" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-default" id="id8">
+<img alt="The distance restraint toolbar" src="../../_images/distance_restraint_toolbar.png" />
+<p class="caption"><span class="caption-text">All but the rightmost button are only available when exactly two atoms are
+selected. The rightmost button is available when at least one atom is
+selected.</span><a class="headerlink" href="rebuild.html#id8" title="Permalink to this image">¶</a></p>
+<div class="legend">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 79%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><img alt="dr_set" src="../../_images/distance-restraint-icon.png" /></p></td>
+<td><p>Add a distance restraint between the selected atoms with
+the given spring constant and target distance.</p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="dr_dist" src="../../_images/diagonal-arrows.png" /></p></td>
+<td><p>Set the target distance to the current distance between
+the selected atoms.</p></td>
+</tr>
+<tr class="row-odd"><td><p><img alt="red_x" src="../../_images/red-x-icon.png" /></p></td>
+<td><p>Disable the distance restraint (if present) between the
+selected atoms.</p></td>
+</tr>
+<tr class="row-even"><td><p><img alt="multi_x" src="../../_images/multi-x.png" /></p></td>
+<td><p>Remove all distance restraints involving any of the
+selected atoms (including restraints to atoms outside the
+selection).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Distance restraints appear in the model as double-ended pistons:</p>
+<div class="figure align-default" id="id9">
+<img alt="Distance restraint visualisations" src="../../_images/distance_restraints.png" />
+<p class="caption"><span class="caption-text">The length of the central cylinder indicates the target distance, while its
+thickness indicates the strength of the restraint.</span><a class="headerlink" href="rebuild.html#id9" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../isolde.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../isolde.html">Home</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../ISOLDE.html">The ISOLDE GUI</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../intro.html">What is ISOLDE all about?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requirements.html">System Requirements</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">GUI Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/isolde.html">Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../commands/isolde.html">The ISOLDE Command Line</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/isolde.html">ISOLDE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../isolde.html">Documentation overview</a><ul>
+  <li><a href="../ISOLDE.html">The ISOLDE GUI</a><ul>
+  <li><a href="index.html">GUI Details</a><ul>
+      <li>Previous: <a href="sim_settings.html" title="previous chapter">Basic simulation controls</a></li>
+      <li>Next: <a href="validate.html" title="next chapter">Monitoring the quality of your model</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016-2019, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/tools/gui/rebuild.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

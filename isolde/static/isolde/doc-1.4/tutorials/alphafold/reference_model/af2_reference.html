@@ -1,0 +1,633 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Improving Legacy Models Using AlphaFold &#8212; ISOLDE 1.4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/external_links.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Building Into CryoEM Maps With Your Own AlphaFold Multimer Models" href="../multimer/alphafold_multimer_cryoem.html" />
+    <link rel="prev" title="Top-Down Modelling with AlphaFold-DB Models" href="../from_scratch/from_scratch.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="improving-legacy-models-using-alphafold">
+<span id="alphafold-reference-tutorial"></span><h1>Improving Legacy Models Using AlphaFold<a class="headerlink" href="af2_reference.html#improving-legacy-models-using-alphafold" title="Permalink to this headline">¶</a></h1>
+<p><strong>(NOTE: Most links on this page will only work correctly when the page is
+loaded in ChimeraX’s help viewer. You will also need to be connected to the
+Internet. Please close ISOLDE and any open models before starting this
+tutorial.)</strong></p>
+<p><strong>(The instructions in the tutorial below assume you are using a wired mouse
+with a scroll wheel doubling as the middle mouse button. While everything should
+also work well on touchpads in Windows and Linux, support for Apple’s
+multi-touch touchpad is a work in progress. Known issues with the latter are
+that clipping planes will not update when zooming, and recontouring of maps is
+not possible.)</strong></p>
+<section id="tutorial-quickly-improving-2rd0-with-alphafold-reference-restraints">
+<h2>Tutorial: Quickly improving 2rd0 with AlphaFold reference restraints<a class="headerlink" href="af2_reference.html#tutorial-quickly-improving-2rd0-with-alphafold-reference-restraints" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+<p><strong>NOTE: This tutorial assumes that you are already familiar with the basic
+operation of ISOLDE. If this is your first time using it, it is highly
+recommended that you first work through at least the</strong>
+<a class="reference internal" href="../../intro/crystal_intro/crystal_intro.html#isolde-intro-tutorial"><span class="std std-ref">Introduction to crystallographic model rebuilding in ISOLDE</span></a> <strong>tutorial before starting this one.</strong></p>
+<p>It is no big secret that models built into lower-resolution datasets have
+historically been fraught with errors, but it can often be surprising to the
+uninitiated just how big these errors can get. In the introductory tutorial we
+looked at rebuilding a small 3.0 angstrom model, 3io0, in ISOLDE using only the
+information available to us from the experimental data. While that case was
+fairly straightforward, for larger structures, lower-resolution and/or
+poorer-quality starting models this approach still becomes quite time-consuming
+and occasionally frustrating. Luckily, with the advent of AlphaFold and its
+high-quality models of most well-structured regions of proteins, we now have a
+much better way to quickly and automatically fix most of the problems in legacy
+models, reducing the interactive component to the (typically few) sites where
+the AlphaFold model disagrees with the data, and/or the reference restraints
+need a little help steering the experimental model to the new conformation.</p>
+<p>As our example, we’re going to take a look at <a class="reference external" href="https://www.rcsb.org/structure/2RD0">2rd0</a>, a 3.05 angstrom structure
+of the human p110alpha/p85alpha complex. Published back in 2007 as the first
+structure of p110alpha (aka PI3Kalpha), given the resolution and state of the
+art at the time it was inevitable that it would contain some errors. Indeed,
+like most structures of similar resolution and time period its “headline”
+validation statistics look quite poor by modern standards:</p>
+<figure class="align-default">
+<img alt="../../../_images/2rd0_multipercentile_validation.png" src="../../../_images/2rd0_multipercentile_validation.png" />
+</figure>
+<p>Let’s just take a moment to appreciate the scale of what these values mean. 2rd0
+contains 9365 atoms in 1136 amino acid residues. A clashscore of 22 indicates
+22/1000, or 206 atoms, are clashing - that is, overlapping in a non-physical way
+with at least one other atom (in a well-refined structure this should be almost
+zero). Eighty-two residues are in disallowed Ramachandran space (i.e. their
+backbones are severely strained) - for a structure this size we’d expect to see
+0-2 such cases. It’s not shown in the graphic above, but a further 159 residues
+(14%) are in the “Allowed” region of the Ramachandran plot where about 2% are
+actually expected to sit - so in total, that’s at least about 220 residues in
+need of fixing according to Ramachandran statistics. Finally, 15.4% of
+sidechains (161 residues) are in non-rotameric conformations - we expect no more
+than 1-2%.</p>
+<p>The point of the above is that there is a <em>lot</em> to be fixed here. While it’s
+certainly possible to get there in ISOLDE in the absence of any external
+information, optimistically it would take at least a full working day - and
+likely quite a bit more. So, let’s explore how we can get there much more
+quickly.</p>
+<p>First, go ahead and open the model and its structure factors. To make the maps a
+little smoother, we’re going to oversample at a rate of two times the Nyquist
+frequency rather than the default 1.5.</p>
+<p><a class="reference external" href="cxcmd:open 2rd0 structurefactors true oversampling 2">open 2rd0 structurefactors true oversampling 2</a></p>
+<p>That should give you an initial view looking something like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/2rd0_initial_view.jpg" src="../../../_images/2rd0_initial_view.jpg" />
+</figure>
+<p>Zoom in <em>(scroll wheel)</em> and adjust the map contours to your liking
+<em>(ctrl-scroll to select the map to adjust, alt-scroll to actually adjust it.
+Sigma values will be shown on the status bar at lower left)</em>. I’d suggest
+setting the sharpened map <em>(transparent cyan)</em> to about 2 sigma and the
+unsharpened one <em>(cyan wireframe)</em> to 1 sigma. Leave the difference map
+<em>(red/green wireframe)</em> at the default +/-3 sigma. In the well-resolved core
+that should look roughly like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/zoom_adjusted_contours.jpg" src="../../../_images/zoom_adjusted_contours.jpg" />
+</figure>
+<p>Remember, you can re-adjust contours whenever you need to.</p>
+<p>Now, go ahead and start ISOLDE:</p>
+<p><a class="reference external" href="cxcmd:isolde start">isolde start</a></p>
+<p>... and add hydrogens:</p>
+<p><a class="reference external" href="cxcmd:addh">addh</a></p>
+<p>Before we get started properly, take a quick browse through the Ramachandran
+plots <em>(on the Validate tab)</em>. Click on a few outliers to see them in context,
+and try to picture what needs to be done to correct them.</p>
+<figure class="align-default">
+<img alt="../../../_images/starting_ramaplots.png" src="../../../_images/starting_ramaplots.png" />
+</figure>
+<p>Now, have a look at what happens if we start a simulation <em>without</em> any
+reference restraints:</p>
+<p><a class="reference external" href="cxcmd:isolde sim start #1">isolde sim start #1</a></p>
+<p>After things start moving, take another look at the Ramachandran plots:</p>
+<figure class="align-default">
+<img alt="../../../_images/settle_no_restraints_ramaplots.png" src="../../../_images/settle_no_restraints_ramaplots.png" />
+</figure>
+<p>Some clear improvements there. In my session, it’s down to 40 outliers and 89
+allowed (from 82/159) - and rotamer outliers are down to 34 (from 161). But
+there’s still a lot to be done, and of course just because something is no
+longer an outlier doesn’t mean it’s necessarily correct - it’s always important
+to see for yourself against the actual experimental map.</p>
+<p>Also take a look at the R-factors (on the status bar at bottom right of the
+ChimeraX window). In my session this simulation increased them slightly from
+Rwork/Rfree of 0.308/0.352 to 0.317/0.354 <em>(your numbers will almost certainly
+differ a bit - don’t worry, that’s normal)</em>. That’s pretty typical of what
+happens in ISOLDE for models like this: while regions that were <em>almost</em> right
+tend to fall into place (and thus improve R-factors), sites that were very wrong
+and over-fitted will be pushed out of density to resolve energetically
+unfavourable states (driving the R-factors up, but generally making the problems
+easier to diagnose and fix).</p>
+<p>Anyway, let’s throw out what we just did and revert to the initial state of the
+model. Hit the big red stop button, or equivalently:</p>
+<p><a class="reference external" href="cxcmd:isolde sim stop discardTo start">isolde sim stop discardTo start</a></p>
+<p>Now, let’s go ahead and fetch the AlphaFold models for our two chains. <em>(Note:
+this is only possible for proteins from organisms currently covered by the
+AlphaFold database - you can see the list of organisms</em> <a class="reference external" href="https://alphafold.ebi.ac.uk/download">here</a> <em>)</em>:</p>
+<p><a class="reference external" href="cxcmd:alphafold match #1 trim false">alphafold match #1 trim false</a></p>
+<p>The optional “trim” argument tells ChimeraX whether or not to automatically trim the
+predicted models to include only those residues present in the experimental
+construct according to the sequences stored in the mmCIF file. In order for
+confidence-based weighting of reference distance restraints to work correctly, this
+<strong>must</strong> be set to false. Your display should now look like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/model_with_alphafold_overlay.jpg" src="../../../_images/model_with_alphafold_overlay.jpg" />
+</figure>
+<p>The AlphaFold model is displayed as a ribbon and coloured according to its
+confidence in its prediction (the predicted local distance difference test, or
+<a class="reference external" href="https://alphafold.ebi.ac.uk/faq#faq-5">pLDDT score</a>) for each individual residue (orange = least confident, dark blue
+= most confident). <strong>(IMPORTANT NOTE: residues with pLDDT scores less than about
+50 are generally junk and their coordinates should not be interpreted in any
+way. Nevertheless, it may on occasion be useful to keep them present to start
+with, to act as raw material for the fitting process. Once the model is fitted
+it is best to inspect and cull these on a case-by-case basis.)</strong></p>
+<p>AlphaFold actually provides <em>two</em> different measures of confidence in its
+predictions, each of which is really useful in its own way. The pLDDT score, a
+measure of confidence in the conformation and immediate local environment of a
+residue, is a fairly natural measure to use to adjust the weights of
+torsion-space reference model restraints. This is achieved with the argument
+“adjustForConfidence true” of the “isolde restrain torsions” command. The
+overall effect of the adjustment scheme is shown below - qualitatively speaking,
+reducing pLDDT will lead to both weaker and “fuzzier” restraints on the matching
+residue. Residues for which the reference model pLDDT values are less than 50
+will <em>not</em> be restrained.</p>
+<figure class="align-default">
+<img alt="../../../_images/torsion_restraint_plddt_adjustments2.png" src="../../../_images/torsion_restraint_plddt_adjustments2.png" />
+</figure>
+<p>So let’s go ahead and apply these. You can do this chain-by-chain with the Reference
+Models widget on ISOLDE’s Restraints tab:</p>
+<figure class="align-default">
+<img alt="../../../_images/reference_models_widget_torsions.png" src="../../../_images/reference_models_widget_torsions.png" />
+</figure>
+<p>... or using the commands:</p>
+<p><a class="reference external" href="cxcmd:isolde restrain torsions #1/A templ #2/A adjustForConfidence true">isolde restrain torsions #1/A template #2/A adjustForConfidence true</a></p>
+<p><a class="reference external" href="cxcmd:isolde restrain torsions #1/B templ #2/B adjustForConfidence true">isolde restrain torsions #1/B template #2/B adjustForConfidence true</a></p>
+<p>Let’s take a quick look at the effect of this. First, let’s show all atoms and
+hide the cartoon for the reference model:</p>
+<p><a class="reference external" href="cxcmd:show #2;~cartoon #2">show #2; ~cartoon #2</a></p>
+<p>... and zoom in on Leucine 687 of chain A:</p>
+<p><a class="reference external" href="cxcmd:view #1/A:687">view #1/A:687</a></p>
+<figure class="align-default">
+<img alt="../../../_images/A686-687.jpg" src="../../../_images/A686-687.jpg" />
+</figure>
+<p>The two leucine residues here are good examples of the types of subtle errors
+that often creep in to low resolution models. Both of them are modelled
+backwards (rotated ~180 degrees around the outermost chi dihedral) - a severely
+outlying, strained geometry, but one that appears to fit low-resolution density
+like this almost as well as the correct state. AlphaFold appears to have gotten
+it right in both cases, and from the colour we can see it’s very confident about
+its predictions - this will lead to very strong and wide-ranging restraints
+here.</p>
+<p>Now, let’s move on to distance restraints. Here we have <em>two</em> new arguments
+added to the “isolde restrain distance” commands. The first,
+“adjustForConfidence true” is analogous to the torsion restraint case, except
+that instead of pLDDT it uses the predicted aligned error (PAE) matrix for the
+prediction to adjust each restraint.</p>
+<p>The PAE matrix encodes the confidence AlphaFold has in the distance between
+every single residue pair in the model (technically, each point [i,j] is the
+expected error in the position of residue i if the predicted and true structures
+were aligned on residue j). This is what it looks like for chain A:</p>
+<figure class="align-default">
+<img alt="../../../_images/PAE_chain_A.png" src="../../../_images/PAE_chain_A.png" />
+</figure>
+<p>... well, that’s how it’s displayed on the website, anyway. But note the color
+scale - I’m sure you’ll agree that distances with estimated errors of 30
+angstroms aren’t particularly useful for restraint purposes! In fact, ISOLDE
+only restrains distances for residue pairs with a mutual PAE of 4 angstroms or
+better. Let’s see what that matrix looks like rescaled to that range:</p>
+<figure class="align-default">
+<img alt="../../../_images/PAE_chain_A_4A_color_scale.png" src="../../../_images/PAE_chain_A_4A_color_scale.png" />
+</figure>
+<p>Distance restraints will only be applied on a given pair of atoms if their
+reference positions are less than 8 Angstroms apart <strong>and</strong> the PAE between
+their parent residues is less than or equal to 4 angstroms (i.e. where they
+correspond to a green dot on the above plot). For residues meeting those
+criteria, representative plots of the restraint potentials are shown below.</p>
+<figure class="align-default">
+<img alt="../../../_images/distance_restraint_pae_adjustments2.png" src="../../../_images/distance_restraint_pae_adjustments2.png" />
+</figure>
+<p>The second new option for the “isolde restrain distances” command is
+“useCoordinateAlignment false”. This affects how ISOLDE compares the reference
+and working models in order to assign distance restraints. The default is to do
+it by a series of rigid-body alignments: find the largest piece that aligns
+well, assign restraints to those residues; find the next largest piece… and
+repeat until there is nothing left to align. That generally works well when the
+reference model is an experimental structure (and particularly when its sequence
+isn’t identical to the working model), because it avoids generating spurious
+restraints between domains that have shifted substantially - but it has the
+drawback that residues that are substantially out of register will typically not
+be given restraints to their correct interaction partners. With
+“adjustForConfidence true” the problem of spurious restraints is generally
+avoided, making the progressive decomposition largely unnecessary. The
+“useCoordinateAlignment false” command tells ISOLDE to instead assign
+model/template residue pairs strictly based on sequence alignment only, which
+makes sure that restraints between confidently-predicted atoms are assigned no
+matter how badly placed they are in the working model.</p>
+<p>Anyway, let’s make it happen. Again, you can do this via the Reference Models
+widget:</p>
+<figure class="align-default">
+<img alt="../../../_images/reference_models_widget_distances.png" src="../../../_images/reference_models_widget_distances.png" />
+</figure>
+<p>... or via commands:</p>
+<p><a class="reference external" href="cxcmd:isolde restrain distances #1/A template #2/A adjustForConfidence true useCoordinateAlignment false">isolde restrain distances #1/A template #2/A adjustForConfidence true
+useCoordinateAlignment false</a></p>
+<p><a class="reference external" href="cxcmd:isolde restr dist #1/B templ #2/B adj t useCoord f">isolde restr dist #1/B templ #2/B adj t useCoord f</a></p>
+<p>Let’s take a look at what that’s done. Hide the AlphaFold models:</p>
+<p><a class="reference external" href="cxcmd:hide #!2 models">hide #!2 models</a></p>
+<p>... select your working model:</p>
+<p><a class="reference external" href="cxcmd:sel #1">sel #1</a></p>
+<p>... and expand the map to cover it using the “Mask to selection” button on ISOLDE’s
+ribbon menu, or:</p>
+<p><a class="reference external" href="cxcmd:clipper isolate sel">clipper isolate sel</a></p>
+<p>To get a closer look at an overview of the distance restraints, let’s turn off
+the map view:</p>
+<p><a class="reference external" href="cxcmd:hide #!1.1 model">hide #!1.1 model</a></p>
+<p><em>(Note: the exclamation mark in “#!1.1” here tells ChimeraX to change the
+display setting of only the top-level “container” model for the maps, without
+changing the display settings of the maps themselves. This is important to make
+it easy to get back exactly the same view as we had before)</em></p>
+<p>Also, let’s hide all the restraints that are close to satisfied via the Manage/Release
+Adaptive Restraints widget, or:</p>
+<p><a class="reference external" href="cxcmd:isolde adj dist #1 disp 0.5">isolde adjust distances #1 displayThreshold 0.5</a></p>
+<p>Browse around a bit. You’ll see a <em>lot</em> of purple indicating pairs of atoms that
+are much further apart than AlphaFold thinks they should be. Let’s focus in on
+one of these, and bring our maps back:</p>
+<p><a class="reference external" href="cxcmd:view #1/A:490-498;show #!1.1 model;clipper spot">view #1/A:490-498; show #!1.1 model; clipper spot</a></p>
+<figure class="align-default">
+<img alt="../../../_images/490-498_out_of_register.jpg" src="../../../_images/490-498_out_of_register.jpg" />
+</figure>
+<p>The forest of purple restraints you see here are a telltale giveaway that this
+helix is probably out of register. Indeed, a close look at the fit to density
+reveals a lot of red flags: Trp498 has no appreciable density around its
+sidechain, while there’s a large green difference blob of about the right shape
+on the other side of the helix; Glu494 is in density much too large for its
+sidechain (and pointing at Asp578 - not impossible, but something that’s
+generally only stable at low pH); Met489 is pointing into space while Asp488
+protrudes into a hydrophobic cavity.</p>
+<p>Now bring up the AlphaFold model for comparision:</p>
+<p><a class="reference external" href="cxcmd:show #2 models">show #2 models</a></p>
+<figure class="align-default">
+<img alt="../../../_images/490-498_AF_overlay.jpg" src="../../../_images/490-498_AF_overlay.jpg" />
+</figure>
+<p>Now, I know this image is getting a bit crowded, but a bit of inspection
+suggests it will solve the above problems. Trp498 goes into that nice difference
+blob; Glu494 is replaced by His495; Met489 takes the place of Asp488.</p>
+<p>... but before we actually fix all that, it’s time to settle the model under
+the influence of these restraints. First, hide the AlphaFold models for clarity,
+then start a simulation and wait a while for it to settle, without tugging
+anything.</p>
+<p><a class="reference external" href="cxcmd:hide #2 models">hide #2 models</a></p>
+<p><a class="reference external" href="cxcmd:isolde sim start #1">isolde sim start #1</a></p>
+<p>If you’re still watching this site, you’ll notice from the still-stretched
+distance restraints that ISOLDE is unable to fix it automatically.</p>
+<figure class="align-default">
+<img alt="../../../_images/490-498_initial_settle.jpg" src="../../../_images/490-498_initial_settle.jpg" />
+</figure>
+<p>That’s alright. We’ll get to fixing that in a bit. First, though, let’s take a
+quick inventory of what ISOLDE <em>has</em> been able to do with the aid of these
+restraints. Stop the simulation:</p>
+<p><a class="reference external" href="cxcmd:isolde sim stop">isolde sim stop</a></p>
+<p>... and take another look at the Ramachandran plots:</p>
+<figure class="align-default">
+<img alt="../../../_images/settle_with_restraints_ramaplots.png" src="../../../_images/settle_with_restraints_ramaplots.png" />
+</figure>
+<p>Now we’re getting somewhere! We’re clearly still not done yet, but the
+statistics are starting to look much more like a real-world protein. We’re down
+to 14 Ramachandran outliers (1.2%) and 36 allowed (3.2%); rotamer outliers are
+down to 5. Most importantly, this time the R-factors have tightened
+substantially (0.326/0.344 vs. the original 0.308/0.352) suggesting we’ve both
+improved the true fit to the map and reduced a bunch of model bias.</p>
+<p>Clearly, there’s still a bunch to be done - but now we’re not going to be
+shooting in the dark quite as much as we would have been without the help of
+AlphaFold. The next obvious thing to do is start working through the biggest
+“problem sites” - mainly those shown up by large clusters of unsatisfied
+distance restraints. Now, you could do this by simply browsing visually through
+the structure, but ISOLDE’s problem site aggregator lets you do things a bit
+more systematically. It looks for all instances of different restraint
+violations and validation issues and identifies regions where many problems are
+clustered together - the idea being that such clusters are often the result of a
+single root cause, so tackling the biggest ones first is likely to give you the
+fastest overall improvement.</p>
+<p>Switch to the “Problem Zones” tab and click the “Update” button at bottom right.
+You should see something like this (your numbers will almost certainly vary
+somewhat - don’t worry).</p>
+<figure class="align-default">
+<img alt="../../../_images/problem_zones_tab1.png" src="../../../_images/problem_zones_tab1.png" />
+</figure>
+<p>Click on the top row of the table. All atoms associated with problems found in
+the cluster are selected, and the view is updated to show them:</p>
+<figure class="align-default">
+<img alt="../../../_images/biggest_cluster.jpg" src="../../../_images/biggest_cluster.jpg" />
+</figure>
+<p><em>(NOTE: Depending on how your initial run went, the top cluster may be around
+either the A355-375 beta-hairpin, or the A488-499 helix. If your top cluster is
+the helix, choose the second cluster here.)</em></p>
+<p>Click ISOLDE’s play button, or</p>
+<p><a class="reference external" href="cxcmd:isolde sim start sel">isolde sim start sel</a></p>
+<p>Zoom in, and you should see something like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/A355-375_bad_hairpin.jpg" src="../../../_images/A355-375_bad_hairpin.jpg" />
+</figure>
+<p>Now, I’ll admit that looks somewhat daunting up-front - but don’t worry, in most
+cases it just comes down to tugging atoms in the direction of the purple
+connections, combined with a little common sense and/or help from the reference
+model. If you spend a little time inspecting <em>without</em> the aid of the AlphaFold
+model first, I think you’ll agree that 355-362 look solid in their density as do
+384-392 - so it’s mainly just that middle 366-378 strand that’s out. See if you
+can figure out <em>how</em> it’s out - then when you’re ready, <a class="reference external" href="cxcmd:show #2 models">show the AlphaFold
+model</a> to see if it agrees with your assessment.</p>
+<p>Spoiler: it’s out by 1, with everything needing to move one residue back towards
+the N-terminus. This is hard to achieve via simple linear distance restraints
+like this - atoms that want to go one way around the backbone end up battling
+atoms that want to go the other - which is why we need to give it a bit of help.</p>
+<p>If you find the display too busy, <a class="reference external" href="cxcmd:hide #!2 model">hide the AlphaFold model</a> again. Now, let’s
+try the simplest (and often fastest) approach - just directly helping out with a
+bit of right-mouse tugging.</p>
+<p>A good place to start might be <a class="reference external" href="cxcmd:view #1/A:372">Asn 372</a>, buried in the hydrophobic core when
+it wants to be exposed to solvent. Rotate your view so you’re looking along the
+chain (allowing you to easily tug around the backbone) - if the view gets too
+busy for you, remember you can <em>shift-scroll</em> to tighten the clipping planes.
+Grab one of the outermost sidechain atoms, and tug it towards the Val371
+sidechain. When tugging, try to steer <em>around</em> the backbone rather than taking
+the most direct path:</p>
+<figure class="align-default">
+<img alt="../../../_images/tug_asn_372.jpg" src="../../../_images/tug_asn_372.jpg" />
+</figure>
+<p>This may take a little playing around - if it’s not cooperating release the atom
+and try tugging in a slightly different direction. The aim is to “tip” the
+geometry over the barrier allowing the surrounding restraints to start
+cooperating - in my case, tugging just this one atom triggered all the
+N-terminal residues of the strand to fall into place:</p>
+<figure class="align-default">
+<img alt="../../../_images/tugged_asn_372.jpg" src="../../../_images/tugged_asn_372.jpg" />
+</figure>
+<p>Play around with the rest of the strand - a good next move might be to pull
+Arg375 outwards. When you’re done, hit the red checkered flag to revert to the
+original bad geometry and we’ll try using the register shifter instead (this
+widget on the Restraints tab):</p>
+<figure class="align-default">
+<img alt="../../../_images/register_shifter.png" src="../../../_images/register_shifter.png" />
+</figure>
+<p>The aim of the register shifter is to provide a somewhat smarter way of applying
+these large, concerted many-residue shifts. Rather than using distance
+restraints, it applies a set of moving <em>position</em> restraints to tug the N, C, CA
+and CB atoms along smooth splines fitted through the positions of their
+counterparts along the chain. This is a natural way to overcome that problem of
+distance restraints “fighting” each other. Now, in the past the direction and
+size of the register shift would have needed to be worked out (or guessed) by
+careful inspection of fit to density and local interactions; in this case we
+already know from the AlphaFold model that it’s 1 residue towards the
+N-terminus. So, select the residues you want to shift:</p>
+<p><a class="reference external" href="cxcmd:sel #1/A:367-378">sel #1/A:367-378</a></p>
+<p>... dial up the desired shift in the register shifter, then click its button.
+When it’s done (it should only take a few seconds), click its red ‘X’ to release
+the position restraints. While Arg375 might still need a little manual help, the
+rest should just fall into place. Take a little time to clean up the
+surroundings <em>(hint: Ile351 should really point into the core)</em>, and when you’re
+ready click the green STOP button to stop the simulation and commit the results.</p>
+<p>If you’re on the “Problem Zones” tab when you stop the simulation the table will
+automatically update; otherwise, switch there and click the Update button now.
+Clicking the top row should now take you to the A488-499 helix. Use what you’ve
+learned from the previous example to see what you can do with this <em>(Hint: the
+helix is out by 1-2 residues)</em>.</p>
+<p>Continue on in this manner, updating the table after each simulation and moving
+on to the next biggest cluster. After these two, most of the rest get
+progressively simpler - but you will also start to run into a few sites where
+the restraints disagree because the <em>AlphaFold</em> model is wrong (or in a
+“correct”-but-different conformation to what’s in this crystal). A small example
+is the region around Met772 and Arg777:</p>
+<figure class="align-default">
+<img alt="../../../_images/arg777_met772.jpg" src="../../../_images/arg777_met772.jpg" />
+</figure>
+<p>Probably not coincidentally, these are right beside a crystallographic
+interface. Not knowing anything about that, AlphaFold confidently predicts this
+region with a somewhat-different conformation:</p>
+<figure class="align-default">
+<img alt="../../../_images/arg777_met772_AF2_overlay.jpg" src="../../../_images/arg777_met772_AF2_overlay.jpg" />
+</figure>
+<p>Met772 and Arg777 are predicted with significantly different rotamers, and the
+772-777 loop in general doesn’t line up with the density. The best thing to do
+here is release the local reference restraints and let the density combined with
+ISOLDE’s force field do the work. Now, you <em>could</em> do this with the “isolde
+release distances” and “isolde release torsions” commands - but those are a bit
+long-winded. This is where isolde’s shorthand commands come in really useful. If
+you enter the command:</p>
+<p><a class="reference external" href="cxcmd:isolde shorthand">isolde shorthand</a></p>
+<p>... it will enable a series of 2-4 character mini-commands corresponding to
+common ISOLDE tasks, and print a cheat-sheet to the log:</p>
+<figure class="align-default">
+<img alt="../../../_images/isolde_shorthand1.png" src="../../../_images/isolde_shorthand1.png" />
+</figure>
+<p><em>(HINT: If you go to Favorites/Settings in the ChimeraX menu and then go to the
+Startup tab, you can make ChimeraX automatically run this command every time it
+starts)</em></p>
+<p>The ones we’re most interested in here are “rd” (release distance restraints on
+the selected atoms), “rt” (release torsion restraints on selected residues) and
+“ra” (release both distance and torsion restraints on the selection). Given that
+the density here is really strong and at least some of the torsion restraints
+are wrong alongside the distances, we may as well release both. With a
+simulation running…</p>
+<p><a class="reference external" href="cxcmd:isolde sim start #1/A:770-780,720-730">isolde sim start #1/A:770-780,720-730</a></p>
+<p>... select the offending loop:</p>
+<p><a class="reference external" href="cxcmd:sel #1/A:772-777">sel #1/A:772-777</a></p>
+<p>... and release the restraints:</p>
+<p><a class="reference external" href="cxcmd:ra">ra</a></p>
+<p>You’ll want to do a little manual tweaking of the Met772 and Ser774 sidechains
+(AlphaFold has the latter pointing into symmetry density - swing it around to
+H-bond to the Lys776 H).</p>
+<p>The A217-250 alpha hairpin is another region where the AlphaFold restraints are
+a bit counterproductive - AlphaFold has the relative disposition of the two
+helices slightly off compared to the strong local density, and the turn at the
+top is <em>completely</em> wrong (albeit only predicted with low confidence):</p>
+<figure class="align-default">
+<img alt="../../../_images/AF2_229-242_wrong_turn.jpg" src="../../../_images/AF2_229-242_wrong_turn.jpg" />
+</figure>
+<p>As with the previous case, you’ll want to go ahead and release these restraints.
+While remodelling this area, you’ll probably also notice a few symmetry clashes.
+If you want to fix these (and it’s clear that it’s the symmetry-related atoms
+that are wrong), stop your simulation then double-click on one of the offending
+symmetry atoms to select and centre the view on its “real” equivalent, allowing
+you to start a local simulation to fix it before moving on. Don’t be afraid
+to use a few judicious position restraints if the local density is poor.</p>
+<p>Anyway, keep on working your way through until the table is empty. This
+<em>doesn’t</em> mean that there are no issues left, just that there’s nothing left
+meeting the definition of a “cluster”. This is the point where, if you were
+planning on depositing this model to the wwPDB or using it in any downstream
+application, you’d want to give it a final detailed residue-by-residue
+inspection to be absolutely certain. (<em>HINT: you can get to the first polymeric
+residue in your structure with “st first” and continue stepping through by
+repeating the “st” command)</em> But before doing that, it would be a <em>very</em> good
+idea to run a refinement at this point to make sure you’re working with the
+best possible maps. To write input ready for <em>phenix.refine</em>, first navigate
+to a suitable directory with the command:</p>
+<p>cd browse</p>
+<p>... then do:</p>
+<p>isolde write phenixRefineInput #1 numProcessors 6</p>
+<p><em>(NOTE: due to the way these interactive tutorials are implemented, you will need
+to type - or copy/paste - these commands into the command line yourself, otherwise
+the files will be written to the wrong directory.)</em></p>
+<p>This will write a snapshot of your current model (without hydrogens unless you
+use the optional “includeHydrogens true” argument) along with an MTZ file and
+a <em>phenix.refine</em> settings file (refine.eff). To run a refinement, navigate to
+the working directory in a separate operating system terminal window with the
+Phenix environment activated, and do:</p>
+<p>phenix.refine refine.eff.</p>
+<p>... then load the results in a fresh ChimeraX session and continue with your
+final inspection and tweaking. At this resolution, after refinement you should
+be able to continue on without further use of the AlphaFold restraints.</p>
+<p>Here’s what the validation statistics for my model looked like after that
+refinement step compared to the original deposited structure:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 25%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Validation measure</p></th>
+<th class="head"><p>Original model</p></th>
+<th class="head"><p>Rebuilt and refined</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>R-work</p></td>
+<td><p>0.291</p></td>
+<td><p>0.238</p></td>
+</tr>
+<tr class="row-odd"><td><p>R-free</p></td>
+<td><p>0.338</p></td>
+<td><p>0.273</p></td>
+</tr>
+<tr class="row-even"><td><p>Clashscore</p></td>
+<td><p>22.64</p></td>
+<td><p>1.50</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ramachandran outliers</p></td>
+<td><p>7.33%</p></td>
+<td><p>0.00%</p></td>
+</tr>
+<tr class="row-even"><td><p>Ramachandran allowed</p></td>
+<td><p>14.22%</p></td>
+<td><p>1.98%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ramachandran favoured</p></td>
+<td><p>78.44%</p></td>
+<td><p>98.02%</p></td>
+</tr>
+<tr class="row-even"><td><p>Ramachandran Z-score</p></td>
+<td><p>-5.60</p></td>
+<td><p>0.55</p></td>
+</tr>
+<tr class="row-odd"><td><p>Rotamer outliers</p></td>
+<td><p>17.15%</p></td>
+<td><p>0.38%</p></td>
+</tr>
+<tr class="row-even"><td><p>C-beta deviations</p></td>
+<td><p>1.10%</p></td>
+<td><p>0.00%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Twisted peptides</p></td>
+<td><p>0.93%</p></td>
+<td><p>0.00</p></td>
+</tr>
+</tbody>
+</table>
+<p>Not a bad improvement, I think!</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../isolde.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../isolde.html">Home</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../tools/ISOLDE.html">The ISOLDE GUI</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../tools/intro.html">What is ISOLDE all about?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tools/requirements.html">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tools/gui/index.html">GUI Details</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../isolde.html">Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../commands/isolde_restrain.html">Adaptive Restraint Schemes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../commands/isolde_remote.html">Remote Control Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../commands/isolde.html">The ISOLDE Command Line</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/isolde.html">ISOLDE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools/citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools/contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../isolde.html">Documentation overview</a><ul>
+  <li><a href="../../../tools/ISOLDE.html">The ISOLDE GUI</a><ul>
+  <li><a href="../../isolde.html">Tutorials</a><ul>
+      <li>Previous: <a href="../from_scratch/from_scratch.html" title="previous chapter">Top-Down Modelling with AlphaFold-DB Models</a></li>
+      <li>Next: <a href="../multimer/alphafold_multimer_cryoem.html" title="next chapter">Building Into CryoEM Maps With Your Own AlphaFold Multimer Models</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016-2022, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../../_sources/tutorials/alphafold/reference_model/af2_reference.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,473 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en" prefix="og: http://ogp.me/ns#">
+    <head>
+        <title>ISOLDE Performance Benchmarks</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, inital-scale=1" />
+        
+
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="ISOLDE: Bringing structural biology to life" />
+        <meta name="twitter:description" content="Fast and flexible interactive molecular modelling into experimental maps" />
+        <meta name="twitter:image" content=" /static/isolde/images/logo_square.jpg" />
+
+        <meta property="og:title" content="ISOLDE: Bringing structural biology to life" />
+        <meta property="og:image" content="/static/isolde/images/logo_square.jpg" />
+        <meta property="og:description" content="Fast and flexible interactive molecular modelling into experimental maps" />
+        <meta property="og:url" content="https://tristanic.github.io/isolde/performance-benchmarks/" />
+
+        
+        <link href="../static/isolde/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../static/isolde/assets/css/main.css" rel="stylesheet" type="text/css" />
+
+        
+
+        
+    </head>
+
+    
+	<body class="subpage">
+
+        
+
+        <header id="header">
+            <div class="logo"><a href="../index.html">ISOLDE <span>home</span></a></div>
+            <a href="#menu">Menu</a>
+        </header>
+
+        <!-- Nav -->
+        <nav id="menu">
+            <ul class="links">
+                
+
+
+<li class="child ancestor">
+	<a href="../index.html">Home</a>
+	
+	<ul>
+		
+
+
+<li class="child sibling">
+	<a href="../what-isolde/index.html">What is ISOLDE?</a>
+	
+</li>
+
+<li class="child sibling">
+	<a href="../download/index.html">Download</a>
+	
+</li>
+
+<li class="child sibling">
+	<a href="../features-main/index.html">Features</a>
+	
+	<ul>
+		
+
+
+<li class="child">
+	<a href="../features-main/features-graphics/index.html">Graphics</a>
+	
+</li>
+
+<li class="child">
+	<a href="../features-main/features-interactive-md/index.html">Interactive MD</a>
+	
+</li>
+
+<li class="child">
+	<a href="../features-main/real-time-validation/index.html">Real-time Validation</a>
+	
+</li>
+
+<li class="child">
+	<a href="../features-main/live-atomic-symmetry/index.html">Live atomic symmetry</a>
+	
+</li>
+
+<li class="child">
+	<a href="../features-main/interactive-restraints/index.html">Interactive restraints</a>
+	
+</li>
+
+<li class="child">
+	<a href="../features-main/real-time-crystallographic-map-calculations/index.html">Real-time crystallographic map calculations</a>
+	
+</li>
+
+	</ul>
+	
+</li>
+
+<li class="child sibling">
+	<a href="../faq/index.html">Frequently Asked Questions</a>
+	
+</li>
+
+<li class="child sibling">
+	<a href="../documentation/index.html">Documentation</a>
+	
+</li>
+
+<li class="child selected">
+	<a href="index.html">Performance</a>
+	
+</li>
+
+<li class="child sibling">
+	<a href="../about/index.html">About</a>
+	
+</li>
+
+<li class="child sibling">
+	<a href="../licensing/index.html">Licensing</a>
+	
+</li>
+
+<li class="child sibling">
+	<a href="../publications/index.html">Publications</a>
+	
+</li>
+
+<li class="child sibling">
+	<a href="../case-studies/index.html">Case Studies</a>
+	
+	<ul>
+		
+
+
+<li class="child">
+	<a href="../case-studies/case-study-3io0/index.html">3io0</a>
+	
+</li>
+
+<li class="child">
+	<a href="../case-studies/case-study-3loh/index.html">3loh</a>
+	
+</li>
+
+<li class="child">
+	<a href="../case-studies/case-study-3j9d/index.html">3j9d</a>
+	
+</li>
+
+	</ul>
+	
+</li>
+
+<li class="child sibling">
+	<a href="../contact/index.html">Contact</a>
+	
+</li>
+
+	</ul>
+	
+</li>
+
+            </ul>
+        </nav>
+
+
+        
+		<!-- One -->
+			<section id="One" class="wrapper style3">
+				<div class="inner">
+					<header class="align-center">
+						<p>ISOLDE: Bringing structural biology to life</p>
+						<h2>Performance and Benchmarks</h2>
+					</header>
+				</div>
+			</section>
+
+		<!-- Two -->
+			<section id="two" class="wrapper style2">
+				<div class="inner">
+					<div class="box">
+						<div class="content">
+                            
+    							<header class="align-center">
+    								
+    							</header>
+    							<h2>ISOLDE performance benchmarks</h2>
+
+<h3>Notes for Apple users with AMD GPUs</h3>
+
+<p>Performance of molecular dynamics simulations on AMD GPUs such as those used in, for example, the larger MacBook Pro models, is unfortunately quite underwhelming. It is not entirely clear why, but preliminary results suggest this is due to deficiencies in the AMD OpenCL driver rather than the cards themselves: for the Radeon Pro 560X found in the 2018 model 15" MacBook Pro, the GeekBench 5 Particle Physics benchmark for <a href="https://browser.geekbench.com/v5/compute/483235">OpenCL</a> runs about 6 times slower than the same benchmark using Apple's <a href="https://browser.geekbench.com/v5/compute/482797">Metal GPU compute API</a>. Further, deficiencies in the OpenCL driver's reporting of GPU characteristics causes OpenMM to typically automatically choose the smaller onboard Intel GPU for simulations (see the MacBook Air benchmarks below for indicative performance). If you wish, you can force it to use your AMD GPU using the command "isolde set gpuDeviceIndex 2" (or by setting the environment variable ISOLDE_DEVICE_INDEX=2 prior to starting ChimeraX). On 2018 and newer MacBook Pro models this should yield a ~4-5 fold improvement in performance.</p>
+
+<h3>General performance notes</h3>
+
+<p>While ISOLDE is designed for optimum performance on machines with a moderate-to-high-end Nvidia GPU, it will run with varying degrees of usability on almost any system with an OpenCL 1.2 capable GPU. The benchmarks here were run in ISOLDE 1.0b4.dev2 on the systems listed below. All machines use a single GPU for both compute and display. </p>
+
+<h3>GTX1070/Core i7</h3>
+
+<p>This is an Asus ROG Strix GL502VS gaming laptop, dual booting Windows 10 and Fedora 31 (both operating systems were tested)</p>
+
+<p>CPU: Intel Core i7 6700HQ @ 2.60 GHz (8 hyperthreads)</p>
+
+<p>GPU: Nvidia GTX 1070</p>
+
+<p>Display: 3840x2160, 60 Hz</p>
+
+<h3>Titan Xp / Xeon</h3>
+
+<p>OS: CentOS 7</p>
+
+<p>CPU: dual Xeon E5-2687W @ 3.10 GHz (32 hyperthreads)</p>
+
+<p>GPU: Nvidia GTX Titan Xp</p>
+
+<p>Displays: dual screen configured as single 3520x1200 desktop, 60 Hz</p>
+
+<h3>MacBook Air</h3>
+
+<p>Early 2015 model</p>
+
+<p>OS: MacOS Mojave 10.14.6</p>
+
+<p>CPU: Intel Core i5 1.6 GHz (4 hyperthreads)</p>
+
+<p>GPU: Intel HD Graphics 6000 </p>
+
+<p>Display: 1440 x 900, 60 Hz</p>
+
+<p>For each benchmark system, the simulation was run with the number of timesteps between GUI coordinate updates set to 1, 5, 10, 25, 50 or 100, recording both the time between coordinate updates and the graphics frame rate for each setting. The graphs plot the number of coordinate updates per second in blue and the graphics frame rate in red, with values on the left axis. The effective number of simulation time steps per second is also plotted in grey with values on the right axis.</p><h2>Benchmark 1: 3io0 (3Å crystal structure, 3348 atoms)</h2>
+
+<h2>Conditions</h2>
+
+<ul>
+	<li>Live rotamer and Ramachandran validation</li>
+	<li>Live structure factor calculations</li>
+	<li>Map masking updated every 0.5 seconds or each structure factor update</li>
+	<li>Live crystallographic symmetry visualisation</li>
+</ul>
+
+<h3>1a: all atoms mobile</h3>
+
+<p>Replication commands:</p>
+
+<p><code>isolde demo crystal_intro</code></p>
+
+<p><code>isolde sim start #1</code></p>
+
+<p>
+
+
+
+
+
+
+
+
+<img src="../media/filer_public_thumbnails/filer_public/2b/8e/2b8e48cc-bbd1-4c36-9117-5594e1cc52d7/3io0_whole_model.png__1535x797_q85_subsampling-2.png"
+    alt=""
+    
+    
+    
+    class="img-fluid img-thumbnail"
+>
+
+
+
+
+
+
+
+
+</p>
+
+<h3>1b: single loop (1942 simulated atoms, 663 mobile)</h3>
+
+<p>Replication commands:</p>
+
+<p><code>isolde demo crystal_intro</code></p>
+
+<p><code>isolde sim start /A:87</code></p>
+
+<p>
+
+
+
+
+
+
+
+
+<img src="../media/filer_public_thumbnails/filer_public/76/c8/76c843a1-a524-4dbd-8e32-b7835a19fd7b/3io0_single_loop.png__1562x895_q85_subsampling-2.png"
+    alt=""
+    
+    
+    
+    class="img-fluid img-thumbnail"
+>
+
+
+
+
+
+
+
+
+</p><h2>Benchmark 2: 6out (2.6Å cryo-EM, 22945 atoms)</h2>
+
+<h2>Conditions</h2>
+
+<ul>
+	<li>Live rotamer and Ramachandran validation</li>
+	<li>Map masking updated every 0.5 seconds</li>
+</ul>
+
+<h3>2a: all atoms mobile</h3>
+
+<p>Replication commands:</p>
+
+<p><code>isolde demo cryo_em_intro</code></p>
+
+<p><code>isolde sim start #1</code></p>
+
+<p>
+
+
+
+
+
+
+
+
+<img src="../media/filer_public_thumbnails/filer_public/19/a8/19a8ea9c-0a60-4acd-b1a8-8b0792954a20/6out_whole_model.png__1595x858_q85_subsampling-2.png"
+    alt=""
+    
+    
+    
+    class="img-fluid img-thumbnail"
+>
+
+
+
+
+
+
+
+
+</p>
+
+<h3>2b: single loop (2567 simulated atoms, 774 mobile)</h3>
+
+<p>Replication commands:</p>
+
+<p><code>isolde demo cryo_em_intro</code></p>
+
+<p><code>isolde sim start /A:296</code></p>
+
+<p>
+
+
+
+
+
+
+
+
+<img src="../media/filer_public_thumbnails/filer_public/e7/ab/e7ab8836-c156-47e2-89bd-c3d8aea358dc/6out_single_loop.png__1593x895_q85_subsampling-2.png"
+    alt=""
+    
+    
+    
+    class="img-fluid img-thumbnail"
+>
+
+
+
+
+
+
+
+
+</p>
+
+<p> </p>
+                            
+						</div>
+					</div>
+				</div>
+			</section>
+
+
+
+        
+
+<div class="row">
+    
+        
+
+<div class="col col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+    
+</div>
+
+    
+        
+
+<div class="col col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10">
+    
+        <p>ISOLDE is developed and maintained by <a href="mailto:tcroll@altoslabs.com" class>Tristan Croll</a> at <a href="https://altoslabs.com">Altos Labs</a>. Development began in the <a href="https://www.cimr.cam.ac.uk/staff/professor-randy-j-read-frs" target="_blank" class>lab of Randy Read</a> at the <a href="https://www.cimr.cam.ac.uk/" target="_blank">Cambridge Institute for Medical Research</a>, supported by Prof. Read's Wellcome Trust Principal Research Fellowship 209407/Z/17/Z. Early development and testing was been aided by the generous donation of a GTX Titan Xp GPU by NVIDIA Corporation.</p>
+    
+</div>
+
+    
+</div>
+
+        
+
+<div class="row">
+    
+        
+
+<div class="col col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+    
+</div>
+
+    
+        
+
+<div class="col col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10">
+    
+        <p>Website design by Tristan Croll based on <a href="https://templated.co/hielo" target="_blank">Hielo by Templated</a> under a CC BY 3.0 license. Powered by <a href="https://www.django-cms.org/en/" target="_blank" class>Django-CMS</a>.<br>
+<a href="https://www.cam.ac.uk/about-this-site/privacy-policy">Privacy policy</a></p>
+    
+</div>
+
+    
+</div>
+
+        <footer id="footer">
+            <div class="container">
+                <ul class="icons">
+                    <li><a href="https://twitter.com/intent/tweet?text=ISOLDE%3A+bringing+structural+biology+to+life.+https://tristanic.github.io/isolde"
+                        class="icon fa-twitter" target="_blank"><span class="label">Twitter</span></a></li>
+                    <li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//www.isolde.cam.ac.uk"
+                        class="icon fa-facebook" target="_blank"><span class="label">Facebook</span></a></li>
+                    <li><a href="https://www.linkedin.com/shareArticle?mini=true&url=https://tristanic.github.io/isolde&title=ISOLDE%3A%20Bringing%20structural%20biology%20to%20life.&source=ISOLDE"
+                        class="icon fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                    <li><a href="mailto:?subject=ISOLDE for molecular model building&amp;body=Check out this cool model building package%3A https://tristanic.github.io/isolde."
+                        class="icon fa-envelope-o"><span class="label">Email</span></a></li>
+                </ul>
+            </div>
+        </footer>
+
+        <!-- Hielo template code -->
+        <script src="../static/isolde/assets/js/jquery.min.js"></script>
+        <script src="../static/isolde/assets/js/jquery.scrollex.min.js"></script>
+        <script src="../static/isolde/assets/js/skel.min.js"></script>
+        <script src="../static/isolde/assets/js/util.js"></script>
+        <script src="../static/isolde/assets/js/main.js"></script>
+        <script src="../static/isolde/node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="../static/isolde/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+
+        
+
+        
+    </body>
+</html>

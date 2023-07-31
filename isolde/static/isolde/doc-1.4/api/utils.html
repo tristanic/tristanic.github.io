@@ -1,0 +1,581 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>General Utilities &#8212; ISOLDE 1.4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/external_links.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="License" href="../tools/license.html" />
+    <link rel="prev" title="Simulation Setup and Management" href="sim_management.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="general-utilities">
+<h1>General Utilities<a class="headerlink" href="utils.html#general-utilities" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="utils.html#session-extensions" id="id1">Session Extensions</a></p></li>
+<li><p><a class="reference internal" href="utils.html#module-chimerax.isolde.view" id="id2">View</a></p></li>
+<li><p><a class="reference internal" href="utils.html#module-chimerax.isolde.ctypes" id="id3">Ctypes Support</a></p></li>
+<li><p><a class="reference internal" href="utils.html#module-chimerax.isolde.delayed_reaction" id="id4">Threading</a></p></li>
+<li><p><a class="reference internal" href="utils.html#module-chimerax.isolde.param_mgr" id="id5">Parameter Management</a></p></li>
+</ul>
+</div>
+<section id="session-extensions">
+<h2><a class="toc-backref" href="utils.html#id1">Session Extensions</a><a class="headerlink" href="utils.html#session-extensions" title="Permalink to this headline">¶</a></h2>
+<p>A set of convenience functions to safely get/create any of ISOLDE’s core
+manager objects.</p>
+<span class="target" id="module-chimerax.isolde.session_extensions"></span><dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.session_extensions.get_adaptive_dihedral_restraint_mgr">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.session_extensions.</span></span><span class="sig-name descname"><span class="pre">get_adaptive_dihedral_restraint_mgr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.session_extensions.get_adaptive_dihedral_restraint_mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <code class="xref py py-class docutils literal notranslate"><span class="pre">AdaptiveDihedralRestraintMgr</span></code> for the given model, creating
+it if it doesn’t yet exist.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>model:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.session_extensions.get_adaptive_distance_restraint_mgr">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.session_extensions.</span></span><span class="sig-name descname"><span class="pre">get_adaptive_distance_restraint_mgr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Reference</span> <span class="pre">Distance</span> <span class="pre">Restraints'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.session_extensions.get_adaptive_distance_restraint_mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a <code class="xref py py-class docutils literal notranslate"><span class="pre">AdaptiveDistanceRestraintMgr</span></code> for the given model, creating
+it if it doesn’t yet exist.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>model:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.session_extensions.get_all_adaptive_distance_restraint_mgrs">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.session_extensions.</span></span><span class="sig-name descname"><span class="pre">get_all_adaptive_distance_restraint_mgrs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.session_extensions.get_all_adaptive_distance_restraint_mgrs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all current adaptive distance restraint managers.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>model:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.session_extensions.get_chiral_restraint_mgr">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.session_extensions.</span></span><span class="sig-name descname"><span class="pre">get_chiral_restraint_mgr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.session_extensions.get_chiral_restraint_mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <code class="xref py py-class docutils literal notranslate"><span class="pre">ChiralRestraintMgr</span></code> for the given model, creating it if it
+doesn’t yet exist.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>model:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.session_extensions.get_distance_restraint_mgr">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.session_extensions.</span></span><span class="sig-name descname"><span class="pre">get_distance_restraint_mgr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.session_extensions.get_distance_restraint_mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <code class="xref py py-class docutils literal notranslate"><span class="pre">DistanceRestraintMgr</span></code> for the given model, creating it if
+it doesn’t yet exist.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>model:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.session_extensions.get_mdff_mgr">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.session_extensions.</span></span><span class="sig-name descname"><span class="pre">get_mdff_mgr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.session_extensions.get_mdff_mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <code class="xref py py-class docutils literal notranslate"><span class="pre">MDFFMgr</span></code> for the given model and volume, optionally
+creating it if it doesn’t yet exist.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>model:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code> instance</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>volume:</dt><dd><ul>
+<li><p>a <a class="reference external" href="http://preview.cgl.ucsf.edu/chimerax/docs/devel/bundles/map/src/map.html#chimerax.map.Volume" title="(in ChimeraX)"><code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.map.Volume</span></code></a> instance. The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDFFMgr</span></code>
+will be added as a submodel to the <code class="xref py py-class docutils literal notranslate"><span class="pre">Volume</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>create (default=False):</dt><dd><ul>
+<li><p>if True, creates and returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDFFMgr</span></code> if one doesn’t
+already exist</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.session_extensions.get_position_restraint_mgr">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.session_extensions.</span></span><span class="sig-name descname"><span class="pre">get_position_restraint_mgr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.session_extensions.get_position_restraint_mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <code class="xref py py-class docutils literal notranslate"><span class="pre">PositionRestraintMgr</span></code> for the given model, creating it if
+it doesn’t yet exist.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>model:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.session_extensions.get_proper_dihedral_restraint_mgr">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.session_extensions.</span></span><span class="sig-name descname"><span class="pre">get_proper_dihedral_restraint_mgr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.session_extensions.get_proper_dihedral_restraint_mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <code class="xref py py-class docutils literal notranslate"><span class="pre">ProperDihedralRestraintMgr</span></code> for the given model, creating
+it if it doesn’t yet exist.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>model:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.session_extensions.get_rama_annotator">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.session_extensions.</span></span><span class="sig-name descname"><span class="pre">get_rama_annotator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.session_extensions.get_rama_annotator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <code class="xref py py-class docutils literal notranslate"><span class="pre">RamaAnnotator</span></code> for the given model, optionally creating it
+if it doesn’t yet exist.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>model:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code> instance</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>create (default=True):</dt><dd><ul>
+<li><p>if True and no <code class="xref py py-class docutils literal notranslate"><span class="pre">RamaAnnotator</span></code> already exists for the</p></li>
+<li><p>model, one will be created and returned.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.session_extensions.get_rota_annotator">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.session_extensions.</span></span><span class="sig-name descname"><span class="pre">get_rota_annotator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.session_extensions.get_rota_annotator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <code class="xref py py-class docutils literal notranslate"><span class="pre">RotamerAnnotator</span></code> for the given model, optionally creating
+it if it doesn’t yet exist.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>model:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code> instance</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>create (default=True):</dt><dd><ul>
+<li><p>if True and no <code class="xref py py-class docutils literal notranslate"><span class="pre">RotamerAnnotator</span></code> already exists for the
+model, one will be created and returned.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.session_extensions.get_rotamer_restraint_mgr">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.session_extensions.</span></span><span class="sig-name descname"><span class="pre">get_rotamer_restraint_mgr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.session_extensions.get_rotamer_restraint_mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <code class="xref py py-class docutils literal notranslate"><span class="pre">RotamerRestraintMgr</span></code> for the given model, creating it if
+it doesn’t yet exist.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>model:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.session_extensions.get_tuggable_atoms_mgr">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.session_extensions.</span></span><span class="sig-name descname"><span class="pre">get_tuggable_atoms_mgr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_hydrogens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.session_extensions.get_tuggable_atoms_mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <code class="xref py py-class docutils literal notranslate"><span class="pre">TuggableAtomsMgr</span></code> for the given model, creating it if it
+doesn’t yet exist.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>model:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-chimerax.isolde.view">
+<span id="view"></span><h2><a class="toc-backref" href="utils.html#id2">View</a><a class="headerlink" href="utils.html#module-chimerax.isolde.view" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.view.focus_on_coord">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.view.</span></span><span class="sig-name descname"><span class="pre">focus_on_coord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.view.focus_on_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Focus the main view on a coordinate, maintaining the current center of
+rotation method and optionally updating the near and far clipping planes.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>session:</dt><dd><ul>
+<li><p>the top-level ChimeraX <cite>session</cite> instance</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>center:</dt><dd><ul>
+<li><p>(x,y,z) coordinates as a Numpy array</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>radius (default=5.0):</dt><dd><ul>
+<li><p>the zoom level, camera position and (optionally) clipping planes
+will be adjusted to ensure that everything within at least this
+distance from the center is shown.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>clip (default=True):</dt><dd><ul>
+<li><p>if <cite>True</cite>, updates the near and far clipping planes.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.view.focus_on_selection">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.view.</span></span><span class="sig-name descname"><span class="pre">focus_on_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.view.focus_on_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Focus the main view on a selecton of atoms, maintaining the current center
+of rotation method and optionally updating the near and far clipping
+planes.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>session:</dt><dd><ul>
+<li><p>the top-level ChimeraX <cite>session</cite> instance</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>atoms:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Atoms</span></code> instance</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>pad (default=1.0):</dt><dd><ul>
+<li><p>the zoom level, camera position and (optionally) clipping planes
+will be adjusted to ensure that everything within at least this
+distance from the selection is shown.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>clip (default=True):</dt><dd><ul>
+<li><p>if <cite>True</cite>, updates the near and far clipping planes.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-chimerax.isolde.ctypes">
+<span id="ctypes-support"></span><h2><a class="toc-backref" href="utils.html#id3">Ctypes Support</a><a class="headerlink" href="utils.html#module-chimerax.isolde.ctypes" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-chimerax.isolde.delayed_reaction">
+<span id="threading"></span><h2><a class="toc-backref" href="utils.html#id4">Threading</a><a class="headerlink" href="utils.html#module-chimerax.isolde.delayed_reaction" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="chimerax.isolde.delayed_reaction.delayed_reaction">
+<span class="sig-prename descclassname"><span class="pre">chimerax.isolde.delayed_reaction.</span></span><span class="sig-name descname"><span class="pre">delayed_reaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">triggerset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initiator_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initiator_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ready_test_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_func_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.delayed_reaction.delayed_reaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Designed to work together with threaded (Python or C++) objects, to start a
+long-running threaded task and then automatically apply the result (in a
+later GUI update) when done. Can also be used to simply conveniently call
+the desired callback once on the next firing of the trigger, by setting
+ready_test_func to None.</p>
+<p>Args:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>triggerset:</dt><dd><ul>
+<li><p>the <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.core.triggers.TriggerSet</span></code> (or other class
+with similar functionality) providing the trigger
+(e.g. <cite>session.triggers</cite>)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>trigger_name:</dt><dd><ul>
+<li><p>the name of the trigger (e.g. ‘new frame’)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>initiator_func:</dt><dd><ul>
+<li><p>A handle to the function that kicks off the threaded process.
+Any return value will be ignored.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>initiator_args:</dt><dd><ul>
+<li><p>A tuple of arguments to be applied to <cite>initiator_func</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>ready_test_func:</dt><dd><ul>
+<li><p>Should return <cite>True</cite> when the threaded task is done, <cite>False</cite>
+otherwise. Set it to <cite>None</cite> to just run on the next firing of the
+trigger.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>final_func:</dt><dd><ul>
+<li><p>Task to run once the thread is done.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>final_func_args:</dt><dd><ul>
+<li><p>A tuple of arguments to be applied to <cite>final_func</cite> (e.g. to tell
+it what to do with the thread result)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>A simple example using the <code class="xref py py-class docutils literal notranslate"><span class="pre">Delayed_Reaction_Tester</span></code> below to print
+some output to the ChimeraX log after a delay of 100 frames (assuming
+the code is run from the ChimeraX Shell or some other environment where
+<cite>session</cite> is already defined):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dt</span> <span class="o">=</span> <span class="n">Delayed_Reaction_Tester</span><span class="p">()</span>
+<span class="n">delayed_reaction</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">triggers</span><span class="p">,</span> <span class="s1">&#39;new frame&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">initiator_func</span><span class="p">,</span>
+    <span class="p">(</span><span class="mi">100</span><span class="p">,),</span> <span class="n">dt</span><span class="o">.</span><span class="n">ready_test_func</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">final_func</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;Finished!,&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-chimerax.isolde.param_mgr">
+<span id="parameter-management"></span><h2><a class="toc-backref" href="utils.html#id5">Parameter Management</a><a class="headerlink" href="utils.html#module-chimerax.isolde.param_mgr" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="chimerax.isolde.param_mgr.Param_Mgr">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chimerax.isolde.param_mgr.</span></span><span class="sig-name descname"><span class="pre">Param_Mgr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="utils.html#chimerax.isolde.param_mgr.Param_Mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>A manager for important parameters to keep them all in one place, rather than
+spread as variables throughout a large class. On object initialisation, the
+docstring will be automatically generated to list the parameters and their
+default values (and units where applicable). Addition of new parameters after
+initialisation is not allowed. Once initialised, parameter values may be
+changed by either (for example):</p>
+<p><cite>obj.set_param(name, new_value)</cite></p>
+<p>or</p>
+<p><cite>obj.name = new_value</cite></p>
+<p>Values are retrievable either by:</p>
+<p><cite>val = obj.name</cite></p>
+<p>or</p>
+<p><cite>val = obj[name]</cite></p>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../isolde.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../isolde.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/ISOLDE.html">The ISOLDE GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/isolde_restrain.html">Adaptive Restraint Schemes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/isolde_remote.html">Remote Control Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/isolde.html">The ISOLDE Command Line</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="isolde.html">ISOLDE Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="isolde_main.html">The primary ISOLDE object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_objects.html">Core Dihedral Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation.html"><em>n</em>-Dimensional Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="live_validation.html">Live Structure Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html">Restraints and Steering Forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripted_manipulations.html">(Semi-)Automated Manipulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sim_management.html">Simulation Setup and Management</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="utils.html#">General Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../isolde.html">Documentation overview</a><ul>
+  <li><a href="isolde.html">ISOLDE Python API</a><ul>
+      <li>Previous: <a href="sim_management.html" title="previous chapter">Simulation Setup and Management</a></li>
+      <li>Next: <a href="../tools/license.html" title="next chapter">License</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016-2022, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/api/utils.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

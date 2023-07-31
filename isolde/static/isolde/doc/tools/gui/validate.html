@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Monitoring the quality of your model &#8212; ISOLDE 1.4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/external_links.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Identifying problem “hotspots”" href="problem_regions.html" />
+    <link rel="prev" title="Manipulating your model" href="rebuild.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="monitoring-the-quality-of-your-model">
+<h1>Monitoring the quality of your model<a class="headerlink" href="validate.html#monitoring-the-quality-of-your-model" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="validate.html#peptide-bond-validation" id="id9">Peptide Bond Validation</a></p></li>
+<li><p><a class="reference internal" href="validate.html#the-ramachandran-plot" id="id10">The Ramachandran plot</a></p></li>
+<li><p><a class="reference internal" href="validate.html#rotamer-validation" id="id11">Rotamer Validation</a></p></li>
+<li><p><a class="reference internal" href="validate.html#clashes" id="id12">Clashes</a></p></li>
+<li><p><a class="reference internal" href="validate.html#unparameterised-residues" id="id13">Unparameterised Residues</a></p></li>
+</ul>
+</div>
+<p>While ISOLDE’s live annotations help you see at a glance where likely problems
+are in whatever part of the model you happen to be looking at, it is of course
+still important to have access to a quick overview summary of potential
+problems. This is handled on the <cite>Validate</cite> tab on the ISOLDE panel. If you
+click there, you’ll intially be greeted by this rather boring view:</p>
+<figure class="align-default" id="id1">
+<img alt="Initial view of the Validate tab" src="../../_images/validate_tab_all_closed.png" />
+<figcaption>
+<p><span class="caption-text">Expect the number of options to grow as ISOLDE develops further</span><a class="headerlink" href="validate.html#id1" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Let’s go through and look at what each of these buttons does.</p>
+<section id="peptide-bond-validation">
+<h2><a class="toc-backref" href="validate.html#id9">Peptide Bond Validation</a><a class="headerlink" href="validate.html#peptide-bond-validation" title="Permalink to this headline">¶</a></h2>
+<figure class="align-default" id="id2">
+<img alt="Peptide bond geometry validation" src="../../_images/validate_tab_peptide_geometry.png" />
+<figcaption>
+<p><span class="caption-text">Tabulated list of questionable peptide bonds</span><a class="headerlink" href="validate.html#id2" title="Permalink to this image">¶</a></p>
+<div class="legend">
+<p>Red: non-proline <em>cis</em> peptide bond
+Green: proline <em>cis</em> peptide bond
+Yellow: twisted peptide bond (more than 30° from planar)</p>
+</div>
+</figcaption>
+</figure>
+<p>Clicking on any entry in the list will select the residue in question and take
+you to it in the main view.</p>
+<p>In a peptide bond, the valence electrons are partially delocalised (think of it
+as the carbon-nitrogen bond spending some fraction of its time as a double
+bond), giving it a strong bias towards planarity. While in some rare, tightly
+constrained conditions real peptide bonds have been observed to be twisted up to
+30°, any twist beyond that is effectively unheard of.</p>
+<p>The question of <em>trans</em> vs <em>cis</em> peptide bonds is less obvious. The vast
+majority of all peptide bonds are found in <em>trans</em> (with the amide hydrogen
+pointing in the opposite direction to the carbonyl oxygen):</p>
+<img alt="a normal trans peptide" src="../../_images/transpep.png" />
+<p>This occurs due to steric considerations: swapping to <em>cis</em> replaces the amide
+hydrogen with the next alpha carbon, and carbon atoms are simply too big to
+pack neatly together in this way. Forcing them to do so puts strain on the
+intervening bonds, which requires energy. For this reason, for all residues
+other than proline <em>cis</em> peptide bonds are vanishingly rare at about 3 per
+10,000 residues - and when they <em>do</em> occur are strongly stabilised by
+interactions with their surroundings, usually well-resolved, and almost always
+functionally interesting.</p>
+<figure class="align-default" id="id3">
+<img alt="a series of cis peptide bonds" src="../../_images/cispep_loop.png" />
+<figcaption>
+<p><span class="caption-text">This should never happen.</span><a class="headerlink" href="validate.html#id3" title="Permalink to this image">¶</a></p>
+<div class="legend">
+<p>A loop like this, with four non-proline <em>cis</em> peptide bonds in a row and no
+stabilising influences whatsoever, is for all intents and purposes
+impossible.</p>
+</div>
+</figcaption>
+</figure>
+<figure class="align-default" id="id4">
+<img alt="a real cis peptide bond" src="../../_images/real_cis_bond.png" />
+<figcaption>
+<p><span class="caption-text">This, on the other hand, is real.</span><a class="headerlink" href="validate.html#id4" title="Permalink to this image">¶</a></p>
+<div class="legend">
+<p>This non-proline <em>cis</em> bond is found in tissue transglutaminase (<em>TGM2</em>, see
+PDB ID 2q3z), and is stabilised by a disulphide bond between directly
+adjacent cysteine residues. It is part of a redox-switching mechanism: under
+certain circumstances the disulphide is reduced by thioredoxin, allowing
+the peptide bond to flip to <em>trans</em> and thereby shifting an inhibitory loop
+to activate the enzyme. It is also clearly resolved in the electron density.</p>
+</div>
+</figcaption>
+</figure>
+<p>If your site in question does not meet the above criteria, then in general
+you should assume it to be <em>trans</em> (unless, of course, you have outside
+evidence such as a higher-resolution structure of a closely-related protein).</p>
+<p>Proline is a special case. Unlike the other amino acids, proline does not have
+an amide hydrogen - instead the amide nitrogen links to the backbone delta
+carbon. With both <em>cis</em> and <em>trans</em> conformers putting a carbon atom adjacent to
+the alpha carbon, the drive towards the <em>trans</em> conformation is nowhere near as
+strong, and about 5% of all proline residues appear in <em>cis</em>. With this in mind,
+<em>cis</em> prolines are coloured in green to reflect their higher likelihood (but
+keep in mind that they do still need to agree with the density map, as in the
+below case).</p>
+<figure class="align-default" id="id5">
+<img alt="a cis-proline bond" src="../../_images/cis_pro.png" />
+<figcaption>
+<p><span class="caption-text">A happy-looking <em>cis</em>-proline.</span><a class="headerlink" href="validate.html#id5" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="the-ramachandran-plot">
+<h2><a class="toc-backref" href="validate.html#id10">The Ramachandran plot</a><a class="headerlink" href="validate.html#the-ramachandran-plot" title="Permalink to this headline">¶</a></h2>
+<p>Expanding the <em>Ramachandran Plot</em> widget will expose a rather minimalist GUI -
+just a button to launch the Ramachandran Plot widget and some options to
+control how it behaves during simulations:</p>
+<figure class="align-default">
+<img alt="../../_images/validate_tab_rama_plot.png" src="../../_images/validate_tab_rama_plot.png" />
+</figure>
+<p>Clicking the “Launch Ramachandran Plot” button will launch the plot as a separate
+widget (this is also available without starting ISOLDE via the ChimeraX menu:
+<em>Tools/Validation/Ramachandran Plot</em>):</p>
+<figure class="align-default" id="id6">
+<img alt="../../_images/rama_plot_general_case.png" src="../../_images/rama_plot_general_case.png" />
+<figcaption>
+<p><span class="caption-text">The Ramachandran plot for “general” amino acids</span><a class="headerlink" href="validate.html#id6" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>In brief, the Ramachandran plot plots the angle of the <em>phi</em> (φ) dihedral
+“entering” the residue against that of the <em>psi</em> (ψ) dihedral “exiting” it.</p>
+<figure class="align-default" id="id7">
+<img alt="The phi dihedral" src="../../_images/phi_dihedral.png" />
+<figcaption>
+<p><span class="caption-text">The four atoms making up the <em>phi</em> (φ) dihedral.</span><a class="headerlink" href="validate.html#id7" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id8">
+<img alt="The psi dihedral" src="../../_images/psi_dihedral.png" />
+<figcaption>
+<p><span class="caption-text">The four atoms making up the <em>psi</em> (ψ) dihedral.</span><a class="headerlink" href="validate.html#id8" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Since atoms are physical objects that <em>really</em> don’t like to overlap with each
+other, only some combinations of φ and ψ are possible (and only a much smaller
+proportion of the range of possible combinations are <em>favourable</em>). That is
+what the Ramachandran plot is telling you.</p>
+<p>The yellow contour line represents  the 2% cut-off: 98% of all well-resolved
+residues in very high-resolution  structures are found within these contours.
+Unsurprisingly, they mostly  represent the well-defined secondary structures:
+the big yellow blob in the top left corresonds to α-helices, while the slightly
+smaller middle-left blob  corresponds to β-strands. Residues within these
+contours are said to be in  “favoured” conformations.</p>
+<p>The purple line, meanwhile, represents the boundary of the far more generous
+“allowed” region. The precise value of this contour varies slightly depending on
+the Ramachandran category, but for the general case only about 5 in 10,000
+residues should be found outside it, in what is known as “outlier” space.</p>
+<p>Note that as well as the given cut-off contours, the background is also shaded
+according to probability. A residue outside the contour but still on a grey zone
+may still be correct (but should be very carefully checked), but one sitting on
+a white background is almost certainly wrong.</p>
+<p>As you can see from the example image above, the size and colour of each point
+scales with its probability, making outliers very difficult to ignore. Hovering
+the mouse over any point in the plot will bring up a tooltip with its identity,
+and clicking the point will take you to the corresponding residue in the main
+window and select it.</p>
+<p>The drop-down menus at the top of the Ramachandran Plot widget provide various
+options allowing you to limit the view to an individual chain or a custom
+selection, plot only disfavoured and/or outlier residues, and switch between
+individual residue classes (or show plots for all classes side-by-side).</p>
+<p>While the Ramachandran widget is active, any changes to model coordinates will
+automatically update the plot. Note that this comes with some performance cost
+(particularly for very large models) - if that becomes problematic, you should
+close the plot widget during simulations.</p>
+</section>
+<section id="rotamer-validation">
+<h2><a class="toc-backref" href="validate.html#id11">Rotamer Validation</a><a class="headerlink" href="validate.html#rotamer-validation" title="Permalink to this headline">¶</a></h2>
+<figure class="align-default">
+<img alt="the rotamer validation table" src="../../_images/validate_tab_rotamers.png" />
+</figure>
+<p>All non-favoured rotamers are listed in the table, ordered from worst to best.
+As for the other validation tools, clicking on an entry will select and take you
+to the offending residue.</p>
+</section>
+<section id="clashes">
+<h2><a class="toc-backref" href="validate.html#id12">Clashes</a><a class="headerlink" href="validate.html#clashes" title="Permalink to this headline">¶</a></h2>
+<p>This table lists any pairwise atomic clashes (that is, non-bonded atoms that are
+closer together than the sum of their van der Waals radii should allow).</p>
+<figure class="align-default">
+<img alt="../../_images/clashes_widget.png" src="../../_images/clashes_widget.png" />
+</figure>
+<p>Clicking on an entry in the table will select and focus the view on the
+offending atom(s). Most minor clashes should be straightforwardly resolved by
+energy minimisation, and once your model is successfully running in simulations
+this table should be nearly empty. For particularly severe clashes where parts
+of the model are entangled with each other, some work will be needed before you
+can safely start simulations (see <a class="reference internal" href="sim_settings.html#dealing-with-clashes"><span class="std std-ref">Dealing with severe clashes</span></a>).</p>
+</section>
+<section id="unparameterised-residues">
+<h2><a class="toc-backref" href="validate.html#id13">Unparameterised Residues</a><a class="headerlink" href="validate.html#unparameterised-residues" title="Permalink to this headline">¶</a></h2>
+<figure class="align-default">
+<img alt="../../_images/unparam_residues_widget.png" src="../../_images/unparam_residues_widget.png" />
+</figure>
+<p>See <a class="reference internal" href="sim_settings.html#unrecognised-residues"><span class="std std-ref">Dealing with unrecognised residues</span></a>.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../isolde.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../isolde.html">Home</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../ISOLDE.html">The ISOLDE GUI</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../intro.html">What is ISOLDE all about?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requirements.html">System Requirements</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">GUI Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/isolde.html">Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../commands/isolde_restrain.html">Adaptive Restraint Schemes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../commands/isolde_remote.html">Remote Control Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../commands/isolde.html">The ISOLDE Command Line</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/isolde.html">ISOLDE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../isolde.html">Documentation overview</a><ul>
+  <li><a href="../ISOLDE.html">The ISOLDE GUI</a><ul>
+  <li><a href="index.html">GUI Details</a><ul>
+      <li>Previous: <a href="rebuild.html" title="previous chapter">Manipulating your model</a></li>
+      <li>Next: <a href="problem_regions.html" title="next chapter">Identifying problem “hotspots”</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016-2022, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/tools/gui/validate.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Adaptive Distance Restraints &#8212; ISOLDE 1.0b3.dev7 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Remote Control Options" href="isolde_remote.html" />
+    <link rel="prev" title="The ISOLDE Command Line" href="isolde.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="adaptive-distance-restraints">
+<span id="adaptive-distance-restraints-cmd"></span><h1>Adaptive Distance Restraints<a class="headerlink" href="isolde_restrain.html#adaptive-distance-restraints" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="isolde_restrain.html#isolde-restrain-distances" id="id1">isolde restrain distances</a></p></li>
+<li><p><a class="reference internal" href="isolde_restrain.html#isolde-restrain-single-distance" id="id2">isolde restrain single distance</a></p></li>
+<li><p><a class="reference internal" href="isolde_restrain.html#isolde-release-distances" id="id3">isolde release distances</a></p></li>
+<li><p><a class="reference internal" href="isolde_restrain.html#isolde-adjust-distances" id="id4">isolde adjust distances</a></p></li>
+</ul>
+</div>
+<div class="section" id="isolde-restrain-distances">
+<span id="isolde-restrain-distances-cmd"></span><h2><a class="toc-backref" href="isolde_restrain.html#id1">isolde restrain distances</a><a class="headerlink" href="isolde_restrain.html#isolde-restrain-distances" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde restrain distances <em>atoms</em> [<strong>templateAtoms</strong> <em>atoms</em>]
+[<strong>protein</strong> <em>true/false</em> (true)]
+[<strong>nucleic</strong> <em>true/false</em> (true)]
+[<strong>customAtomNames</strong> <em>list of names</em>]
+[<strong>distanceCutoff</strong> <em>number</em> (8.0)]
+[<strong>alignmentCutoff</strong> <em>number</em> (5.0)]
+[<strong>wellHalfWidth</strong> <em>number</em> (0.05)]
+[<strong>kappa</strong> <em>number</em> (5.0)]
+[<strong>tolerance</strong> <em>number</em> (0.025)]
+[<strong>fallOff</strong> <em>number</em> (4.0)]</p>
+<p>Creates a “web” of adaptive distance restraints between nearby atoms,
+restraining them either to their current geometry or to that of a template.
+The <em>atoms</em> and <em>templateAtoms</em> arguments will be promoted to complete residues.
+If <em>templateAtoms</em> is not specified, the template is the model itself.</p>
+<p>If no template is specified, then <em>atoms</em> may simply be any selection from your
+model. <strong>(NOTE: if the selection string includes commas, it will need to be
+quoted - e.g. isolde restrain distances “#1/A,B”)</strong>. If a template <em>is</em>
+specified, then <em>atoms</em> and <em>templateAtoms</em> should be matched comma-separated
+lists of selections, where the residues within each selection come from a
+single chain, e.g. <strong>isolde restrain distances #1/A,#1,B,#1/C:1-50
+templateAtoms #2/A,#2/B,#2/C</strong>. The individual chain selections need not have
+the same number of residues, but they should of course specify closely related
+sequences.</p>
+<p>The algorithm ISOLDE uses to determine which atoms to restrain is as follows:</p>
+<ol class="arabic">
+<li><p>The set of atom names to use for restraints is constructed from the
+<em>protein</em>, <em>nucleic</em> and <em>customAtomNames</em> arguments. If <em>protein</em> is
+true, the following atom names are added to the list of candidates:
+- CA, CB, CG, CG1, OG, OG1</p>
+<p>If <em>nucleic</em> is true, these atoms are added:
+- OP1, OP2, C4’, C2’, O2, O4, N4, N2, O6, N1, N6</p>
+<p>You may, if you wish, further extend these defaults with a comma-separated
+list of other (non-hydrogen) atom names with the customAtomNames argument,
+but this should rarely be necessary.</p>
+</li>
+<li><p>A sequence alignment is performed for each pair of chains, yielding lists
+of corresponding residues.</p></li>
+<li><p>All residue pairs found in the sequence alignment are merged into a single
+“super-alignment”</p></li>
+<li><p>The largest rigid-body alignment of these residues’ “principal atoms”
+(CA for amino acids, C4’ for nucleotides) is found for which no principal
+atom is more than <em>alignmentCutoff</em> from its counterpart.</p></li>
+<li><p>Within the aligned residues, matching lists are created consisting of
+atoms with allowed names present in both model and template. For each
+atom in the “template” list, all other atoms in the “template” list
+within <em>distanceCutoff</em> of the atom (excluding atoms from the same
+residue) are used to set the target distance for a restraint between
+the corresponding atoms in the “model” list.</p></li>
+<li><p>Steps 4 and 5 are repeated on the residues left over from the previous
+round, until no further alignments of at least 3 residues are found.</p></li>
+</ol>
+<p>The remaining arguments relate to the form of the restraint scheme, which
+requires some explanation. The functional form is as follows:</p>
+<div class="math">
+<p><img src="../_images/math/5bd24ab695ebf40dbe2bdf8006daecbce7fcddc1.png" alt="E = \kappa *
+\begin{cases}
+    0, &amp; \text{if}\ enabled &lt; 0.5 \text{ or}\ |r-r_0| &lt; \tau \\
+    1/2 (\frac{r-\rho}{c})^2, &amp; \text{if}\ \alpha = 2 \\
+    ln(\frac{1}{2} (\frac{r-\rho}{c})^2 + 1), &amp; \text{if}\ \alpha = 0 \\
+    \frac{|2-\alpha|}{\alpha} ((\frac{ (\frac{r-\rho}{c})^2 }{|2-\alpha|} + 1)^\frac{\alpha}{2} - 1), &amp; \text{otherwise}
+\end{cases}"/></p>
+</div><p>where</p>
+<div class="math">
+<p><img src="../_images/math/2bff2618a397c1301e6f2d251185a8251859bdca.png" alt="\rho =
+\begin{cases}
+    r-\tau, &amp; \text{if}\ (r-r_0) &lt; -\tau \\
+    r+\tau, &amp; \text{if}\ (r-r_0) &gt; \tau
+\end{cases}"/></p>
+</div><p>… leading to energy potentials that look like this:</p>
+<div class="figure align-default">
+<img alt="../_images/adaptive_energy_function.png" src="../_images/adaptive_energy_function.png" />
+</div>
+<p>To interpret this, keep in mind that the force applied to a given atom is
+proportional to the <em>derivative</em> (that is, the slope) of the energy with
+respect to distance. In effect, for a pair of atoms that is close to the target
+distance the restraint will act as a simple harmonic spring (with a
+“flat-bottom” range defined by <em>tolerance</em> over which no force is applied).
+Once the interatomic distance deviates from the target by more than
+(<em>wellHalfWidth</em> + <em>tolerance</em>) * target_distance the energy profile begins to
+flatten out at a rate specified by <img class="math" src="../_images/math/2f5aa019312e1bbc969deab8dca8b00f76025404.png" alt="\alpha"/>.</p>
+<p>The value of <img class="math" src="../_images/math/2f5aa019312e1bbc969deab8dca8b00f76025404.png" alt="\alpha"/> for a given restraint is determined by the
+combination of <em>fallOff</em> and the target distance, based on the idea that larger
+distances are inherently less certain. Specifically,
+<img class="math" src="../_images/math/3b3a0f2f061d4ec8b541cc63ea21d66a9f6a6d6e.png" alt="\alpha = -2 -\text{fallOff} ln(\text{target})"/>. Small (or negative
+- <strong>not</strong> generally recommended) values of <em>fallOff</em> will cause the restraints
+to stay quite strong with increasing distances (like a ball rolling into a
+funnel), whereas large values cause them to quickly flatten off (like a golf
+ball rolling into its cup - only falling into place when <em>very</em> close to the
+target).</p>
+<p>Finally, the parameter <em>kappa</em> sets the overall strength of the restraints.
+The effective spring constant for a given restraint within its “harmonic” range
+is <img class="math" src="../_images/math/8fcc5d9912ab353253a1ce0781a33da78115b4ec.png" alt="k=\frac{\kappa}{(\text{wellHalfWidth}*\text{(target distance)})^2}"/>
+<img class="math" src="../_images/math/18d4f7064f2d08134d9a12d2fb4b74b1e3a71446.png" alt="kJ mol^{-1} nm^{-2}"/>.</p>
+</div>
+<div class="section" id="isolde-restrain-single-distance">
+<h2><a class="toc-backref" href="isolde_restrain.html#id2">isolde restrain single distance</a><a class="headerlink" href="isolde_restrain.html#isolde-restrain-single-distance" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde restrain single distance <em>atoms</em> <em>minDist</em> <em>maxDist</em>
+[<strong>strength</strong> <em>number</em> (20)]
+[<strong>wellHalfWidth</strong> <em>number</em> ((<em>minDist*+*maxDist</em>)/10)]
+[<strong>confidence</strong> <em>number</em> (-2)]</p>
+<p>Restrain the distance between a single pair of atoms. The arguments <em>minDist</em>
+and <em>maxDist</em> specify the range of distances between which no force will be
+applied. In other words, the target distance becomes (<em>minDist*+*maxDist</em>)/2,
+and the tolerance becomes (<em>maxDist</em>-<em>minDist</em>)/2.</p>
+<ul class="simple">
+<li><p><em>strength</em>: Corresponds directly to <img class="math" src="../_images/math/261e3eb56c1757dd003745ee4cc53aa595565af1.png" alt="\kappa"/> in the energy formula.</p></li>
+<li><p><em>wellHalfWidth</em>: Corresponds directly to <em>c</em> (the half-width of the harmonic
+region) in the energy formula. If not specifies, it defaults to 1/5 of the
+target distance.</p></li>
+<li><p><em>confidence</em>: Corresponds to <img class="math" src="../_images/math/2f5aa019312e1bbc969deab8dca8b00f76025404.png" alt="\alpha"/> in the energy formula.</p></li>
+</ul>
+</div>
+<div class="section" id="isolde-release-distances">
+<h2><a class="toc-backref" href="isolde_restrain.html#id3">isolde release distances</a><a class="headerlink" href="isolde_restrain.html#isolde-release-distances" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde release distances <em>atoms</em> [<strong>internalOnly</strong> <em>true/false</em> (false)]
+[<strong>externalOnly</strong> <em>true/false</em> (false)] [<strong>longerThan</strong> <em>number</em>]
+[<strong>strainedOnly</strong> <em>true/false</em> (false)] [<strong>stretchLimit</strong> <em>number</em> (1.2)]
+[<strong>compressionLimit</strong> <em>number</em> (0.8)]</p>
+<p>Release a selection of adaptive distance restraints. <em>(NOTE: released restraints
+cannot currently be reinstated, but may be re-created using the “isolde restrain
+distances” command)</em></p>
+<p>Calling <em>isolde restrain distances &lt;selection&gt;</em> with no other arguments will
+simply release all restraints involving any of the specified atoms (including
+restraints to atoms outside the selection). The remaining arguments allow fine-
+tuning of the selection to release:</p>
+<ul class="simple">
+<li><p><em>internalOnly</em> (<strong>incompatible with externalOnly</strong>): if true, only those
+restraints for which both atoms are within the selection will be
+released.</p></li>
+<li><p><em>externalOnly</em> (<strong>incompatible with internalOnly</strong>): if true, only those
+restraints connecting atoms within the selection to those outside will be
+released.</p></li>
+<li><p><em>longerThan</em>: a value in Angstroms. If specified, only restraints with
+target distances larger than this value will be released.</p></li>
+<li><p><em>strainedOnly</em>: if true, only restraints with (length/target) larger than
+<em>stretchLimit</em> or smaller than <em>compressionLimit</em> will be released.</p></li>
+<li><p><em>stretchLimit</em> (<strong>ignored unless strainedOnly is true</strong>): ratio of current
+distance to target distance above which restraints will be released.</p></li>
+<li><p><em>compressionLimit</em> (<strong>ignored unless strainedOnly is true</strong>): ratio of
+current distance to target distance below which restraints will be
+released.</p></li>
+</ul>
+</div>
+<div class="section" id="isolde-adjust-distances">
+<h2><a class="toc-backref" href="isolde_restrain.html#id4">isolde adjust distances</a><a class="headerlink" href="isolde_restrain.html#isolde-adjust-distances" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde adjust distances <em>atoms</em> [<strong>internalOnly</strong> <em>true/false</em> (false)]
+[<strong>externalOnly</strong> <em>true/false</em> (false)] [<strong>kappa</strong> <em>number</em>]
+[<strong>wellHalfWidth</strong> <em>number</em>] [<strong>tolerance</strong> <em>number</em>] [<strong>fallOff</strong> <em>number</em>]
+[<strong>displayThreshold</strong> <em>number</em>]</p>
+<p>Adjust the strength and/or display properties of a set of adaptive distance
+restraints.</p>
+<ul class="simple">
+<li><p><em>internalOnly</em> (<strong>incompatible with externalOnly</strong>): if true, only those
+restraints for which both atoms are within the selection will be
+released.</p></li>
+<li><p><em>externalOnly</em> (<strong>incompatible with internalOnly</strong>): if true, only those
+restraints connecting atoms within the selection to those outside will be
+released.</p></li>
+<li><p><em>kappa</em>: see <a class="reference internal" href="isolde_restrain.html#isolde-restrain-distances-cmd"><span class="std std-ref">isolde restrain distances</span></a></p></li>
+<li><p><em>wellHalfWidth</em>: see <a class="reference internal" href="isolde_restrain.html#isolde-restrain-distances-cmd"><span class="std std-ref">isolde restrain distances</span></a></p></li>
+<li><p><em>tolerance</em>: see <a class="reference internal" href="isolde_restrain.html#isolde-restrain-distances-cmd"><span class="std std-ref">isolde restrain distances</span></a></p></li>
+<li><p><em>fallOff</em>: see <a class="reference internal" href="isolde_restrain.html#isolde-restrain-distances-cmd"><span class="std std-ref">isolde restrain distances</span></a></p></li>
+<li><p><em>displayThreshold</em>: deviation from target distance (expressed as a fraction
+of the target distance) below which a given restraint will not be shown. For
+example, to only show restraints deviating more than 10% from their targets,
+set <em>displayThreshold</em> to 0.1. To show all restraints, set displayThreshold to
+0.</p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../isolde.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../isolde.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/ISOLDE.html">The ISOLDE GUI</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="isolde.html">The ISOLDE Command Line</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="isolde_restrain.html#">Adaptive Distance Restraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_remote.html">Remote Control Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-tutorial">isolde tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-demo">isolde demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-start">isolde start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-sim">isolde sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-pepflip">isolde pepflip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-cisflip">isolde cisflip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-ignore">isolde ignore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#id1">isolde ~ignore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-restrain-distances">isolde restrain distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-release-distances">isolde release distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-adjust-distances">isolde adjust distances</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/isolde.html">ISOLDE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../isolde.html">Documentation overview</a><ul>
+  <li><a href="isolde.html">The ISOLDE Command Line</a><ul>
+      <li>Previous: <a href="isolde.html" title="previous chapter">The ISOLDE Command Line</a></li>
+      <li>Next: <a href="isolde_remote.html" title="next chapter">Remote Control Options</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016-2019, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/commands/isolde_restrain.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

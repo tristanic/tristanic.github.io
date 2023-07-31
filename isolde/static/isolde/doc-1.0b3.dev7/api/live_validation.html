@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Live Structure Validation &#8212; ISOLDE 1.0b3.dev7 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Restraints and Steering Forces" href="restraints.html" />
+    <link rel="prev" title="n-Dimensional Interpolation" href="interpolation.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="live-structure-validation">
+<h1>Live Structure Validation<a class="headerlink" href="live_validation.html#live-structure-validation" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="live_validation.html#general-principles" id="id1">General Principles</a></p>
+<ul>
+<li><p><a class="reference internal" href="live_validation.html#ramaannotator" id="id2">RamaAnnotator</a></p></li>
+<li><p><a class="reference internal" href="live_validation.html#rotamerannotator" id="id3">RotamerAnnotator</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="general-principles">
+<h2><a class="toc-backref" href="live_validation.html#id1">General Principles</a><a class="headerlink" href="live_validation.html#general-principles" title="Permalink to this headline">¶</a></h2>
+<p>One of the core design principles underlying ISOLDE is the need for real-time,
+continuous and visually-clear feedback. When you are working on a structure with
+thousands of residues, having to stop and generate a table or plot to tell you
+how you did, then navigate back to each outlier and attempt to fix it before
+repeating the process is simply too slow, and leads people to give up while
+their structure is still far from perfect. The aim in ISOLDE is to instead
+continually show you how you’re going <em>right now</em> by directly marking up
+problems where and when they occur, telling you directly whether your
+manipulations are making things better or worse.</p>
+<span class="target" id="module-chimerax.isolde.validation"></span><div class="section" id="ramaannotator">
+<h3><a class="toc-backref" href="live_validation.html#id2">RamaAnnotator</a><a class="headerlink" href="live_validation.html#ramaannotator" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="chimerax.isolde.validation.RamaAnnotator">
+<em class="property">class </em><code class="sig-prename descclassname">chimerax.isolde.validation.</code><code class="sig-name descname">RamaAnnotator</code><span class="sig-paren">(</span><em class="sig-param">atomic_structure</em>, <em class="sig-param">hide_favored=False</em>, <em class="sig-param">ignore_ribbon_hides=True</em><span class="sig-paren">)</span><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RamaAnnotator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the task of real-time Ramachandran validation for a single
+<code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code> and visualisation of the results.
+Results are displayed as coloured spheres overlaying the alpha carbon
+atoms, shading from (by default) green through yellow to hot pink as
+the Ramachandran score goes from favoured through allowed to outlier.</p>
+<p>Designed to be mostly “fire-and-forget”:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span> <span class="o">=</span> <span class="n">RamaAnnotator</span><span class="p">(</span><span class="n">atomic_structure</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>adds the :py:class`RamaAnnotator` as a child model to <cite>atomic_structure</cite>
+and will update its validation drawing every time the coordinates change.
+Alternatively:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">chimerax.isolde</span> <span class="kn">import</span> <span class="n">session_extensions</span> <span class="k">as</span> <span class="n">sx</span>
+<span class="n">ra</span> <span class="o">=</span> <span class="n">sx</span><span class="o">.</span><span class="n">get_RamaAnnotator</span><span class="p">(</span><span class="n">atomic_model</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>creates the <a class="reference internal" href="live_validation.html#chimerax.isolde.validation.RamaAnnotator" title="chimerax.isolde.validation.RamaAnnotator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RamaAnnotator</span></code></a> if it doesn’t exist, or returns
+the existing one if it does.</p>
+<p>Turning off the display of the <a class="reference internal" href="live_validation.html#chimerax.isolde.validation.RamaAnnotator" title="chimerax.isolde.validation.RamaAnnotator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RamaAnnotator</span></code></a> model (e.g.
+via the <cite>ChimeraX</cite> Model Panel) temporarily turns off automatic validation,
+which will restart when display is turned back on.</p>
+<dl class="method">
+<dt id="chimerax.isolde.validation.RamaAnnotator.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">atomic_structure</em>, <em class="sig-param">hide_favored=False</em>, <em class="sig-param">ignore_ribbon_hides=True</em><span class="sig-paren">)</span><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RamaAnnotator.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the validator object, and add it as a child model to the target
+structure.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>atomic_structure:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">ChimeraX.AtomicStructure</span></code> instance</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>hide_favored:</dt><dd><ul>
+<li><p>if True, indicators will only appear for non-favored residues.
+(this can be changed at any time later)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>ignore_ribbon_hides:</dt><dd><ul>
+<li><p>if True, the <code class="xref py py-attr docutils literal notranslate"><span class="pre">chimerax.HIDE_RIBBON</span></code> bit will be ignored
+when deciding when to display a particular annotation. This is
+needed because the default ChimeraX ribbon representation
+hides the CA for any residue whose sidechain is un-displayed
+or missing (meaning that the glycine CA is always hidden).</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.validation.RamaAnnotator.ca_radius">
+<em class="property">property </em><code class="sig-name descname">ca_radius</code><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RamaAnnotator.ca_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the radius (in Angstroms) of the sphere overlaying each CA atom.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.validation.RamaAnnotator.color_scale">
+<em class="property">property </em><code class="sig-name descname">color_scale</code><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RamaAnnotator.color_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a 3-tuple of (r,g,b,a) arrays defining the current colour scale.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.validation.RamaAnnotator.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RamaAnnotator.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete this model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.validation.RamaAnnotator.display">
+<em class="property">property </em><code class="sig-name descname">display</code><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RamaAnnotator.display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show/hide the validation markup (automatic validation will pause while
+hidden).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.validation.RamaAnnotator.hide_favored">
+<em class="property">property </em><code class="sig-name descname">hide_favored</code><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RamaAnnotator.hide_favored" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show annotations for favoured rotamers, or just non-favoured/outliers?</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.validation.RamaAnnotator.restrict_to_selected_residues">
+<code class="sig-name descname">restrict_to_selected_residues</code><span class="sig-paren">(</span><em class="sig-param">residues</em><span class="sig-paren">)</span><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RamaAnnotator.restrict_to_selected_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restrict validation to a defined set of residues. Use
+<a class="reference internal" href="live_validation.html#chimerax.isolde.validation.RamaAnnotator.track_whole_model" title="chimerax.isolde.validation.RamaAnnotator.track_whole_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">track_whole_model</span></code></a> = True to once again cover all residues.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>residues:</dt><dd><ul>
+<li><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> instance</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.validation.RamaAnnotator.track_whole_model">
+<em class="property">property </em><code class="sig-name descname">track_whole_model</code><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RamaAnnotator.track_whole_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tell the validator to track/annotate all protein residues in the
+model (the default starting state).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="rotamerannotator">
+<h3><a class="toc-backref" href="live_validation.html#id3">RotamerAnnotator</a><a class="headerlink" href="live_validation.html#rotamerannotator" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="chimerax.isolde.validation.RotamerAnnotator">
+<em class="property">class </em><code class="sig-prename descclassname">chimerax.isolde.validation.</code><code class="sig-name descname">RotamerAnnotator</code><span class="sig-paren">(</span><em class="sig-param">atomic_structure</em><span class="sig-paren">)</span><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RotamerAnnotator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the task of real-time validation of rotamers for a single
+<code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.AtomicStructure</span></code> and drawing of 3D indicators of their
+current scores. Designed to be mostly “fire-and-forget”:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span> <span class="o">=</span> <span class="n">RotamerAnnotator</span><span class="p">(</span><span class="n">atomic_structure</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>adds the :py:class`RotamerAnnotator` as a child model to <cite>atomic_structure</cite>
+and will update its validation drawing every time the coordinates change.
+Alternatively:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">chimerax.isolde</span> <span class="kn">import</span> <span class="n">session_extensions</span> <span class="k">as</span> <span class="n">sx</span>
+<span class="n">ra</span> <span class="o">=</span> <span class="n">sx</span><span class="o">.</span><span class="n">get_rota_annotator</span><span class="p">(</span><span class="n">atomic_model</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>creates the <a class="reference internal" href="live_validation.html#chimerax.isolde.validation.RotamerAnnotator" title="chimerax.isolde.validation.RotamerAnnotator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RotamerAnnotator</span></code></a> if it doesn’t exist, or returns
+the existing one if it does.</p>
+<p>Each rotamer score visualised as a 3D exclamation mark surrounded by a
+spiral, which changes colour and grows with outlier severity. By default
+only non-favoured rotamers are flagged.</p>
+<p>Turning off the display of the <a class="reference internal" href="live_validation.html#chimerax.isolde.validation.RotamerAnnotator" title="chimerax.isolde.validation.RotamerAnnotator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RotamerAnnotator</span></code></a> model (e.g.
+via the <cite>ChimeraX</cite> Model Panel) temporarily turns off automatic validation,
+which will restart when display is turned back on.</p>
+<dl class="method">
+<dt id="chimerax.isolde.validation.RotamerAnnotator.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">atomic_structure</em><span class="sig-paren">)</span><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RotamerAnnotator.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the validator object, and add it as a child model to the target
+structure.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>atomic_structure:</dt><dd><ul>
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">ChimeraX.AtomicStructure</span></code> instance</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.validation.RotamerAnnotator.color_scale">
+<em class="property">property </em><code class="sig-name descname">color_scale</code><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RotamerAnnotator.color_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a 3-tuple of (r,g,b,a) arrays defining the current colour scale.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.validation.RotamerAnnotator.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RotamerAnnotator.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete this model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.validation.RotamerAnnotator.display">
+<em class="property">property </em><code class="sig-name descname">display</code><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RotamerAnnotator.display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show/hide the validation markup (automatic validation will pause while
+hidden).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.validation.RotamerAnnotator.hide_favored">
+<em class="property">property </em><code class="sig-name descname">hide_favored</code><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RotamerAnnotator.hide_favored" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show annotations for favoured rotamers, or just non-favoured/outliers?</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.validation.RotamerAnnotator.restrict_to_selected_residues">
+<code class="sig-name descname">restrict_to_selected_residues</code><span class="sig-paren">(</span><em class="sig-param">residues</em><span class="sig-paren">)</span><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RotamerAnnotator.restrict_to_selected_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restrict validation to a defined set of residues. Use
+<a class="reference internal" href="live_validation.html#chimerax.isolde.validation.RotamerAnnotator.track_whole_model" title="chimerax.isolde.validation.RotamerAnnotator.track_whole_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">track_whole_model</span></code></a> = True to once again cover all residues.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>residues:</dt><dd><ul>
+<li><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> instance</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.validation.RotamerAnnotator.track_whole_model">
+<em class="property">property </em><code class="sig-name descname">track_whole_model</code><a class="headerlink" href="live_validation.html#chimerax.isolde.validation.RotamerAnnotator.track_whole_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tell the validator to track/annotate all rotameric residues in the
+model (the default starting state).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../isolde.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../isolde.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/ISOLDE.html">The ISOLDE GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/isolde.html">The ISOLDE Command Line</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="isolde.html">ISOLDE Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gui_control.html">Accessing ISOLDE GUI functions from Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_objects.html">Core Dihedral Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation.html"><em>n</em>-Dimensional Interpolation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="live_validation.html#">Live Structure Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html">Restraints and Steering Forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripted_manipulations.html">(Semi-)Automated Manipulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sim_management.html">Simulation Setup and Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">General Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../isolde.html">Documentation overview</a><ul>
+  <li><a href="isolde.html">ISOLDE Python API</a><ul>
+      <li>Previous: <a href="interpolation.html" title="previous chapter"><em>n</em>-Dimensional Interpolation</a></li>
+      <li>Next: <a href="restraints.html" title="next chapter">Restraints and Steering Forces</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016-2019, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/api/live_validation.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

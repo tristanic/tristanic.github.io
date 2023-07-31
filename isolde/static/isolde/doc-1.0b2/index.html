@@ -1,0 +1,221 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Interactive Structure Optimisation by Local Direct Exploration &#8212; ISOLDE 1.0b1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="What is ISOLDE all about?" href="intro.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <img alt="ISOLDE" src="_images/isolde_splash_screen.jpg" />
+<div class="section" id="interactive-structure-optimisation-by-local-direct-exploration">
+<h1>Interactive Structure Optimisation by Local Direct Exploration<a class="headerlink" href="index.html#interactive-structure-optimisation-by-local-direct-exploration" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="index.html#">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">What is ISOLDE all about?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">System Requirements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#operating-system">Operating System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#hardware">Hardware</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui/index.html">The ISOLDE GUI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gui/getting_started.html">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gui/getting_started.html#starting-isolde">Starting ISOLDE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/getting_started.html#preparing-a-model-for-simulation">Preparing a model for simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/getting_started.html#adding-maps">Adding maps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gui/navigation.html">Visualisation and Navigation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gui/navigation.html#general-layout">General layout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/navigation.html#zooming-and-panning">Zooming and Panning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/navigation.html#adjusting-the-maps">Adjusting the maps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/navigation.html#selecting-atoms">Selecting atoms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/navigation.html#masking-the-maps">Masking the maps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gui/sim_settings.html">Basic simulation controls</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gui/sim_settings.html#starting-a-simulation">Starting a simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/sim_settings.html#dealing-with-unrecognised-residues">Dealing with unrecognised residues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/sim_settings.html#dealing-with-severe-clashes">Dealing with severe clashes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/sim_settings.html#general-simulation-controls">General simulation controls</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/sim_settings.html#basic-interaction">Basic interaction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/sim_settings.html#adjusting-map-weightings">Adjusting map weightings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/sim_settings.html#trajectory-smoothing">Trajectory smoothing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gui/rebuild.html">Manipulating your model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gui/rebuild.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/rebuild.html#the-residue-rebuilding-toolbar">The residue rebuilding toolbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/rebuild.html#fine-tuning-your-selection">Fine-tuning your selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/rebuild.html#secondary-structure-toolbar">Secondary Structure Toolbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/rebuild.html#register-shifter">Register Shifter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/rebuild.html#position-restraint-toolbar">Position Restraint Toolbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/rebuild.html#distance-restraint-toolbar">Distance Restraint Toolbar</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gui/validate.html">Monitoring the quality of your model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gui/validate.html#the-ramachandran-plot">The Ramachandran plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/validate.html#peptide-bond-geometry-validation">Peptide Bond Geometry validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/validate.html#rotamer-validation">Rotamer Validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui/validate.html#clashes">Clashes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="python_api/index.html">ISOLDE Python API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="python_api/gui_control.html">Accessing ISOLDE GUI functions from Python</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="python_api/core_objects.html">Core Dihedral Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="python_api/core_objects.html#general-principles">General Principles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/core_objects.html#proper-dihedrals">Proper Dihedrals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/core_objects.html#chiral-centres">Chiral Centres</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/core_objects.html#ramachandran-validation">Ramachandran validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/core_objects.html#amino-acid-rotamers">Amino acid rotamers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="python_api/interpolation.html"><em>n</em>-Dimensional Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="python_api/interpolation.html#general-principles">General Principles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/interpolation.html#n-dimensional-linear-interpolation"><em>n</em>-dimensional Linear Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="python_api/live_validation.html">Live Structure Validation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="python_api/live_validation.html#general-principles">General Principles</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="python_api/restraints.html">Restraints and Steering Forces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="python_api/restraints.html#general-principles">General Principles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/restraints.html#general-utilities">General Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/restraints.html#change-tracking">Change Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/restraints.html#map-steering-forces">Map Steering Forces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/restraints.html#position-restraints">Position Restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/restraints.html#interactive-tugging-forces">Interactive Tugging Forces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/restraints.html#distance-restraints">Distance Restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/restraints.html#proper-dihedral-restraints">Proper Dihedral Restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/restraints.html#chirality-restraints">Chirality Restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/restraints.html#rotamer-restraints">Rotamer Restraints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="python_api/scripted_manipulations.html">(Semi-)Automated Manipulations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="python_api/scripted_manipulations.html#peptide-bond-flipper">Peptide_Bond_Flipper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/scripted_manipulations.html#protein-register-shifter">Protein_Register_Shifter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/scripted_manipulations.html#module-chimerax.isolde.refine">Backrub</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="python_api/sim_management.html">Simulation Setup and Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="python_api/sim_management.html#general-principles">General Principles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/sim_management.html#module-chimerax.isolde.openmm">Simulation Management Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/sim_management.html#custom-forces">Custom Forces</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="python_api/utils.html">General Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="python_api/utils.html#session-extensions">Session Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/utils.html#module-chimerax.isolde.view">View</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/utils.html#module-chimerax.isolde.ctypes">Ctypes Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/utils.html#module-chimerax.isolde.delayed_reaction">Threading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_api/utils.html#module-chimerax.isolde.param_mgr">Parameter Management</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact Info</a></li>
+</ul>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="index.html#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html#">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="index.html#">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">What is ISOLDE all about?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/index.html">The ISOLDE GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_api/index.html">ISOLDE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html#">Documentation overview</a><ul>
+      <li>Next: <a href="intro.html" title="next chapter">What is ISOLDE all about?</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

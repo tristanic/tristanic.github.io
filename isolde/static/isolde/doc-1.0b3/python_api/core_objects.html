@@ -1,0 +1,2280 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Core Dihedral Classes &#8212; ISOLDE 1.0b3 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="n-Dimensional Interpolation" href="interpolation.html" />
+    <link rel="prev" title="Accessing ISOLDE GUI functions from Python" href="gui_control.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="core-dihedral-classes">
+<h1>Core Dihedral Classes<a class="headerlink" href="core_objects.html#core-dihedral-classes" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="core_objects.html#general-principles" id="id2">General Principles</a></li>
+<li><a class="reference internal" href="core_objects.html#proper-dihedrals" id="id3">Proper Dihedrals</a><ul>
+<li><a class="reference internal" href="core_objects.html#proper-dihedral-mgr" id="id4">Proper_Dihedral_Mgr</a></li>
+<li><a class="reference internal" href="core_objects.html#proper-dihedral" id="id5">Proper_Dihedral</a></li>
+<li><a class="reference internal" href="core_objects.html#id1" id="id6">Proper_Dihedrals</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="core_objects.html#chiral-centres" id="id7">Chiral Centres</a><ul>
+<li><a class="reference internal" href="core_objects.html#chiral-mgr" id="id8">Chiral_Mgr</a></li>
+<li><a class="reference internal" href="core_objects.html#chiral-center" id="id9">Chiral_Center</a></li>
+<li><a class="reference internal" href="core_objects.html#chiral-centers" id="id10">Chiral_Centers</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="core_objects.html#ramachandran-validation" id="id11">Ramachandran validation</a><ul>
+<li><a class="reference internal" href="core_objects.html#rama-mgr" id="id12">Rama_Mgr</a></li>
+<li><a class="reference internal" href="core_objects.html#rama" id="id13">Rama</a></li>
+<li><a class="reference internal" href="core_objects.html#ramas" id="id14">Ramas</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="core_objects.html#amino-acid-rotamers" id="id15">Amino acid rotamers</a><ul>
+<li><a class="reference internal" href="core_objects.html#rota-mgr" id="id16">Rota_Mgr</a></li>
+<li><a class="reference internal" href="core_objects.html#rotamer" id="id17">Rotamer</a></li>
+<li><a class="reference internal" href="core_objects.html#rotamers" id="id18">Rotamers</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="general-principles">
+<h2><a class="toc-backref" href="core_objects.html#id2">General Principles</a><a class="headerlink" href="core_objects.html#general-principles" title="Permalink to this headline">¶</a></h2>
+<p>Dihedrals are the key fundamental units defining many aspects of a molecule’s
+structure: backbone “twist” or secondary structure, peptide bond conformation,
+rotamer (sidechain) conformation, planarity, chirality, etc. Fast methods for
+finding, measuring and tracking them are thus vital to ISOLDE’s success.</p>
+<p>Each of the groups below are arranged in essentially the same way, so I will
+explain the layout using proper dihedrals as an example. There are three key
+Python classes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedral_Mgr</span></code> exists as a single instance per session
+and is responsible for creation, deletion and retrieval of C++
+<code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Proper_Dihedral</span></code> objects. The preferred way to find the
+manager instance is to use
+<code class="xref py py-func docutils literal notranslate"><span class="pre">session_extensions.get_proper_dihedral_manager()</span></code>. This will create
+the manager if it doesn’t yet exist, or simply retrieve it if it does.</li>
+<li><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedral</span></code> is built on the <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.State</span></code>
+framework and behaves similarly to e.g. <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Atom</span></code>.</li>
+<li><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedrals</span></code> is built on the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Collection</span></code> framework and behaves similarly to
+e.g. <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Atoms</span></code>.</li>
+</ul>
+</div></blockquote>
+<dl class="docutils">
+<dt>Some general key points:</dt>
+<dd><ul class="first last">
+<li><p class="first">In general, the C++ <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Proper_Dihedral</span></code> objects are only created
+when needed. <code class="xref py py-func docutils literal notranslate"><span class="pre">Proper_Dihedral_Mgr.get_dihedral()</span></code> by default will
+work through the input list of residues, returning dihedrals that already
+exist and attempting to create those that don’t.</p>
+</li>
+<li><p class="first">If any constituent atom in a C++ <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Proper_Dihedral</span></code> is deleted,
+the dihedral will be deleted and automatically removed from any
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedrals</span></code> instances. Any corresponding Python
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedral</span></code> instances will become invalid, raising an
+exception if an attempt is made to use them. Similarly,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Rotamer</span></code> objects will be cleaned up if any constituent
+dihedral is deleted. The exception to this rule is <code class="xref py py-class docutils literal notranslate"><span class="pre">Rama</span></code>, where
+each <code class="xref py py-class docutils literal notranslate"><span class="pre">Rama</span></code> will persist as long as its associated residue has at
+least a CA atom. <code class="xref py py-class docutils literal notranslate"><span class="pre">Rama</span></code> instances with missing dihedrals will
+return <code class="xref py py-attr docutils literal notranslate"><span class="pre">valid</span></code> = False, and will attempt to complete themselves
+on each call to the underlying C++ class.</p>
+</li>
+<li><p class="first">The combination of the above rules means that these classes for the most
+part should “just work”, with the user or developer rarely if ever needing
+to worry about object creation/deletion. If, for example, a residue is
+mutated from lysine to arginine, the old rotamer will disappear and the
+next call to <code class="xref py py-func docutils literal notranslate"><span class="pre">Rota_Mgr.get_rotamers()</span></code> will have the new one in
+the expected position.</p>
+</li>
+<li><p class="first">For best performance, you should try to do most tasks using the plural
+<code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Collection</span></code> calls, which loop over their constituent
+objects in C++. Looping over individual <code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code> objects is at
+least an order of magnitude slower. So, for example:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">angles</span> <span class="o">=</span> <span class="n">proper_dihedrals</span><span class="o">.</span><span class="n">angles</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>… is very fast, whereas:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">proper_dihedrals</span><span class="p">:</span>
+    <span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>is very slow, since it involves creating and deleting a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedral</span></code> for every iteration of the loop.</p>
+</li>
+</ul>
+</dd>
+</dl>
+<span class="target" id="module-chimerax.isolde.atomic"></span></div>
+<div class="section" id="proper-dihedrals">
+<h2><a class="toc-backref" href="core_objects.html#id3">Proper Dihedrals</a><a class="headerlink" href="core_objects.html#proper-dihedrals" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="proper-dihedral-mgr">
+<h3><a class="toc-backref" href="core_objects.html#id4">Proper_Dihedral_Mgr</a><a class="headerlink" href="core_objects.html#proper-dihedral-mgr" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="class">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral_Mgr">
+<em class="property">class </em><code class="descclassname">chimerax.isolde.atomic.</code><code class="descname">Proper_Dihedral_Mgr</code><span class="sig-paren">(</span><em>session</em>, <em>c_pointer=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral_Mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>A session-level singleton managing all proper dihedrals (phi, psi, chi etc.).
+Rather than instantiating directly, it is best created/retrieved using
+<code class="xref py py-func docutils literal notranslate"><span class="pre">session_extensions.get_proper_dihedral_mgr()</span></code>.</p>
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral_Mgr.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>session</em>, <em>c_pointer=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral_Mgr.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral_Mgr.create_all_dihedrals">
+<code class="descname">create_all_dihedrals</code><span class="sig-paren">(</span><em>residues</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral_Mgr.create_all_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create C++ objects for all known dihedrals in a set of residues. In
+general it is not necessary to do this, and preferable to allow them to
+simply be created as needed.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>residues:</dt>
+<dd><ul class="first last">
+<li>A <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral_Mgr.delete_dihedrals">
+<code class="descname">delete_dihedrals</code><span class="sig-paren">(</span><em>dihedrals</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral_Mgr.delete_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete all dihedrals in a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals" title="chimerax.isolde.atomic.Proper_Dihedrals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedrals</span></code></a>. Note that
+this will not affect the constituent atoms in any way, and
+should not actually be necessary in most cases. Dihedrals are
+automatically deleted at the C++ level when their manager or
+any of their constituent atoms are deleted. The deleted dihedrals
+will be automatically re-created if/when needed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral_Mgr.get_all_dihedrals">
+<code class="descname">get_all_dihedrals</code><span class="sig-paren">(</span><em>residues</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral_Mgr.get_all_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals" title="chimerax.isolde.atomic.Proper_Dihedrals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedrals</span></code></a> containing all dihedrals that have
+been defined for the given residues. Any standard dihedrals (e.g.
+phi, psi, omega) will be created.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>residues:</dt>
+<dd><ul class="first last">
+<li>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral_Mgr.get_dihedral">
+<code class="descname">get_dihedral</code><span class="sig-paren">(</span><em>residue</em>, <em>name</em>, <em>create=True</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral_Mgr.get_dihedral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral" title="chimerax.isolde.atomic.Proper_Dihedral"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedral</span></code></a> for the given residue and name,
+or None if no such dihedral exists.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>residue:</dt>
+<dd><ul class="first last">
+<li>A <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residue</span></code> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>name:</dt>
+<dd><ul class="first last">
+<li>A string giving the lowercase name of the dihedral (e.g.
+‘phi’, ‘omega’, ‘chi1’, etc.)</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>create (default: True):</dt>
+<dd><ul class="first last">
+<li>If True, if the dihedral does not currently exist an attempt
+will be made to create it.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral_Mgr.get_dihedrals">
+<code class="descname">get_dihedrals</code><span class="sig-paren">(</span><em>residues</em>, <em>name</em>, <em>create=True</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral_Mgr.get_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals" title="chimerax.isolde.atomic.Proper_Dihedrals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedrals</span></code></a> providing the named dihedral
+(where it exists) for every residue in residues. The resulting
+array will be in the same order as residues, but may be shorter.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>residues:</dt>
+<dd><ul class="first last">
+<li>A <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>name:</dt>
+<dd><ul class="first last">
+<li>A string giving the lowercase name of the dihedral (e.g.
+‘phi’, ‘omega’, ‘chi1’, etc.)</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>create (default = True):</dt>
+<dd><ul class="first last">
+<li>If True, if any dihedral does not currently exist an attempt
+will be made to create it.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral_Mgr.num_mapped_dihedrals">
+<code class="descname">num_mapped_dihedrals</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral_Mgr.num_mapped_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of dihedrals currently being managed.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="proper-dihedral">
+<h3><a class="toc-backref" href="core_objects.html#id5">Proper_Dihedral</a><a class="headerlink" href="core_objects.html#proper-dihedral" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="class">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral">
+<em class="property">class </em><code class="descclassname">chimerax.isolde.atomic.</code><code class="descname">Proper_Dihedral</code><span class="sig-paren">(</span><em>c_pointer</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Proper_Dihedral is defined as a dihedral in which the four atoms are
+strictly bonded a1-a2-a3-a4.</p>
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>c_pointer</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral.angle">
+<code class="descname">angle</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral.angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angle in radians. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral.atoms">
+<code class="descname">atoms</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral.atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Atoms making up this dihedral. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral.axial_bond">
+<code class="descname">axial_bond</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral.axial_bond" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bond forming the axis of this dihedral. Read-only</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral.cpp_pointer">
+<code class="descname">cpp_pointer</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral.cpp_pointer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value that can be passed to C++ layer to be used as pointer (Python int)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral.deleted">
+<code class="descname">deleted</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral.deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Has the C++ side been deleted?</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral.name">
+<code class="descname">name</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of this dihedral. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral.residue">
+<code class="descname">residue</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral.residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Residue this dihedral belongs to. Read only.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral.restore_snapshot">
+<em class="property">classmethod </em><code class="descname">restore_snapshot</code><span class="sig-paren">(</span><em>session</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral.restore_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create object using snapshot data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedral.take_snapshot">
+<code class="descname">take_snapshot</code><span class="sig-paren">(</span><em>session</em>, <em>flags</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral.take_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return snapshot of current state of instance.</p>
+<p>The semantics of the data is unknown to the caller.
+Returns None if should be skipped.
+The default implementation is for non-core classes and
+returns a copy of the instance dictionary (a deep copy of
+lists/dicts/etc., but shallow copy of named objects).
+Named objects are later converted to unique names.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="id1">
+<h3><a class="toc-backref" href="core_objects.html#id6">Proper_Dihedrals</a><a class="headerlink" href="core_objects.html#id1" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="class">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals">
+<em class="property">class </em><code class="descclassname">chimerax.isolde.atomic.</code><code class="descname">Proper_Dihedrals</code><span class="sig-paren">(</span><em>c_pointers=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>c_pointers=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.angles">
+<code class="descname">angles</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the angle in radians for each dihedral. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.atoms">
+<code class="descname">atoms</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a four-tuple of <code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code> objects. For each dihedral,
+its constituent atoms are in the matching position in the four
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code> collections. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.axial_bonds">
+<code class="descname">axial_bonds</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.axial_bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code> giving the axial bond for each dihedral. Read-only</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy, since Collections are immutable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.filter">
+<code class="descname">filter</code><span class="sig-paren">(</span><em>mask_or_indices</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a subset of the collection as a new collection.</p>
+<dl class="docutils">
+<dt>mask_or_indices <span class="classifier-delimiter">:</span> <span class="classifier">numpy bool array (mask) or int array (indices)</span></dt>
+<dd>Bool length must match the length of the collection and filters out items where
+the bool array is False.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.hash">
+<code class="descname">hash</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be used for quickly determining if collections have the same elements in the same order.
+Objects are automatically deleted from the collection when the C++ object is deleted.
+So this hash value will not be valid if the collection changes.  This is not the __hash__
+special Python method and it is not supported to use collections as keys of dictionaries
+or elements of sets since they are mutable (deletions automatically remove items).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the position of the first occurence of an object in a collection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.indices">
+<code class="descname">indices</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return int32 array indicating for each element in objects its index of the
+first occurence in the collection, or -1 if it does not occur in the collection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.instances">
+<code class="descname">instances</code><span class="sig-paren">(</span><em>instantiate=True</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.instances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of the Python instances.  If ‘instantiate’ is False, then for
+those items that haven’t yet been instantiated, None will be returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.intersect">
+<code class="descname">intersect</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.intersect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection that is the intersection with the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.intersects">
+<code class="descname">intersects</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.intersects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this collection has any element in common with the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>. Returns bool.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.intersects_each">
+<code class="descname">intersects_each</code><span class="sig-paren">(</span><em>objects_list</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.intersects_each" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if each of serveral pointer arrays intersects this array.
+Return a boolean array of length equal to the length of objects_list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.mask">
+<code class="descname">mask</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return bool array indicating for each object in current set whether that
+object appears in the argument objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.merge">
+<code class="descname">merge</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection combining this one with the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>.
+All duplicates are removed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.residues">
+<code class="descname">residues</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Residues</span></code> giving the parent residue of each dihedral. Read only</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.restore_snapshot">
+<em class="property">classmethod </em><code class="descname">restore_snapshot</code><span class="sig-paren">(</span><em>session</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.restore_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create object using snapshot data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.subtract">
+<code class="descname">subtract</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.subtract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection subtracting the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code> from this one.
+All duplicates are removed.  Currently does not preserve order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.take_snapshot">
+<code class="descname">take_snapshot</code><span class="sig-paren">(</span><em>session</em>, <em>flags</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.take_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return snapshot of current state of instance.</p>
+<p>The semantics of the data is unknown to the caller.
+Returns None if should be skipped.
+The default implementation is for non-core classes and
+returns a copy of the instance dictionary (a deep copy of
+lists/dicts/etc., but shallow copy of named objects).
+Named objects are later converted to unique names.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Proper_Dihedrals.unique">
+<code class="descname">unique</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals.unique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection containing the unique elements from this one, preserving order.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="chiral-centres">
+<h2><a class="toc-backref" href="core_objects.html#id7">Chiral Centres</a><a class="headerlink" href="core_objects.html#chiral-centres" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="chiral-mgr">
+<h3><a class="toc-backref" href="core_objects.html#id8">Chiral_Mgr</a><a class="headerlink" href="core_objects.html#chiral-mgr" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="class">
+<dt id="chimerax.isolde.atomic.Chiral_Mgr">
+<em class="property">class </em><code class="descclassname">chimerax.isolde.atomic.</code><code class="descname">Chiral_Mgr</code><span class="sig-paren">(</span><em>session</em>, <em>c_pointer=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>A session-level singleton managing all chiral centres. Rather than
+instantiating directly, it is best created/retrieved using
+<code class="xref py py-func docutils literal notranslate"><span class="pre">session_extensions.get_chiral_mgr()</span></code>.</p>
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Mgr.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>session</em>, <em>c_pointer=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Mgr.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Mgr.add_chiral_def">
+<code class="descname">add_chiral_def</code><span class="sig-paren">(</span><em>residue_name</em>, <em>chiral_atom_name</em>, <em>s1_names</em>, <em>s2_names</em>, <em>s3_names</em>, <em>expected_angle</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Mgr.add_chiral_def" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a definition to the dictionary of known chiral centres. The
+definition will only be valid for the current session. All instances of
+the chiral centre will be automatically found and tracked.</p>
+<p>Since chiral bonds can occur across residues, substituent atom names
+should be provided as lists of possible names.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>residue_name:</dt>
+<dd><ul class="first last">
+<li>the 3-letter name of the residue the centre is found in</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>chiral_atom_name:</dt>
+<dd><ul class="first last">
+<li>the name of the central chiral atom</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>s1_names:</dt>
+<dd><ul class="first last">
+<li>a list of potential names for the highest priority substituent</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>s2_names:</dt>
+<dd><ul class="first last">
+<li>a list of potential names for the second substituent</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>s3_names:</dt>
+<dd><ul class="first last">
+<li>a list of potential names for the third substituent</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>expected_angle:</dt>
+<dd><ul class="first last">
+<li>the expected dihedral angle (in radians) for the chiral centre
+at equilibrium. While it is best to provide more accurate
+measures based on an energy-minimised model of your compound,
+fairly typical values are 0.6 for a (S) isomer and -0.6 for a
+(R) isomer. Note that chirality restraints only become active
+for deviations more than 15 degrees (0.26 radians), from the
+expected angle, relying on the forcefield parameterisation
+inside that range.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Mgr.delete_chirals">
+<code class="descname">delete_chirals</code><span class="sig-paren">(</span><em>chirals</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Mgr.delete_chirals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the C++ objects for the given <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers" title="chimerax.isolde.atomic.Chiral_Centers"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chiral_Centers</span></code></a>. Note that
+this only deletes the chirality information, not any atoms/bonds. In
+general it should not be necessary to use this method - creation and
+deletion is fully automatic.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Mgr.get_chiral">
+<code class="descname">get_chiral</code><span class="sig-paren">(</span><em>atom</em>, <em>create=True</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Mgr.get_chiral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center" title="chimerax.isolde.atomic.Chiral_Center"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chiral_Center</span></code></a> for the given atom if it is a known
+chiral atom. Returns None if the atom is achiral, no definition exists
+for the chiral centre, required substituent atoms are missing, or
+create is False and the c++ object has not previously been created.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>atom:</dt>
+<dd><ul class="first last">
+<li>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Atom</span></code> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>create:</dt>
+<dd><ul class="first last">
+<li>if True, an attempt will be made to create the chiral centre
+if it doesn’t already exist.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Mgr.get_chirals">
+<code class="descname">get_chirals</code><span class="sig-paren">(</span><em>atoms</em>, <em>create=True</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Mgr.get_chirals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers" title="chimerax.isolde.atomic.Chiral_Centers"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chiral_Centers</span></code></a> containing all known chiral centres in
+the given atoms.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>atoms:</dt>
+<dd><ul class="first last">
+<li>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Atoms</span></code> instance.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>create:</dt>
+<dd><ul class="first last">
+<li>if True, for every atom where a chiral definition exists but
+no <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Chiral_Center</span></code> has been created, an attempt
+will be made to create it. Otherwise, only previously-created
+chirals will be returned.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="chiral-center">
+<h3><a class="toc-backref" href="core_objects.html#id9">Chiral_Center</a><a class="headerlink" href="core_objects.html#chiral-center" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="class">
+<dt id="chimerax.isolde.atomic.Chiral_Center">
+<em class="property">class </em><code class="descclassname">chimerax.isolde.atomic.</code><code class="descname">Chiral_Center</code><span class="sig-paren">(</span><em>c_pointer</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center" title="Permalink to this definition">¶</a></dt>
+<dd><p>A chiral centre is an atom with four chemically distinct substituents, such
+that it cannot be overlaid with its mirror image by rotation and
+translation. Within ISOLDE, chiral centres are treated as improper dihedrals
+(that is, dihedrals for which the axis isn’t a real bond). Atom ordering
+within a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center" title="chimerax.isolde.atomic.Chiral_Center"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chiral_Center</span></code></a> is defined with the central atom first,
+followed by  the first three substituents in order of decreasing priority by
+standard Cahn-Ingold-Prelog rules. Typical tetrahedral centres will have
+dihedral angles in the vicinity of +/-35 degrees - S positive, R negative.</p>
+<p><a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center" title="chimerax.isolde.atomic.Chiral_Center"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chiral_Center</span></code></a> instances are not created directly - they are
+generated as  needed by <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Chiral_Mgr" title="chimerax.isolde.atomic.Chiral_Mgr"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chiral_Mgr</span></code></a> based on dictionary definitions.</p>
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Center.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>c_pointer</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Center.angle">
+<code class="descname">angle</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center.angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angle in radians. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Center.atoms">
+<code class="descname">atoms</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center.atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Atoms making up this chiral centre. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Center.chiral_atom">
+<code class="descname">chiral_atom</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center.chiral_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>The chiral atom. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Center.cpp_pointer">
+<code class="descname">cpp_pointer</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center.cpp_pointer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value that can be passed to C++ layer to be used as pointer (Python int)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Center.deleted">
+<code class="descname">deleted</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center.deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Has the C++ side been deleted?</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Center.deviation">
+<code class="descname">deviation</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center.deviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>The difference between the current dihedral angle and <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center.expected_angle" title="chimerax.isolde.atomic.Chiral_Center.expected_angle"><code class="xref py py-attr docutils literal notranslate"><span class="pre">expected_angle</span></code></a>. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Center.expected_angle">
+<code class="descname">expected_angle</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center.expected_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>The equilibrium angle of the chiral dihedral in its correct isomeric state. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Center.residue">
+<code class="descname">residue</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center.residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Residue this chiral centre belongs to. Read only.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="chimerax.isolde.atomic.Chiral_Center.restore_snapshot">
+<em class="property">classmethod </em><code class="descname">restore_snapshot</code><span class="sig-paren">(</span><em>session</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center.restore_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create object using snapshot data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Center.take_snapshot">
+<code class="descname">take_snapshot</code><span class="sig-paren">(</span><em>session</em>, <em>flags</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Center.take_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return snapshot of current state of instance.</p>
+<p>The semantics of the data is unknown to the caller.
+Returns None if should be skipped.
+The default implementation is for non-core classes and
+returns a copy of the instance dictionary (a deep copy of
+lists/dicts/etc., but shallow copy of named objects).
+Named objects are later converted to unique names.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="chiral-centers">
+<h3><a class="toc-backref" href="core_objects.html#id10">Chiral_Centers</a><a class="headerlink" href="core_objects.html#chiral-centers" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="class">
+<dt id="chimerax.isolde.atomic.Chiral_Centers">
+<em class="property">class </em><code class="descclassname">chimerax.isolde.atomic.</code><code class="descname">Chiral_Centers</code><span class="sig-paren">(</span><em>c_pointers=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>c_pointers=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.angles">
+<code class="descname">angles</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the angle in radians for each dihedral. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.atoms">
+<code class="descname">atoms</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a four-tuple of <code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code> objects. For each dihedral,
+its constituent atoms are in the matching position in the four
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code> collections. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.chiral_atoms">
+<code class="descname">chiral_atoms</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.chiral_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>The chiral atoms. Read only.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy, since Collections are immutable.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.deviations">
+<code class="descname">deviations</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>The difference between each current dihedral angle and its <code class="xref py py-attr docutils literal notranslate"><span class="pre">expected_angle</span></code>. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.expected_angles">
+<code class="descname">expected_angles</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.expected_angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>The equilibrium angle of each chiral dihedral in its correct isomeric state. Read only.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.filter">
+<code class="descname">filter</code><span class="sig-paren">(</span><em>mask_or_indices</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a subset of the collection as a new collection.</p>
+<dl class="docutils">
+<dt>mask_or_indices <span class="classifier-delimiter">:</span> <span class="classifier">numpy bool array (mask) or int array (indices)</span></dt>
+<dd>Bool length must match the length of the collection and filters out items where
+the bool array is False.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.hash">
+<code class="descname">hash</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be used for quickly determining if collections have the same elements in the same order.
+Objects are automatically deleted from the collection when the C++ object is deleted.
+So this hash value will not be valid if the collection changes.  This is not the __hash__
+special Python method and it is not supported to use collections as keys of dictionaries
+or elements of sets since they are mutable (deletions automatically remove items).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the position of the first occurence of an object in a collection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.indices">
+<code class="descname">indices</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return int32 array indicating for each element in objects its index of the
+first occurence in the collection, or -1 if it does not occur in the collection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.instances">
+<code class="descname">instances</code><span class="sig-paren">(</span><em>instantiate=True</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.instances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of the Python instances.  If ‘instantiate’ is False, then for
+those items that haven’t yet been instantiated, None will be returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.intersect">
+<code class="descname">intersect</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.intersect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection that is the intersection with the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.intersects">
+<code class="descname">intersects</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.intersects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this collection has any element in common with the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>. Returns bool.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.intersects_each">
+<code class="descname">intersects_each</code><span class="sig-paren">(</span><em>objects_list</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.intersects_each" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if each of serveral pointer arrays intersects this array.
+Return a boolean array of length equal to the length of objects_list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.mask">
+<code class="descname">mask</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return bool array indicating for each object in current set whether that
+object appears in the argument objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.merge">
+<code class="descname">merge</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection combining this one with the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>.
+All duplicates are removed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.residues">
+<code class="descname">residues</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Residues</span></code> giving the parent residue of each dihedral. Read only</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.restore_snapshot">
+<em class="property">classmethod </em><code class="descname">restore_snapshot</code><span class="sig-paren">(</span><em>session</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.restore_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create object using snapshot data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.subtract">
+<code class="descname">subtract</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.subtract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection subtracting the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code> from this one.
+All duplicates are removed.  Currently does not preserve order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.take_snapshot">
+<code class="descname">take_snapshot</code><span class="sig-paren">(</span><em>session</em>, <em>flags</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.take_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return snapshot of current state of instance.</p>
+<p>The semantics of the data is unknown to the caller.
+Returns None if should be skipped.
+The default implementation is for non-core classes and
+returns a copy of the instance dictionary (a deep copy of
+lists/dicts/etc., but shallow copy of named objects).
+Named objects are later converted to unique names.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Chiral_Centers.unique">
+<code class="descname">unique</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Chiral_Centers.unique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection containing the unique elements from this one, preserving order.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="ramachandran-validation">
+<h2><a class="toc-backref" href="core_objects.html#id11">Ramachandran validation</a><a class="headerlink" href="core_objects.html#ramachandran-validation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="rama-mgr">
+<h3><a class="toc-backref" href="core_objects.html#id12">Rama_Mgr</a><a class="headerlink" href="core_objects.html#rama-mgr" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="class">
+<dt id="chimerax.isolde.atomic.Rama_Mgr">
+<em class="property">class </em><code class="descclassname">chimerax.isolde.atomic.</code><code class="descname">Rama_Mgr</code><span class="sig-paren">(</span><em>session</em>, <em>c_pointer=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Session-level singleton managing the Ramachandran scoring of protein
+residues. Rather than instantiating directly, it is best created/retrieved
+using <code class="xref py py-func docutils literal notranslate"><span class="pre">session_extensions.get_ramachandran_mgr()</span></code>.</p>
+<dl class="class">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.Rama_Bin">
+<em class="property">class </em><code class="descname">Rama_Bin</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.Rama_Bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumerator for validation bins. Values match an enumerator in the C++
+layer, so don’t change them unless you know <em>exactly</em> what you’re doing.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.Rama_Case">
+<em class="property">class </em><code class="descname">Rama_Case</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.Rama_Case" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumerators for the different Ramachandran cases. These match
+an enumerator in the C++ layer, so don’t change them unless you
+know <em>exactly</em> what you’re doing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>session</em>, <em>c_pointer=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.bin_scores">
+<code class="descname">bin_scores</code><span class="sig-paren">(</span><em>scores</em>, <em>cases</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.bin_scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of integer values corresponding to the enumerator
+<a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.Rama_Bin" title="chimerax.isolde.atomic.Rama_Mgr.Rama_Bin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rama_Mgr.Rama_Bin</span></code></a> to bin the given Ramachandran scores into
+favoured, allowed, outlier and N/A. The input arrays are the product
+of <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.validate" title="chimerax.isolde.atomic.Rama_Mgr.validate"><code class="xref py py-func docutils literal notranslate"><span class="pre">validate()</span></code></a>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>scores:</dt>
+<dd><ul class="first last">
+<li>an array of floating-point scores</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>cases:</dt>
+<dd><ul class="first last">
+<li>a matching integer array defining the Ramachandran cases</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.cis">
+<code class="descname">cis</code><span class="sig-paren">(</span><em>residues</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.cis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> instance encompassing the subset
+of input residues whose peptide bonds are in the cis conformation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.color_cas_by_rama_score">
+<code class="descname">color_cas_by_rama_score</code><span class="sig-paren">(</span><em>ramas</em>, <em>hide_favored=False</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.color_cas_by_rama_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Colours the alpha carbon atoms by Ramachandran score.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>ramas:</dt>
+<dd><ul class="first last">
+<li>a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Ramas" title="chimerax.isolde.atomic.Ramas"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ramas</span></code></a> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>hide_favored:</dt>
+<dd><ul class="first last">
+<li>if True, only the data for non-favoured residues will be
+returned.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.color_scale">
+<code class="descname">color_scale</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.color_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current colour scale as a 4-tuple of (max, mid, min, n/a)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.cpp_pointer">
+<code class="descname">cpp_pointer</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.cpp_pointer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value that can be passed to C++ layer to be used as pointer (Python int)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.cutoffs">
+<code class="descname">cutoffs</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.cutoffs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict giving the allowed and outlier cutoffs for each
+Ramachandran case. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.deleted">
+<code class="descname">deleted</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Has the C++ side been deleted?</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.dihedral_manager">
+<code class="descname">dihedral_manager</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.dihedral_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the session <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral_Mgr" title="chimerax.isolde.atomic.Proper_Dihedral_Mgr"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedral_Mgr</span></code></a> singleton.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.get_ramas">
+<code class="descname">get_ramas</code><span class="sig-paren">(</span><em>residues</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.get_ramas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Ramas" title="chimerax.isolde.atomic.Ramas"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ramas</span></code></a> with one Rama for each protein residue in the
+list. Non-protein residues will be skipped so the length of the result
+may be different from the input array, but the returned Ramas will be
+in the same order as the protein residues in the input.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>residues:</dt>
+<dd><ul class="first last">
+<li>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.interpolator_axes">
+<code class="descname">interpolator_axes</code><span class="sig-paren">(</span><em>rama_case</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.interpolator_axes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience function combining <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.interpolator_axis_lengths" title="chimerax.isolde.atomic.Rama_Mgr.interpolator_axis_lengths"><code class="xref py py-func docutils literal notranslate"><span class="pre">interpolator_axis_lengths()</span></code></a> and
+<a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.interpolator_limits" title="chimerax.isolde.atomic.Rama_Mgr.interpolator_limits"><code class="xref py py-func docutils literal notranslate"><span class="pre">interpolator_limits()</span></code></a> to provide a tuple of arrays giving the
+axis values at each grid point.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>rama_case:</dt>
+<dd><ul class="first last">
+<li>integer value corresponding to the <code class="xref py py-class docutils literal notranslate"><span class="pre">Rama_Cases</span></code> enum</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.interpolator_axis_lengths">
+<code class="descname">interpolator_axis_lengths</code><span class="sig-paren">(</span><em>rama_case</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.interpolator_axis_lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the (phi,psi) axis dimensions of the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">RegularGridInterpolator</span></code> object for a given Ramachandran case.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>rama_case:</dt>
+<dd><ul class="first last">
+<li>integer value corresponding to the <code class="xref py py-class docutils literal notranslate"><span class="pre">Rama_Cases</span></code> enum</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.interpolator_dim">
+<code class="descname">interpolator_dim</code><span class="sig-paren">(</span><em>rama_case</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.interpolator_dim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the number of dimensions in the <code class="xref py py-class docutils literal notranslate"><span class="pre">RegularGridInterpolator</span></code>
+object for a given Ramachandran case. Should always return 2.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>rama_case:</dt>
+<dd><ul class="first last">
+<li>integer value corresponding to the <code class="xref py py-class docutils literal notranslate"><span class="pre">Rama_Cases</span></code> enum</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.interpolator_limits">
+<code class="descname">interpolator_limits</code><span class="sig-paren">(</span><em>rama_case</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.interpolator_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a (minimum_values, maximum_values) tuple giving the limiting
+values for each axis in the <code class="xref py py-class docutils literal notranslate"><span class="pre">RegularGridInterpolator</span></code> object
+for a given Ramachandran case.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>rama_case:</dt>
+<dd><ul class="first last">
+<li>integer value corresponding to the <code class="xref py py-class docutils literal notranslate"><span class="pre">Rama_Cases</span></code> enum</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.interpolator_values">
+<code class="descname">interpolator_values</code><span class="sig-paren">(</span><em>rama_case</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.interpolator_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a multidimensional array containing the contour data for a
+given Ramachandran case.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>rama_case:</dt>
+<dd><ul class="first last">
+<li>integer value corresponding to the <code class="xref py py-class docutils literal notranslate"><span class="pre">Rama_Cases</span></code> enum</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.outliers">
+<code class="descname">outliers</code><span class="sig-paren">(</span><em>residues</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.outliers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> instance encompassing the
+subset of input residues that are Ramachandran outliers.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>residues:</dt>
+<dd><ul class="first last">
+<li>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.rama_cases">
+<code class="descname">rama_cases</code><span class="sig-paren">(</span><em>residues</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.rama_cases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of integer values corresponding to the Ramachandran
+case enumerator <code class="xref py py-class docutils literal notranslate"><span class="pre">Rama_Mgr.Rama_Cases</span></code>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>residues:</dt>
+<dd><ul class="first last">
+<li>A <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.rama_colors">
+<code class="descname">rama_colors</code><span class="sig-paren">(</span><em>ramas</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.rama_colors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a nx4 uint8 array giving a color for each rama corresponding
+to the current colormap.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>ramas:</dt>
+<dd><ul class="first last">
+<li>a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Ramas" title="chimerax.isolde.atomic.Ramas"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ramas</span></code></a> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.set_color_scale">
+<code class="descname">set_color_scale</code><span class="sig-paren">(</span><em>max_c</em>, <em>mid_c</em>, <em>min_c</em>, <em>na_c</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.set_color_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define a custom colour scale for visualisation of Ramachandran scores.
+All arguments are iterables of four integers providing
+(red, green, blue, alpha) in the range (0..255).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>max_c:</dt>
+<dd><ul class="first last">
+<li>colour associated with the maximum (most favourable) score</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>mid_c:</dt>
+<dd><ul class="first last">
+<li>colour at the favoured/allowed cutoff</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>min_c:</dt>
+<dd><ul class="first last">
+<li>colour at the allowed/outlier cutoff. All scores below the
+outlier cutoff will have this colour</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>na_c:</dt>
+<dd><ul class="first last">
+<li>colour to associate with residues that don’t have
+Ramachandran scores (e.g. N/C termini)</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.set_default_colors">
+<code class="descname">set_default_colors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.set_default_colors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the colours for visualisation of scores back to their defaults.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.set_default_cutoffs">
+<code class="descname">set_default_cutoffs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.set_default_cutoffs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the Ramachandran cutoffs to default values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.twisted">
+<code class="descname">twisted</code><span class="sig-paren">(</span><em>residues</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.twisted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of (<code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residue</span></code>, angle) 2-tuples giving the
+subset of input residues whose peptide bonds are twisted more than 30
+degrees from planar.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rama_Mgr.validate">
+<code class="descname">validate</code><span class="sig-paren">(</span><em>residues_or_ramas</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an 2-tuple containing an array of Ramachandran scores and an
+array of case enum values for a set of residues or ramas. Residues
+lacking either phi or psi will have a score of -1.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li>residues_or_ramas: either a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> or
+<a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Ramas" title="chimerax.isolde.atomic.Ramas"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ramas</span></code></a> instance</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="rama">
+<h3><a class="toc-backref" href="core_objects.html#id13">Rama</a><a class="headerlink" href="core_objects.html#rama" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="class">
+<dt id="chimerax.isolde.atomic.Rama">
+<em class="property">class </em><code class="descclassname">chimerax.isolde.atomic.</code><code class="descname">Rama</code><span class="sig-paren">(</span><em>c_pointer</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="chimerax.isolde.atomic.Rama.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>c_pointer</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.angles">
+<code class="descname">angles</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>The omega, phi and psi angles for this residue in radians. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.ca_atom">
+<code class="descname">ca_atom</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.ca_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>The alpha carbon <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Atom</span></code> of the amino acid residue. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.case">
+<code class="descname">case</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.case" title="Permalink to this definition">¶</a></dt>
+<dd><p>A value representing the Ramachandran case for this residue,
+matching the case definitions in <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.Rama_Case" title="chimerax.isolde.atomic.Rama_Mgr.Rama_Case"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rama_Mgr.Rama_Case</span></code></a>. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.cpp_pointer">
+<code class="descname">cpp_pointer</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.cpp_pointer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value that can be passed to C++ layer to be used as pointer (Python int)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.deleted">
+<code class="descname">deleted</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Has the C++ side been deleted?</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.omega_dihedral">
+<code class="descname">omega_dihedral</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.omega_dihedral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral" title="chimerax.isolde.atomic.Proper_Dihedral"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedral</span></code></a> instance pointing to the omega
+(peptide bond) dihedral for this residue, or None if there is no
+preceding residue.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.phi_dihedral">
+<code class="descname">phi_dihedral</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.phi_dihedral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral" title="chimerax.isolde.atomic.Proper_Dihedral"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedral</span></code></a> instance pointing to the phi dihedral
+for this residue, or None if there is no preceding residue.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.phipsi">
+<code class="descname">phipsi</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.phipsi" title="Permalink to this definition">¶</a></dt>
+<dd><p>The phi and psi angles for this residue in radians. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.psi_dihedral">
+<code class="descname">psi_dihedral</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.psi_dihedral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedral" title="chimerax.isolde.atomic.Proper_Dihedral"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedral</span></code></a> instance pointing to the psi dihedral
+for this residue, or None if there is no following residue.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.residue">
+<code class="descname">residue</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residue</span></code> to which this Rama belongs. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.score">
+<code class="descname">score</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>The score of this residue on the MolProbity Ramachandran contours. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.valid">
+<code class="descname">valid</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if this residue has all three of omega, phi and psi. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.visible">
+<code class="descname">visible</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.visible" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if the alpha carbon of this residue is visible. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rama.visible_ignoring_ribbon">
+<code class="descname">visible_ignoring_ribbon</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rama.visible_ignoring_ribbon" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if the only thing hiding the alpha carbon is the ribbon display. Read only.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="ramas">
+<h3><a class="toc-backref" href="core_objects.html#id14">Ramas</a><a class="headerlink" href="core_objects.html#ramas" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="class">
+<dt id="chimerax.isolde.atomic.Ramas">
+<em class="property">class </em><code class="descclassname">chimerax.isolde.atomic.</code><code class="descname">Ramas</code><span class="sig-paren">(</span><em>c_pointers=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>c_pointers=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Ramas.angles">
+<code class="descname">angles</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>The omega, phi and psi angles for each residue in radians. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Ramas.ca_atoms">
+<code class="descname">ca_atoms</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.ca_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Atoms</span></code> instance giving the alpha carbon of each amino acid residue. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Ramas.cases">
+<code class="descname">cases</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.cases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Values representing the Ramachandran case for these residues,
+matching the case definitions in <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rama_Mgr.Rama_Case" title="chimerax.isolde.atomic.Rama_Mgr.Rama_Case"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rama_Mgr.Rama_Case</span></code></a>. Read only.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy, since Collections are immutable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.filter">
+<code class="descname">filter</code><span class="sig-paren">(</span><em>mask_or_indices</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a subset of the collection as a new collection.</p>
+<dl class="docutils">
+<dt>mask_or_indices <span class="classifier-delimiter">:</span> <span class="classifier">numpy bool array (mask) or int array (indices)</span></dt>
+<dd>Bool length must match the length of the collection and filters out items where
+the bool array is False.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.hash">
+<code class="descname">hash</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be used for quickly determining if collections have the same elements in the same order.
+Objects are automatically deleted from the collection when the C++ object is deleted.
+So this hash value will not be valid if the collection changes.  This is not the __hash__
+special Python method and it is not supported to use collections as keys of dictionaries
+or elements of sets since they are mutable (deletions automatically remove items).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the position of the first occurence of an object in a collection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.indices">
+<code class="descname">indices</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return int32 array indicating for each element in objects its index of the
+first occurence in the collection, or -1 if it does not occur in the collection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.instances">
+<code class="descname">instances</code><span class="sig-paren">(</span><em>instantiate=True</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.instances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of the Python instances.  If ‘instantiate’ is False, then for
+those items that haven’t yet been instantiated, None will be returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.intersect">
+<code class="descname">intersect</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.intersect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection that is the intersection with the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.intersects">
+<code class="descname">intersects</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.intersects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this collection has any element in common with the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>. Returns bool.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.intersects_each">
+<code class="descname">intersects_each</code><span class="sig-paren">(</span><em>objects_list</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.intersects_each" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if each of serveral pointer arrays intersects this array.
+Return a boolean array of length equal to the length of objects_list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.mask">
+<code class="descname">mask</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return bool array indicating for each object in current set whether that
+object appears in the argument objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.merge">
+<code class="descname">merge</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection combining this one with the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>.
+All duplicates are removed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Ramas.omega_dihedrals">
+<code class="descname">omega_dihedrals</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.omega_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals" title="chimerax.isolde.atomic.Proper_Dihedrals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedrals</span></code></a> instance pointing to the omega
+(peptide bond) dihedral for each residue. Note that some residues
+will not have omega dihedrals, so the output array may be shorter
+than the <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Ramas" title="chimerax.isolde.atomic.Ramas"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ramas</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Ramas.phi_dihedrals">
+<code class="descname">phi_dihedrals</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.phi_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals" title="chimerax.isolde.atomic.Proper_Dihedrals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedrals</span></code></a> instance pointing to the phi
+dihedral for each residue. Note that some residues will not have phi
+dihedrals, so the output array may be shorter  than the <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Ramas" title="chimerax.isolde.atomic.Ramas"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ramas</span></code></a>
+instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Ramas.phipsis">
+<code class="descname">phipsis</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.phipsis" title="Permalink to this definition">¶</a></dt>
+<dd><p>The phi and psi angles for each residue in radians. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Ramas.psi_dihedrals">
+<code class="descname">psi_dihedrals</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.psi_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals" title="chimerax.isolde.atomic.Proper_Dihedrals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedrals</span></code></a> instance pointing to the psi
+dihedral for each residue. Note that some residues will not have psi
+dihedrals, so the output array may be shorter than the <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Ramas" title="chimerax.isolde.atomic.Ramas"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ramas</span></code></a>
+instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Ramas.residues">
+<code class="descname">residues</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> instance giving the residue to which each Rama belongs. Read only.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="chimerax.isolde.atomic.Ramas.restore_snapshot">
+<em class="property">classmethod </em><code class="descname">restore_snapshot</code><span class="sig-paren">(</span><em>session</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.restore_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create object using snapshot data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Ramas.scores">
+<code class="descname">scores</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>The score of each residue on the MolProbity Ramachandran contours. Read only.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.subtract">
+<code class="descname">subtract</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.subtract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection subtracting the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code> from this one.
+All duplicates are removed.  Currently does not preserve order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.take_snapshot">
+<code class="descname">take_snapshot</code><span class="sig-paren">(</span><em>session</em>, <em>flags</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.take_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return snapshot of current state of instance.</p>
+<p>The semantics of the data is unknown to the caller.
+Returns None if should be skipped.
+The default implementation is for non-core classes and
+returns a copy of the instance dictionary (a deep copy of
+lists/dicts/etc., but shallow copy of named objects).
+Named objects are later converted to unique names.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Ramas.unique">
+<code class="descname">unique</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.unique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection containing the unique elements from this one, preserving order.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Ramas.valids">
+<code class="descname">valids</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.valids" title="Permalink to this definition">¶</a></dt>
+<dd><p>True for each residue that has all three of omega, phi and psi. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Ramas.visibles">
+<code class="descname">visibles</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.visibles" title="Permalink to this definition">¶</a></dt>
+<dd><p>True for each residue whose alpha carbon is visible. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Ramas.visibles_ignoring_ribbon">
+<code class="descname">visibles_ignoring_ribbon</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Ramas.visibles_ignoring_ribbon" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if the only thing hiding the alpha carbon is the ribbon display. Read only.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="amino-acid-rotamers">
+<h2><a class="toc-backref" href="core_objects.html#id15">Amino acid rotamers</a><a class="headerlink" href="core_objects.html#amino-acid-rotamers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="rota-mgr">
+<h3><a class="toc-backref" href="core_objects.html#id16">Rota_Mgr</a><a class="headerlink" href="core_objects.html#rota-mgr" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="class">
+<dt id="chimerax.isolde.atomic.Rota_Mgr">
+<em class="property">class </em><code class="descclassname">chimerax.isolde.atomic.</code><code class="descname">Rota_Mgr</code><span class="sig-paren">(</span><em>session</em>, <em>c_pointer=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Session-level singleton managing rotamers and their scoring. Rather than
+instantiating directly, it is best created/retrieved using
+<code class="xref py py-func docutils literal notranslate"><span class="pre">session_extensions.get_rotamer_mgr()</span></code>.</p>
+<dl class="class">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.Rota_Bin">
+<em class="property">class </em><code class="descname">Rota_Bin</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.Rota_Bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumerator for validation bins. Values match an enumerator in the C++
+layer, so don’t change them unless you know <em>exactly</em> what you’re doing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>session</em>, <em>c_pointer=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.color_scale">
+<code class="descname">color_scale</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.color_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current colour scale as a 3-tuple of (max, mid, min)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.cutoffs">
+<code class="descname">cutoffs</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.cutoffs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the current (allowed, outlier) P-value cutoffs</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.deleted">
+<code class="descname">deleted</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Has the C++ side been deleted?</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.get_rotamer">
+<code class="descname">get_rotamer</code><span class="sig-paren">(</span><em>residue</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.get_rotamer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create/retrieve the <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rotamer" title="chimerax.isolde.atomic.Rotamer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rotamer</span></code></a> object for a given residue</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>residue:</dt>
+<dd><ul class="first last">
+<li>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residue</span></code> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.get_rotamers">
+<code class="descname">get_rotamers</code><span class="sig-paren">(</span><em>residues</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.get_rotamers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rotamers" title="chimerax.isolde.atomic.Rotamers"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rotamers</span></code></a> instance containing all valid rotamers in the
+selection.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>residues:</dt>
+<dd><ul class="first last">
+<li>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.non_favored_rotamers">
+<code class="descname">non_favored_rotamers</code><span class="sig-paren">(</span><em>rotamers</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.non_favored_rotamers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a 2-tuple containing only the rotamers in non-favoured
+conformations, and their current scores.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>rotamers:</dt>
+<dd><ul class="first last">
+<li>a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rotamers" title="chimerax.isolde.atomic.Rotamers"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rotamers</span></code></a> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.set_color_scale">
+<code class="descname">set_color_scale</code><span class="sig-paren">(</span><em>max_c</em>, <em>mid_c</em>, <em>min_c</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.set_color_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define a custom colour scale for visualisation of rotamer scores.
+All arguments are iterables of four integers providing
+(red, green, blue, alpha) in the range (0..255).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>max_c:</dt>
+<dd><ul class="first last">
+<li>colour associated with the maximum (most favourable) score</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>mid_c:</dt>
+<dd><ul class="first last">
+<li>colour at the favoured/allowed cutoff</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>min_c:</dt>
+<dd><ul class="first last">
+<li>colour at the allowed/outlier cutoff. All scores below the
+outlier cutoff will have this colour</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.set_default_colors">
+<code class="descname">set_default_colors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.set_default_colors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the colour map for visualisation of rotamer validation back to
+the stored default colours.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.set_default_cutoffs">
+<code class="descname">set_default_cutoffs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.set_default_cutoffs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the rotamer P-value cutoffs to default values</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.validate_residues">
+<code class="descname">validate_residues</code><span class="sig-paren">(</span><em>residues</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.validate_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of P-values for the current conformations of all
+rotameric protein residues in the input. Non-rotameric residues will
+receive a score of -1.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>residues:</dt>
+<dd><ul class="first last">
+<li>a <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residues</span></code> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.validate_rotamers">
+<code class="descname">validate_rotamers</code><span class="sig-paren">(</span><em>rotamers</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.validate_rotamers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of P-values for the current conformations of the
+given rotamers.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>rotamers:</dt>
+<dd><ul class="first last">
+<li>a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rotamers" title="chimerax.isolde.atomic.Rotamers"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rotamers</span></code></a> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rota_Mgr.validate_scale_and_color_rotamers">
+<code class="descname">validate_scale_and_color_rotamers</code><span class="sig-paren">(</span><em>rotamers</em>, <em>max_scale=2.0</em>, <em>non_favored_only=True</em>, <em>visible_only=True</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr.validate_scale_and_color_rotamers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used by <code class="xref py py-class docutils literal notranslate"><span class="pre">Rotamer_Annotator</span></code> for visualising rotamer validation.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>rotamers:</dt>
+<dd><ul class="first last">
+<li>a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rotamers" title="chimerax.isolde.atomic.Rotamers"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rotamers</span></code></a> instance</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>max_scale:</dt>
+<dd><ul class="first last">
+<li>size limit when scaling indicators by outlier severity</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>non_favored_only:</dt>
+<dd><ul class="first last">
+<li>if True, the return arrays will be limited to only those
+rotamers outside of favoured conformations</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>visible_only:</dt>
+<dd><ul class="first last">
+<li>if True, non-visible residues will be excluded from analysis
+and return</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li>A <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rotamers" title="chimerax.isolde.atomic.Rotamers"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rotamers</span></code></a> instance matching the filtering criteria</li>
+<li>An array of scale factors (one per rotamer)</li>
+<li>An array of colours (one per rotamer)</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="rotamer">
+<h3><a class="toc-backref" href="core_objects.html#id17">Rotamer</a><a class="headerlink" href="core_objects.html#rotamer" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="class">
+<dt id="chimerax.isolde.atomic.Rotamer">
+<em class="property">class </em><code class="descclassname">chimerax.isolde.atomic.</code><code class="descname">Rotamer</code><span class="sig-paren">(</span><em>c_pointer</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamer.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>c_pointer</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamer.angles">
+<code class="descname">angles</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array giving the current chi angles (chi1, chi2, …) for
+this rotamer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamer.ca_cb_bond">
+<code class="descname">ca_cb_bond</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.ca_cb_bond" title="Permalink to this definition">¶</a></dt>
+<dd><p>The “stem”  <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Bond</span></code> of this rotamer. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamer.chi_dihedrals">
+<code class="descname">chi_dihedrals</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.chi_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Proper_Dihedrals" title="chimerax.isolde.atomic.Proper_Dihedrals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proper_Dihedrals</span></code></a> giving the chi dihedrals for this
+rotamer, in order (chi1, chi2, …)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamer.cpp_pointer">
+<code class="descname">cpp_pointer</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.cpp_pointer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value that can be passed to C++ layer to be used as pointer (Python int)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamer.deleted">
+<code class="descname">deleted</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Has the C++ side been deleted?</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamer.get_target">
+<code class="descname">get_target</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.get_target" title="Permalink to this definition">¶</a></dt>
+<dd><p>For each rotamer type, <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rota_Mgr" title="chimerax.isolde.atomic.Rota_Mgr"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rota_Mgr</span></code></a> stores a set of ideal rotamer
+targets, based upon the Ultimate Rotamer Library [Hintze et al]_. These
+are indexed in decreasing order of expected frequency. The number of
+available target definitions is available from <a class="reference internal" href="core_objects.html#chimerax.isolde.atomic.Rotamer.num_targets" title="chimerax.isolde.atomic.Rotamer.num_targets"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_targets</span></code></a>.
+The target definition is returned as a dict containing the name,
+expected frequency, ideal angles and their estimated standard deviations.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamer.moving_atoms">
+<code class="descname">moving_atoms</code><span class="sig-paren">(</span><em>chi_index</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.moving_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the set of atoms moved by rotating around the given chi dihedral.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamer.nearest_target">
+<code class="descname">nearest_target</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.nearest_target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the definition for the nearest ideal rotamer by minimising the
+sum of differences between the current and target angles. Adds an extra
+entry [‘Z scores’] to the returned dict giving the Z score for
+abs(angle-target) for each chi dihedral.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamer.num_chi_dihedrals">
+<code class="descname">num_chi_dihedrals</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.num_chi_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of dihedrals defining this rotamer. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamer.num_targets">
+<code class="descname">num_targets</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.num_targets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of available target conformations. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamer.residue">
+<code class="descname">residue</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.residue" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residue</span></code> this rotamer belongs to. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamer.score">
+<code class="descname">score</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>P-value for the current conformation of this rotamer. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamer.visible">
+<code class="descname">visible</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamer.visible" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if the CA-CB bond of the rotamer is visible. Read only.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="rotamers">
+<h3><a class="toc-backref" href="core_objects.html#id18">Rotamers</a><a class="headerlink" href="core_objects.html#rotamers" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="class">
+<dt id="chimerax.isolde.atomic.Rotamers">
+<em class="property">class </em><code class="descclassname">chimerax.isolde.atomic.</code><code class="descname">Rotamers</code><span class="sig-paren">(</span><em>c_pointers=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>c_pointers=None</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamers.ca_cb_bonds">
+<code class="descname">ca_cb_bonds</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.ca_cb_bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>The “stem” <code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Bond</span></code> of this rotamer. Read only.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy, since Collections are immutable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.filter">
+<code class="descname">filter</code><span class="sig-paren">(</span><em>mask_or_indices</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a subset of the collection as a new collection.</p>
+<dl class="docutils">
+<dt>mask_or_indices <span class="classifier-delimiter">:</span> <span class="classifier">numpy bool array (mask) or int array (indices)</span></dt>
+<dd>Bool length must match the length of the collection and filters out items where
+the bool array is False.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.hash">
+<code class="descname">hash</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be used for quickly determining if collections have the same elements in the same order.
+Objects are automatically deleted from the collection when the C++ object is deleted.
+So this hash value will not be valid if the collection changes.  This is not the __hash__
+special Python method and it is not supported to use collections as keys of dictionaries
+or elements of sets since they are mutable (deletions automatically remove items).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the position of the first occurence of an object in a collection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.indices">
+<code class="descname">indices</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return int32 array indicating for each element in objects its index of the
+first occurence in the collection, or -1 if it does not occur in the collection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.instances">
+<code class="descname">instances</code><span class="sig-paren">(</span><em>instantiate=True</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.instances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of the Python instances.  If ‘instantiate’ is False, then for
+those items that haven’t yet been instantiated, None will be returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.intersect">
+<code class="descname">intersect</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.intersect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection that is the intersection with the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.intersects">
+<code class="descname">intersects</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.intersects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this collection has any element in common with the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>. Returns bool.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.intersects_each">
+<code class="descname">intersects_each</code><span class="sig-paren">(</span><em>objects_list</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.intersects_each" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if each of serveral pointer arrays intersects this array.
+Return a boolean array of length equal to the length of objects_list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.mask">
+<code class="descname">mask</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return bool array indicating for each object in current set whether that
+object appears in the argument objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.merge">
+<code class="descname">merge</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection combining this one with the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>.
+All duplicates are removed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamers.residues">
+<code class="descname">residues</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.residues" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">chimerax.Residue</span></code> this rotamer belongs to. Read only.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="chimerax.isolde.atomic.Rotamers.restore_snapshot">
+<em class="property">classmethod </em><code class="descname">restore_snapshot</code><span class="sig-paren">(</span><em>session</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.restore_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create object using snapshot data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamers.scores">
+<code class="descname">scores</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>P-value for the current conformation of this rotamer. Read only.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.subtract">
+<code class="descname">subtract</code><span class="sig-paren">(</span><em>objects</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.subtract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection subtracting the <em>objects</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code> from this one.
+All duplicates are removed.  Currently does not preserve order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.take_snapshot">
+<code class="descname">take_snapshot</code><span class="sig-paren">(</span><em>session</em>, <em>flags</em><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.take_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return snapshot of current state of instance.</p>
+<p>The semantics of the data is unknown to the caller.
+Returns None if should be skipped.
+The default implementation is for non-core classes and
+returns a copy of the instance dictionary (a deep copy of
+lists/dicts/etc., but shallow copy of named objects).
+Named objects are later converted to unique names.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.atomic.Rotamers.unique">
+<code class="descname">unique</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.unique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new collection containing the unique elements from this one, preserving order.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.atomic.Rotamers.visibles">
+<code class="descname">visibles</code><a class="headerlink" href="core_objects.html#chimerax.isolde.atomic.Rotamers.visibles" title="Permalink to this definition">¶</a></dt>
+<dd><p>True for each rotamer whose CA-CB bond is visible</p>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">What is ISOLDE all about?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/index.html">The ISOLDE GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">ISOLDE Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gui_control.html">Accessing ISOLDE GUI functions from Python</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="core_objects.html#">Core Dihedral Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#general-principles">General Principles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#proper-dihedrals">Proper Dihedrals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#chiral-centres">Chiral Centres</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#ramachandran-validation">Ramachandran validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#amino-acid-rotamers">Amino acid rotamers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation.html"><em>n</em>-Dimensional Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="live_validation.html">Live Structure Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html">Restraints and Steering Forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripted_manipulations.html">(Semi-)Automated Manipulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sim_management.html">Simulation Setup and Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">General Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">ISOLDE Python API</a><ul>
+      <li>Previous: <a href="gui_control.html" title="previous chapter">Accessing ISOLDE GUI functions from Python</a></li>
+      <li>Next: <a href="interpolation.html" title="next chapter"><em>n</em>-Dimensional Interpolation</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/python_api/core_objects.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

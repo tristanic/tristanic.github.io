@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>The ISOLDE Command Line &#8212; ISOLDE 1.0b3.dev7 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Adaptive Distance Restraints" href="isolde_restrain.html" />
+    <link rel="prev" title="Bulk Flexible Fitting" href="../tutorials/bulk_fitting/bulk_fitting.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="the-isolde-command-line">
+<h1>The ISOLDE Command Line<a class="headerlink" href="isolde.html#the-isolde-command-line" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="isolde_restrain.html">Adaptive Distance Restraints</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isolde_restrain.html#isolde-restrain-distances">isolde restrain distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_restrain.html#isolde-restrain-single-distance">isolde restrain single distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_restrain.html#isolde-release-distances">isolde release distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_restrain.html#isolde-adjust-distances">isolde adjust distances</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="isolde_remote.html">Remote Control Options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isolde_remote.html#isolde-remote-rest-start">isolde remote rest start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_remote.html#isolde-remote-rest-stop">isolde remote rest stop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_remote.html#isolde-remote-rest-info">isolde remote rest info</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>While the primary mode of control of ISOLDE is via <a class="reference internal" href="../tools/ISOLDE.html#isolde-gui"><span class="std std-ref">The ISOLDE GUI</span></a>, if you
+prefer you can also perform many tasks via the command line, such as launching
+the GUI (<a class="reference internal" href="isolde.html#start"><span class="std std-ref">isolde start</span></a>), starting, stopping and pausing simulations (<a class="reference internal" href="isolde.html#sim"><span class="std std-ref">isolde sim</span></a>),
+and performing basic manipulations (<a class="reference internal" href="isolde.html#pepflip"><span class="std std-ref">isolde pepflip</span></a> and <a class="reference internal" href="isolde.html#cisflip"><span class="std std-ref">isolde cisflip</span></a>). Some
+functions are currently available <em>only</em> through the command line - in
+particular, <a class="reference internal" href="isolde_restrain.html#adaptive-distance-restraints-cmd"><span class="std std-ref">Adaptive Distance Restraints</span></a>.</p>
+<div class="section" id="isolde-tutorial">
+<span id="tutorial"></span><h2>isolde tutorial<a class="headerlink" href="isolde.html#isolde-tutorial" title="Permalink to this headline">¶</a></h2>
+<p>Brings up the ISOLDE <a class="reference internal" href="../tutorials/isolde.html#isolde-tutorials"><span class="std std-ref">Tutorials</span></a> help page, providing interactive
+case studies for working on models in ISOLDE.</p>
+</div>
+<div class="section" id="isolde-demo">
+<span id="demo"></span><h2>isolde demo<a class="headerlink" href="isolde.html#isolde-demo" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde demo <em>demoName</em> [<strong>modelOnly</strong> <em>true/false</em>] [<strong>startIsolde</strong> <em>true/false</em>]</p>
+<p>Primarily intended for use with the ISOLDE tutorials. Loads saved atomic
+coordinates for use in rebuilding.</p>
+<p><em>demoName</em>: either “cryo_em” or “crystal”</p>
+<p><em>modelOnly</em>: if true, load only the model and not the electron density map</p>
+<p><em>startIsolde</em>: if true, the ISOLDE GUI will be started.</p>
+</div>
+<div class="section" id="isolde-start">
+<span id="start"></span><h2>isolde start<a class="headerlink" href="isolde.html#isolde-start" title="Permalink to this headline">¶</a></h2>
+<p>Brings up <a class="reference internal" href="../tools/ISOLDE.html#isolde-gui"><span class="std std-ref">The ISOLDE GUI</span></a>. The first model in the list of open models will be
+automatically prepared with ISOLDE’s default visualisation mode. This also sets
+the display camera to orthographic projection and lighting to simple. It is
+strongly recommended that you do not change these settings during your ISOLDE
+session.</p>
+</div>
+<div class="section" id="isolde-sim">
+<span id="sim"></span><h2>isolde sim<a class="headerlink" href="isolde.html#isolde-sim" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde sim <em>cmd</em> [<em>atoms</em>] [<strong>discardTo</strong> <em>discardTo</em>]</p>
+<p>Start, stop or pause an interactive simulation.</p>
+<div class="section" id="isolde-sim-start-atoms">
+<h3>isolde sim start [<em>atoms</em>]<a class="headerlink" href="isolde.html#isolde-sim-start-atoms" title="Permalink to this headline">¶</a></h3>
+<p>Launches the ISOLDE GUI if not already running, and starts a simulation. If no
+atoms are specified, the simulation will encompass the entirety of the current
+selected model (or the first open model if ISOLDE is not already running). If
+<em>atoms</em> is specified, the selected atoms must come from a single model
+(if this is not the current selected model, ISOLDE will automatically switch).</p>
+</div>
+<div class="section" id="isolde-sim-stop-discardto-discardto">
+<h3>isolde sim stop [<strong>discardTo</strong> <em>discardTo</em>]<a class="headerlink" href="isolde.html#isolde-sim-stop-discardto-discardto" title="Permalink to this headline">¶</a></h3>
+<p><em>discardTo</em>: one of “checkpoint” or “start”</p>
+<p>Stop the currently running simulation, and optionally discard the results. If
+<em>discardTo</em> is not specified, the current state of the model will be kept.
+Otherwise, the atomic positions and states of all restraints will be reverted
+either to the starting state or the last saved checkpoint.</p>
+</div>
+<div class="section" id="isolde-sim-pause">
+<h3>isolde sim pause<a class="headerlink" href="isolde.html#isolde-sim-pause" title="Permalink to this headline">¶</a></h3>
+<p>Pauses/resumes the current simulation.</p>
+</div>
+</div>
+<div class="section" id="isolde-pepflip">
+<span id="pepflip"></span><h2>isolde pepflip<a class="headerlink" href="isolde.html#isolde-pepflip" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde pepflip <em>atoms</em></p>
+<p>Attempt to flip the peptide bond N-terminal to each selected residue, starting a
+suitable simulation if none is currently running. Requires ISOLDE to already be
+initialised. Residues outside the model currently selected for ISOLDE (or
+outside the mobile selection if a simulation is running) will not be flipped.</p>
+</div>
+<div class="section" id="isolde-cisflip">
+<span id="cisflip"></span><h2>isolde cisflip<a class="headerlink" href="isolde.html#isolde-cisflip" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde cisflip <em>atoms</em></p>
+<p>Attempt to flip the peptide bond N-terminal to each selected residue from <em>cis</em>
+to <em>trans</em> or vice versa, starting a suitable simulation if none is currently
+running. Requires ISOLDE to already be initialised. Residues outside the model
+currently selected for ISOLDE (or outside the mobile selection if a simulation
+is running) will not be flipped.</p>
+</div>
+<div class="section" id="isolde-ignore">
+<span id="ignore"></span><h2>isolde ignore<a class="headerlink" href="isolde.html#isolde-ignore" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde ignore <em>residues</em></p>
+<p>Tell ISOLDE to ignore a selection of residues in future simulations. This will
+not take effect until the next simulation is started. Ignored residues will
+still be used for structure factor calculations, but do not take part in
+simulations in any way. Atoms directly bonded to an ignored residue will be
+fixed in space. This command is most useful in dealing with severe clashes that
+are otherwise intractable (e.g. docked homology models with intertwined loops):</p>
+<ul class="simple">
+<li><p>select one of the clashing chains</p></li>
+<li><p><em>isolde ignore sel</em> to ignore it</p></li>
+<li><p>start a simulation and remodel its counterpart into density</p></li>
+<li><p>stop the simulation, then <em>isolde ~ignore</em> to clear the list of ignored
+residues</p></li>
+<li><p>if necessary, ignore the selection you just remodelled and run a
+simulation to fix the other side of the problem area</p></li>
+<li><p>stop any running simulation, <em>isolde ~ignore</em>, then run a final simulation
+with everything included to resolve any remaining clashes.</p></li>
+</ul>
+</div>
+<div class="section" id="id1">
+<span id="id2"></span><h2>isolde ~ignore<a class="headerlink" href="isolde.html#id1" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde ~ignore <em>residues</em></p>
+<p>Tell ISOLDE to stop ignoring a selection of residues for simulation purposes.
+This will not take effect until the next new simulation is started.</p>
+</div>
+<div class="section" id="isolde-restrain-distances">
+<span id="restrain-distances"></span><h2>isolde restrain distances<a class="headerlink" href="isolde.html#isolde-restrain-distances" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="isolde_restrain.html#adaptive-distance-restraints-cmd"><span class="std std-ref">Adaptive Distance Restraints</span></a></p>
+</div>
+<div class="section" id="isolde-release-distances">
+<span id="release-distances"></span><h2>isolde release distances<a class="headerlink" href="isolde.html#isolde-release-distances" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="isolde_restrain.html#adaptive-distance-restraints-cmd"><span class="std std-ref">Adaptive Distance Restraints</span></a></p>
+</div>
+<div class="section" id="isolde-adjust-distances">
+<span id="adjust-distances"></span><h2>isolde adjust distances<a class="headerlink" href="isolde.html#isolde-adjust-distances" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="isolde_restrain.html#adaptive-distance-restraints-cmd"><span class="std std-ref">Adaptive Distance Restraints</span></a></p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../isolde.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../isolde.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/ISOLDE.html">The ISOLDE GUI</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="isolde.html#">The ISOLDE Command Line</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isolde_restrain.html">Adaptive Distance Restraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_remote.html">Remote Control Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-tutorial">isolde tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-demo">isolde demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-start">isolde start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-sim">isolde sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-pepflip">isolde pepflip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-cisflip">isolde cisflip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-ignore">isolde ignore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#id1">isolde ~ignore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-restrain-distances">isolde restrain distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-release-distances">isolde release distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-adjust-distances">isolde adjust distances</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/isolde.html">ISOLDE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../isolde.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../tutorials/bulk_fitting/bulk_fitting.html" title="previous chapter">Bulk Flexible Fitting</a></li>
+      <li>Next: <a href="isolde_restrain.html" title="next chapter">Adaptive Distance Restraints</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016-2019, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/commands/isolde.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

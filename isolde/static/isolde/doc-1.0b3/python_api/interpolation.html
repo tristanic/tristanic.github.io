@@ -1,0 +1,327 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>n-Dimensional Interpolation &#8212; ISOLDE 1.0b3 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Live Structure Validation" href="live_validation.html" />
+    <link rel="prev" title="Core Dihedral Classes" href="core_objects.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="n-dimensional-interpolation">
+<h1><em>n</em>-Dimensional Interpolation<a class="headerlink" href="interpolation.html#n-dimensional-interpolation" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="interpolation.html#general-principles" id="id1">General Principles</a></li>
+<li><a class="reference internal" href="interpolation.html#n-dimensional-linear-interpolation" id="id2"><em>n</em>-dimensional Linear Interpolation</a><ul>
+<li><a class="reference internal" href="interpolation.html#regulargridinterpolator" id="id3">RegularGridInterpolator</a></li>
+<li><a class="reference internal" href="interpolation.html#testing" id="id4">Testing</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="general-principles">
+<h2><a class="toc-backref" href="interpolation.html#id1">General Principles</a><a class="headerlink" href="interpolation.html#general-principles" title="Permalink to this headline">¶</a></h2>
+<p>Many structure validation tasks boil down to checking an <em>n</em>-dimensional set of
+values (e.g. the <em>chi</em> dihedral angles for a sidechain) against a map of
+probability values based on what we know from very high-resolution structures.
+For a given set of (x1, x2, … xn) coordinates, the resulting P-value must
+be calculated via linear interpolation from the 2^n corners of the n-orthotope
+surrounding the point in the map.</p>
+<p>Providing rotamer and Ramachandran validation in real time for a 1,000-residue
+simulation requires on the order of 4-5,000 dihedral angle measurements, 1,000
+2D interpolations and 1,000 1-4D interpolations (spread over 25 different maps)
+for every coordinate update. Maintaining a high graphics framereate in the face
+of 20+ coordinate updates per second therefore requires this pipeline to be very
+highly optimised. The <code class="xref py py-class docutils literal notranslate"><span class="pre">RegularGridInterpolator</span></code> described below may be
+used as-is as a Python class, taking approximately <img class="math" src="../_images/math/b7c81702ee77979e966f7a11b095f68fd59879ea.png" alt="(20 + 0.13*m) \mu s"/>
+to perform <em>m</em> 3D interpolations on a single map. While this is good enough for
+many situations, the Python class is not used by ISOLDE’s core <code class="xref py py-class docutils literal notranslate"><span class="pre">Rama</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Rotamer</span></code> classes. Instead the underlying C++ class is used, allowing all
+the necessary <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">RegularGridInterpolator</span></code> instances to be stored in an
+efficient C++ mapping so that the entire validation task is handled in a single
+Python call.</p>
+<span class="target" id="module-chimerax.isolde.interpolation"></span></div>
+<div class="section" id="n-dimensional-linear-interpolation">
+<h2><a class="toc-backref" href="interpolation.html#id2"><em>n</em>-dimensional Linear Interpolation</a><a class="headerlink" href="interpolation.html#n-dimensional-linear-interpolation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="regulargridinterpolator">
+<h3><a class="toc-backref" href="interpolation.html#id3">RegularGridInterpolator</a><a class="headerlink" href="interpolation.html#regulargridinterpolator" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="class">
+<dt id="chimerax.isolde.interpolation.RegularGridInterpolator">
+<em class="property">class </em><code class="descclassname">chimerax.isolde.interpolation.</code><code class="descname">RegularGridInterpolator</code><span class="sig-paren">(</span><em>dim</em>, <em>axis_lengths</em>, <em>min_vals</em>, <em>max_vals</em>, <em>grid_data</em><span class="sig-paren">)</span><a class="headerlink" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator" title="Permalink to this definition">¶</a></dt>
+<dd><p>A C++ implementation of n-dimensional regular grid interpolation, interfaced
+to Python using ctypes. Designed as an almost-drop-in replacement for the
+SciPy RegularGridInterpolator, but significantly faster (particularly for
+small numbers of interpolations). Whereas the SciPy interpolator has a fixed
+overhead of about 400 microseconds per call, this implementation reduces
+that to 20 microseconds. In addition, the speed of each interpolation is
+increased approximately 5-fold.</p>
+<p>Achieving this speed does impose a few limitations, however. Whereas the
+SciPy interpolator allows uneven steps along each axis, for this
+implementation the gridded data <em>must</em> be evenly-spaced (although it is not
+necessary for each axis to have the same spacing). The initialisation
+function is therefore slightly different to the SciPy implementation to
+reflect this.</p>
+<p>While in theory any number of dimensions is supported, in practice memory
+limitations make it impractical beyond 4-5 dimensions for most situations.
+For example, to handle interpolation over a 360 range with periodic wrapping
+on a 10 degree grid requires 39 points per axis. For three dimensions the
+resulting grid contains about 60k points; four dimensions contains about
+2.3 million; five dimensions 90 million and six dimensions 3.5 billion (that
+is, about 25 GB of RAM in double precision).</p>
+<p>Example usage is as follows (also see <code class="xref py py-func docutils literal notranslate"><span class="pre">test_interpolator()</span></code>):</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="n">dim</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">axis_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
+<span class="n">min_vals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">max_vals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">grid_data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">interp</span> <span class="o">=</span> <span class="n">RegularGridInterpolator</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">axis_lengths</span><span class="p">,</span> <span class="n">min_vals</span><span class="p">,</span> <span class="n">max_vals</span><span class="p">,</span>
+                                 <span class="n">grid_data</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">interp</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="c1"># or, if you prefer:</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">interp</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Interpolation is fastest if the input is a NumPy double array - anything
+else is converted internally (with an associated performance penalty) prior
+to calling the C++ function.</p>
+<dl class="method">
+<dt id="chimerax.isolde.interpolation.RegularGridInterpolator.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>dim</em>, <em>axis_lengths</em>, <em>min_vals</em>, <em>max_vals</em>, <em>grid_data</em><span class="sig-paren">)</span><a class="headerlink" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare the interpolator for a given n-dimensional grid. Once created,
+the grid elements cannot be modified.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>dim:</dt>
+<dd><ul class="first last">
+<li>An integer specifying the number of dimensions</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>axis_lengths:</dt>
+<dd><ul class="first last">
+<li>A numpy int array of length dim, specifying the number of
+points along each axis</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>min_vals:</dt>
+<dd><ul class="first last">
+<li>A numpy double array of length dim, specifying the minimum
+value of each axis</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>max_vals:</dt>
+<dd>A numpy double array of length dim, specifying the maximum
+value of each axis</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>grid_data:</dt>
+<dd>A n-dimensional numpy double array with dimensions matching
+axis_lengths, containing all the gridded data.</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.interpolation.RegularGridInterpolator.axis_lengths">
+<code class="descname">axis_lengths</code><a class="headerlink" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.axis_lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a NumPy array of length <a class="reference internal" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.dim" title="chimerax.isolde.interpolation.RegularGridInterpolator.dim"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dim</span></code></a> providing the number of
+steps on each axis. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.interpolation.RegularGridInterpolator.dim">
+<code class="descname">dim</code><a class="headerlink" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.dim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of dimensions of the interpolator. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.interpolation.RegularGridInterpolator.grid">
+<code class="descname">grid</code><a class="headerlink" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.dim" title="chimerax.isolde.interpolation.RegularGridInterpolator.dim"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dim</span></code></a>-length tuple of NumPy arrays giving the axis
+values at each grid step.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chimerax.isolde.interpolation.RegularGridInterpolator.interpolate">
+<code class="descname">interpolate</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the interpolated values for a set of (x(1), x(2), …
+x(<a class="reference internal" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.dim" title="chimerax.isolde.interpolation.RegularGridInterpolator.dim"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dim</span></code></a>)) points.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>data:</dt>
+<dd><ul class="first last">
+<li>a (n, <a class="reference internal" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.dim" title="chimerax.isolde.interpolation.RegularGridInterpolator.dim"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dim</span></code></a>) 2D NumPy array providing the coordinates at
+which to calculate the interpolated values. For fastest
+performance the data type of the array should be
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">numpy.double</span></code>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li>a 1D NumPy double array</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.interpolation.RegularGridInterpolator.max">
+<code class="descname">max</code><a class="headerlink" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a NumPy array of length <a class="reference internal" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.dim" title="chimerax.isolde.interpolation.RegularGridInterpolator.dim"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dim</span></code></a> providing the maximum limit
+of each axis. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.interpolation.RegularGridInterpolator.min">
+<code class="descname">min</code><a class="headerlink" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a NumPy array of length <a class="reference internal" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.dim" title="chimerax.isolde.interpolation.RegularGridInterpolator.dim"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dim</span></code></a> providing the minimum limit
+of each axis. Read only.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chimerax.isolde.interpolation.RegularGridInterpolator.values">
+<code class="descname">values</code><a class="headerlink" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the original gridded data values as a <a class="reference internal" href="interpolation.html#chimerax.isolde.interpolation.RegularGridInterpolator.dim" title="chimerax.isolde.interpolation.RegularGridInterpolator.dim"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dim</span></code></a>-dimensional
+NumPy array</p>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="testing">
+<h3><a class="toc-backref" href="interpolation.html#id4">Testing</a><a class="headerlink" href="interpolation.html#testing" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div>test_interpolator</div></blockquote>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">What is ISOLDE all about?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/index.html">The ISOLDE GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">ISOLDE Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gui_control.html">Accessing ISOLDE GUI functions from Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_objects.html">Core Dihedral Classes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="interpolation.html#"><em>n</em>-Dimensional Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interpolation.html#general-principles">General Principles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interpolation.html#n-dimensional-linear-interpolation"><em>n</em>-dimensional Linear Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="live_validation.html">Live Structure Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html">Restraints and Steering Forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripted_manipulations.html">(Semi-)Automated Manipulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sim_management.html">Simulation Setup and Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">General Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">ISOLDE Python API</a><ul>
+      <li>Previous: <a href="core_objects.html" title="previous chapter">Core Dihedral Classes</a></li>
+      <li>Next: <a href="live_validation.html" title="next chapter">Live Structure Validation</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/python_api/interpolation.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>ISOLDE Python API &#8212; ISOLDE 1.4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/external_links.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The primary ISOLDE object" href="isolde_main.html" />
+    <link rel="prev" title="Remote Control Options" href="../commands/isolde_remote.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="isolde-python-api">
+<h1>ISOLDE Python API<a class="headerlink" href="isolde.html#isolde-python-api" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="isolde_main.html">The primary ISOLDE object</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="core_objects.html">Core Dihedral Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core_objects.html#general-principles">General Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_objects.html#proper-dihedrals">Proper Dihedrals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#properdihedralmgr">ProperDihedralMgr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#properdihedral">ProperDihedral</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#properdihedrals">ProperDihedrals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core_objects.html#chiral-centres">Chiral Centres</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#chiralmgr">ChiralMgr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#chiralcenter">ChiralCenter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#chiralcenters">ChiralCenters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core_objects.html#ramachandran-validation">Ramachandran validation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#ramamgr">RamaMgr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#rama">Rama</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#ramas">Ramas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core_objects.html#amino-acid-rotamers">Amino acid rotamers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#rotamgr">RotaMgr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#rotamer">Rotamer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core_objects.html#rotamers">Rotamers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="interpolation.html"><em>n</em>-Dimensional Interpolation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="interpolation.html#general-principles">General Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation.html#n-dimensional-linear-interpolation"><em>n</em>-dimensional Linear Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interpolation.html#regulargridinterpolator">RegularGridInterpolator</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="live_validation.html">Live Structure Validation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="live_validation.html#general-principles">General Principles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="live_validation.html#ramaannotator">RamaAnnotator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="live_validation.html#rotamerannotator">RotamerAnnotator</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="restraints.html">Restraints and Steering Forces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html#general-principles">General Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html#general-utilities">General Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html#change-tracking">Change Tracking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#restraintchangetracker">RestraintChangeTracker</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html#map-steering-forces">Map Steering Forces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#mdffmgr">MDFFMgr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#mdffatom">MDFFAtom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#mdffatoms">MDFFAtoms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html#position-restraints">Position Restraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#positionrestraintmgr">PositionRestraintMgr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#positionrestraint">PositionRestraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#positionrestraints">PositionRestraints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html#interactive-tugging-forces">Interactive Tugging Forces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#tuggableatomsmgr">TuggableAtomsMgr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#tuggableatom">TuggableAtom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#tuggableatoms">TuggableAtoms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html#distance-restraints">Distance Restraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#distancerestraintmgr">DistanceRestraintMgr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#distancerestraint">DistanceRestraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#distancerestraints">DistanceRestraints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html#adaptive-distance-restraints">Adaptive Distance Restraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#adaptivedistancerestraintmgr">AdaptiveDistanceRestraintMgr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#adaptivedistancerestraint">AdaptiveDistanceRestraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#adaptivedistancerestraints">AdaptiveDistanceRestraints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html#proper-dihedral-restraints">Proper Dihedral Restraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#properdihedralrestraintmgr">ProperDihedralRestraintMgr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#properdihedralrestraint">ProperDihedralRestraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#properdihedralrestraints">ProperDihedralRestraints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html#adaptive-dihedral-restraints">Adaptive Dihedral Restraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#adaptivedihedralrestraintmgr">AdaptiveDihedralRestraintMgr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#adaptivedihedralrestraint">AdaptiveDihedralRestraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#adaptivedihedralrestraints">AdaptiveDihedralRestraints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html#chirality-restraints">Chirality Restraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#chiralrestraintmgr">ChiralRestraintMgr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#chiralrestraint">ChiralRestraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#chiralrestraints">ChiralRestraints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html#rotamer-restraints">Rotamer Restraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#rotamerrestraintmgr">RotamerRestraintMgr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#rotamerrestraint">RotamerRestraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#rotamerrestraints">RotamerRestraints</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scripted_manipulations.html">(Semi-)Automated Manipulations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scripted_manipulations.html#peptide-bond-flipper">Peptide_Bond_Flipper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripted_manipulations.html#proteinregistershifter">ProteinRegisterShifter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sim_management.html">Simulation Setup and Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sim_management.html#general-principles">General Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sim_management.html#module-chimerax.isolde.openmm">Simulation Management Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#simparams">SimParams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#sim-construct">Sim_Construct</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#sim-manager">Sim_Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#sim-handler">Sim_Handler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#openmm-thread-handler">OpenMM_Thread_Handler</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sim_management.html#custom-forces">Custom Forces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#mdff-potentials">MDFF Potentials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#distance-restraints">Distance Restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#position-restraints">Position Restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#dihedral-restraints">Dihedral Restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#adaptive-dihedral-restraints">Adaptive Dihedral Restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#cmap-correction-terms">CMAP Correction terms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#implicit-solvent">Implicit Solvent</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">General Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#session-extensions">Session Extensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-chimerax.isolde.view">View</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-chimerax.isolde.ctypes">Ctypes Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-chimerax.isolde.delayed_reaction">Threading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-chimerax.isolde.param_mgr">Parameter Management</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../isolde.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../isolde.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/ISOLDE.html">The ISOLDE GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/isolde_restrain.html">Adaptive Restraint Schemes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/isolde_remote.html">Remote Control Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/isolde.html">The ISOLDE Command Line</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="isolde.html#">ISOLDE Python API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isolde_main.html">The primary ISOLDE object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_objects.html">Core Dihedral Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation.html"><em>n</em>-Dimensional Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="live_validation.html">Live Structure Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html">Restraints and Steering Forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripted_manipulations.html">(Semi-)Automated Manipulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sim_management.html">Simulation Setup and Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">General Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../isolde.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../commands/isolde_remote.html" title="previous chapter">Remote Control Options</a></li>
+      <li>Next: <a href="isolde_main.html" title="next chapter">The primary ISOLDE object</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016-2022, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/api/isolde.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

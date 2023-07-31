@@ -1,0 +1,534 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Getting Started &#8212; ISOLDE 1.0b3 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Visualisation and Navigation" href="navigation.html" />
+    <link rel="prev" title="The ISOLDE GUI" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="getting-started">
+<h1>Getting Started<a class="headerlink" href="getting_started.html#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="getting_started.html#starting-isolde" id="id9">Starting ISOLDE</a></li>
+<li><a class="reference internal" href="getting_started.html#preparing-a-model-for-simulation" id="id10">Preparing a model for simulation</a></li>
+<li><a class="reference internal" href="getting_started.html#adding-maps" id="id11">Adding maps</a><ul>
+<li><a class="reference internal" href="getting_started.html#real-space-maps" id="id12">Real-space maps</a></li>
+<li><a class="reference internal" href="getting_started.html#x-ray-maps-or-other-maps-calculated-from-fourier-coefficients" id="id13">X-ray maps (or other maps calculated from Fourier coefficients)</a><ul>
+<li><a class="reference internal" href="getting_started.html#static-pre-calculated-crystallographic-maps" id="id14">Static (pre-calculated) crystallographic maps</a></li>
+<li><a class="reference internal" href="getting_started.html#live-crystallographic-maps-experimental" id="id15">Live crystallographic maps <strong>(EXPERIMENTAL)</strong></a></li>
+<li><a class="reference internal" href="getting_started.html#phenix-maps-template" id="id16"><cite>phenix.maps</cite> template</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p><strong>(NEW in 1.0b3: if you are reading this from within the ChimeraX Help browser,
+you may prefer trying out the :ref:`isolde_intro_tutorial` interactive
+tutorial.)</strong></p>
+<div class="section" id="starting-isolde">
+<h2><a class="toc-backref" href="getting_started.html#id9">Starting ISOLDE</a><a class="headerlink" href="getting_started.html#starting-isolde" title="Permalink to this headline">¶</a></h2>
+<p>Assuming you already have ISOLDE installed (if not, you can do so via
+<em>Tools/More Tools…</em> in the ChimeraX menu), then you can start it up via
+<em>Tools/General/ISOLDE</em> or by typing <code class="docutils literal notranslate"><span class="pre">isolde</span> <span class="pre">start</span></code> in the command line. This
+should yield a new floating panel looking something like this:</p>
+<img alt="Initial GUI appearance" src="../_images/isolde_initial_screen.png" />
+<p><em>(NOTE: the ISOLDE panel is designed to be similar in size to the ChimeraX Log
+panel on most machines, and will “dock” there if dragged onto it. If working
+with a single display I recommend doing this.)</em></p>
+<p>If you already have a model loaded, you’ll probably notice that it’s gained a
+few (but hopefully not <strong>too</strong> many) new features like those in the image below.
+If not, go ahead and load a model using the standard ChimeraX interface. If you
+have multiple models open, you can choose the one you want to work on using the
+“Working on:” drop-down menu at the top-left of the ISOLDE panel.</p>
+<div class="figure" id="id4">
+<img alt="Basic rota/rama/omega markup" src="../_images/basic_display.png" />
+<p class="caption"><span class="caption-text">Basics of ISOLDE validation markup (<em>sans</em> map)</span></p>
+<div class="legend">
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="95%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>a</td>
+<td>Crosshairs denoting the pivot point (centre of rotation) of
+the display. Red, green and blue point along the x, y and z
+axes respectively. Under normal circumstances the centre of
+rotation should remain in the middle of the screen - if for
+any reason you find it stops behaving as expected, this
+behaviour can be reinstated using the command
+<code class="docutils literal notranslate"><span class="pre">cofr</span> <span class="pre">center</span> <span class="pre">showpivot</span> <span class="pre">true</span></code>.</td>
+</tr>
+<tr class="row-even"><td>b</td>
+<td>This exclamation mark/spiral motif denotes a rotamer outlier
+(that is, a sidechain in an unlikely conformation). The more
+unlikely the conformation, the larger and redder the
+indicator becomes. Below and to the left you can see a less
+severe “iffy” rotamer.</td>
+</tr>
+<tr class="row-odd"><td>c</td>
+<td>The red trapezoids you see here are highlighting non-proline
+<em>cis</em> peptide bonds (where the amide hydrogen and carbonyl
+oxygen are pointing in the same direction). In the real world
+these are vanishingly rare (around 3 per 10,000 amino acid
+residues), and real ones tend to be heavily stabilised by
+surrounding packing/H-bond interactions (and hence are
+usually among the better-resolved sites in the molecule). A
+string of non-proline <em>cis</em> bonds on a flexible loop as seen
+here is essentially impossible. The less-rare proline <em>cis</em>
+bonds are similarly shown in green, and peptide bonds twisted
+more than 30 degrees from planar in yellow.</td>
+</tr>
+<tr class="row-even"><td>d,e</td>
+<td><p class="first">The protein backbone is not infinitely free to move, but has
+clearly preferred conformations that have been well
+characterised by studying high-resolution structures. The
+best-established method for characterising backbone
+conformation is via the Ramachandran plot, a plot of the phi
+(C-N-CA-C) and psi (N-CA-C-N) dihedral angles against each
+other.</p>
+<p class="last">The probabilities of finding different (phi, psi)
+combinations have been mapped out in high detail for
+various groups of amino acids (<a class="reference external" href="https://doi.org/10.1107/S0907444909042073">MolProbity</a>). While ISOLDE
+also provides a Ramachandran plot, the current probability
+score for each protein residue is mapped in real time to the
+colour of its alpha carbon (CA) atom as shown. Green denotes
+a “happy” residue, yellow is marginal (possible, but somewhat
+strained), and red is a serious outlier (still possible, but
+needs very strong support to justify it).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><em>(Note: The rotamer, peptide bond and Ramachandran markups described above
+update automatically whenever the atomic coordinates change. As long as you have
+ISOLDE installed, you can add them to any loaded model using the</em> <code class="docutils literal notranslate"><span class="pre">rama</span></code> <em>and</em>
+<code class="docutils literal notranslate"><span class="pre">rota</span></code> <em>commands)</em></p>
+</div>
+<div class="section" id="preparing-a-model-for-simulation">
+<span id="preparing-a-model"></span><h2><a class="toc-backref" href="getting_started.html#id10">Preparing a model for simulation</a><a class="headerlink" href="getting_started.html#preparing-a-model-for-simulation" title="Permalink to this headline">¶</a></h2>
+<p><em>(Note: if you just want to load up a model and maps ready to play with, just
+click the “Load demo” button in the top left of the ISOLDE panel)</em></p>
+<p>While getting a clear picture of potential problems in a model is already
+somewhat useful, what ISOLDE is really all about is <em>fixing</em> them. To do that,
+it needs to be able to run molecular dynamics (MD) simulations. This in turn
+imposes a few requirements:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">It must consist of residues that the MD engine knows about</p>
+<p>That is, each residue must have a corresponding definition in the MD
+<em>forcefield</em> dictating all the details of bond lengths, angles, charges,
+atomic radii etc. As of version 1.0b3, ISOLDE supports protein, nucleic
+acid, most common sugars, water, metal ions, and approx. 13,000 of the
+more common ligands in the Chemical Components Dictionary. If your ligand
+is not recognised, you will need to provide AMBER-compatible parameters in
+the <a class="reference external" href="http://docs.openmm.org/7.0.0/userguide/application.html#creating-force-fields">OpenMM ffXML format</a>.</p>
+<p>These can be conveniently converted from AMBER .mol2 and .frcmod files
+using <a class="reference external" href="https://parmed.github.io/ParmEd/html/index.html">ParmEd</a>. One convenient option for preparing the .mol2 and .frcmod
+files themselves is Phenix <a class="reference external" href="https://www.phenix-online.org/documentation/reference/amber.html">AmberPrep</a>.</p>
+</li>
+</ol>
+</div></blockquote>
+<blockquote>
+<div><blockquote>
+<div>An integrated ligand paramterisation framework is planned for a future
+release.</div></blockquote>
+<ol class="arabic" start="2">
+<li><p class="first">Each individual residue must be complete, including all hydrogens</p>
+<p>(Yes, even water). In MD every atom plays a role - the engine needs every
+atom present to determine what sort of residue it’s dealing with.
+Nevertheless, in keeping with the fact that ISOLDE is about model building
+and refinement rather than traditional equilibrium MD, a few artificial
+arrangements are allowed. In particular, it is <em>not</em> necessary to “cap”
+dangling N- and C-termini (or 5’ and 3’ termini in nucleic acids) at chain
+breaks:</p>
+<div class="figure" id="id5">
+<img alt="Dangling N-terminal residue" src="../_images/nterm.png" />
+<p class="caption"><span class="caption-text">This dangling N-terminus is fine</span></p>
+</div>
+<div class="figure" id="id6">
+<img alt="Dangling C-terminal residue" src="../_images/cterm.png" />
+<p class="caption"><span class="caption-text">.. as is this dangling C-terminus</span></p>
+</div>
+<p>Additionally, for all protein residues other than proline, sidechain
+truncations to CA, CB, CG or CD are allowed.</p>
+<p>The most convenient way to add hydrogens (in a manner that follows the
+above rules) is by using the ChimeraX <cite>addh`</cite> command. Type <code class="docutils literal notranslate"><span class="pre">usage</span> <span class="pre">addh</span></code>
+in the ChimeraX command line for complete instructions, but in most cases
+<code class="docutils literal notranslate"><span class="pre">addh</span> <span class="pre">hbond</span> <span class="pre">true</span></code> will give you the most desirable result.</p>
+<p><em>(Note: if you have metal ions present and your geometry is not perfect,
+you may find</em> <code class="docutils literal notranslate"><span class="pre">addh</span></code> <em>refusing to protonate one or more nearby peptide
+nitrogens. If you run into this issue try adding the argument</em>
+<code class="docutils literal notranslate"><span class="pre">metalDist</span> <span class="pre">1.0</span></code> <em>to your</em> <code class="docutils literal notranslate"><span class="pre">addh</span></code> <em>command.)</em></p>
+<p>In general, I recommend adding sidechains wherever possible - even if
+there is minimal density to support them, in the MD environment the
+contributions from each sidechain generally help in maintaining the
+geometry of surrounding residues. Sidechains can be conveniently rebuilt
+using the <cite>swapaa</cite> mouse mode provided by ChimeraX and found in the “Right
+Mouse” tab in the menu ribbon above the  main GUI:</p>
+<div class="figure">
+<img alt="SwapAA mouse mode icon" src="../_images/swapaa.png" />
+</div>
+<p>Right-clicking on a protein atom and dragging up/down will iterate through
+building all standard amino acid residues. Using this tool to simply
+“mutate” the residue to its own identity will give you a complete
+sidechain.</p>
+<p><strong>(IMPORTANT NOTE: Never perform edits that add or remove atoms
+while a simulation is running)</strong></p>
+</li>
+<li><p class="first">Alternative conformations (altlocs - that is, the same atom in two or more
+different places) are not currently supported. This is usually not a
+problem, since at the resolutions ISOLDE can help the most altlocs aren’t
+generally resolvable in the data anyway!</p>
+</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="adding-maps">
+<span id="id2"></span><h2><a class="toc-backref" href="getting_started.html#id11">Adding maps</a><a class="headerlink" href="getting_started.html#adding-maps" title="Permalink to this headline">¶</a></h2>
+<p>The primary use of ISOLDE is of course the fitting and refinement of an atomic
+model into one or more experimental maps. This is achieved via an interactive
+implementation of <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2430731/">molecular dynamics flexible fitting (MDFF)</a>. In brief, MDFF
+converts your map into a field of potential energies overlaid on a molecular
+dynamics simulation, with each feeling a force proportional to the energy
+gradient at its current position. In effect, this causes atoms to “fall” into
+the high-density regions of the map.</p>
+<p>ISOLDE is designed with the aim of seamless operability between direct
+real-space maps (e.g. as generated from cryo-EM experiments) and maps calculated
+from reciprocal-space data (typically derived from x-ray crystallography).
+Depending on your needs, three general types of maps are supported as described
+below, and a model may be associated with any combination (and any number,
+memory permitting) of these map types.</p>
+<div class="section" id="real-space-maps">
+<h3><a class="toc-backref" href="getting_started.html#id12">Real-space maps</a><a class="headerlink" href="getting_started.html#real-space-maps" title="Permalink to this headline">¶</a></h3>
+<p><strong>(NOTE: within ChimeraX, you may prefer to familiarise yourself with the
+use of real-space maps in the interactive :ref:`bulk_fitting_tutorial` tutorial.)</strong></p>
+<p>Any real-space map format recognised by ChimeraX can be used as a MDFF
+potential by ISOLDE with a few simple steps. Simply load your model, e.g.</p>
+<p><code class="docutils literal notranslate"><span class="pre">open</span> <span class="pre">6eyd;</span> <span class="pre">open</span> <span class="pre">3983</span> <span class="pre">from</span> <span class="pre">emdb</span></code></p>
+<p>If the model and map are not perfectly aligned, you can easily obtain an
+optimised rigid-body fit using ChimeraX’s <code class="docutils literal notranslate"><span class="pre">fitmap</span></code> command.</p>
+<p><code class="docutils literal notranslate"><span class="pre">fitmap</span> <span class="pre">#1</span> <span class="pre">inMap</span> <span class="pre">#2</span> <span class="pre">moveWholeMolecules</span> <span class="pre">false</span></code></p>
+<p>Once aligned, the map may be associated with the model either by using the
+“Associate real-space map with current model” button on the ISOLDE “Sim
+settings” tab, or</p>
+<p><code class="docutils literal notranslate"><span class="pre">clipper</span> <span class="pre">associate</span> <span class="pre">#2</span> <span class="pre">toModel</span> <span class="pre">#1</span></code></p>
+<p><strong>(IMPORTANT NOTE: rigid-body fitting of the model into the map must be done
+BEFORE running “clipper associate”.)</strong></p>
+<p>This should change your view of the model and map from something like this:</p>
+<div class="figure">
+<img alt="Default ChimeraX model/map view" src="../_images/6eyd_with_map_initial.png" />
+</div>
+<p>to a visualisation mode similar to the traditional crystallographic view:</p>
+<div class="figure" id="id7">
+<img alt="View after registering map with Clipper" src="../_images/6eyd_with_map_clipper.png" />
+<p class="caption"><span class="caption-text">Default Clipper/ISOLDE “spotlight” model/map view. The map appears as a
+sphere of density around the centre of rotation. Residues with atoms within
+the spotlight radius have their atoms shown; the remainder of the molecule
+is shown as a cartoon. You can adjust the spotlight radius using the command
+<code class="docutils literal notranslate"><span class="pre">clipper</span> <span class="pre">spotlight</span> <span class="pre">radius</span> <span class="pre">&lt;radius&gt;</span></code> - but keep in mind that radii much larger
+than about 20Å will cause noticeable lag in navigation.</span></p>
+</div>
+<p>Upon registration, ISOLDE automatically registers the map as a MDFF potential.
+The coupling constant (defining how strongly the map “pulls” on atoms) is
+automatically set by analysis of the gradients in the region close to the
+atomic model.</p>
+</div>
+<div class="section" id="x-ray-maps-or-other-maps-calculated-from-fourier-coefficients">
+<h3><a class="toc-backref" href="getting_started.html#id13">X-ray maps (or other maps calculated from Fourier coefficients)</a><a class="headerlink" href="getting_started.html#x-ray-maps-or-other-maps-calculated-from-fourier-coefficients" title="Permalink to this headline">¶</a></h3>
+<p>An x-ray crystallography experiment yields a set of measured intensities
+corresponding to the amplitude component of the Fourier transform of the
+electron density in the crystal environment. In order to generate a real-space
+map, the amplitudes must be combined with a matching set of phases. The core
+challenge in crystallography is that the original phase information is not
+measurable, and hence estimates may be obtained by other means. Initial phases
+are typically obtained by molecular replacement with a close homologue, and/or
+anomalous scattering by one or more types of heavy atom in the crystal. These
+are then improved by building and refining your model into the map - as the
+quality of the model improves, the quality of the map improves, allowing
+further improvement to the model, etc..</p>
+<p>Initial solution of the phase problem (e.g. with the aid of <em>Phaser</em>) and, if
+necessary, building of as much of the model as possible using tools like
+<em>phenix.autobuild</em> should already have happened before you load your model
+into ISOLDE. At this point, you have two choices:</p>
+<ul class="simple">
+<li>Use “live” maps calculated directly from your model and the experimental
+amplitudes (preferred); or</li>
+<li>Use “static” maps derived from pre-calculated amplitudes and phases
+(e.g. as output from <em>phenix.refine</em> or <em>phenix.maps</em>).</li>
+</ul>
+<p>Both options have their own pros and cons, and are described in detail below.
+In either case, the input is an MTZ file. ISOLDE will automatically generate
+live or static maps (or a combination of both types) depending on what it
+finds in the loaded file. Crystallographic maps may be added to the model
+currently selected in ISOLDE using the “Load crystallographic dataset” button,
+or added to any atomic model using a command such as:</p>
+<p><code class="docutils literal notranslate"><span class="pre">open</span> <span class="pre">reflections.mtz</span> <span class="pre">structureModel</span> <span class="pre">#1</span></code></p>
+<p>Multiple crystallographic datasets may be associated with a single model, as
+long as the space group and cell dimensions match. Maps will be generated for
+each data column recognised by the Clipper plugin. Any unwanted maps may be
+safely closed via ChimeraX’s model panel:</p>
+<div class="figure" id="id8">
+<img alt="A rather over-complicated map arrangement" src="../_images/model_panel_complex_dataset.png" />
+<p class="caption"><span class="caption-text">The ChimeraX model panel showing six crystallographic maps and one non-
+crystallographic map associated with an atomic model. The unwanted maps may
+be closed by selecting their entry in the tree then clicking the “Close”
+button at top right. You can close an entire crystallographic dataset by
+selecting the corresponding entry with name starting “Crystallographic maps”.</span></p>
+</div>
+<div class="section" id="static-pre-calculated-crystallographic-maps">
+<h4><a class="toc-backref" href="getting_started.html#id14">Static (pre-calculated) crystallographic maps</a><a class="headerlink" href="getting_started.html#static-pre-calculated-crystallographic-maps" title="Permalink to this headline">¶</a></h4>
+<p><strong>(WARNING: in many refinement packages (including PHENIX) the default
+behaviour is to include the free reflections when generating maps for
+visualisation and manual model building. By Parseval’s theorem this is
+equivalent in effect to including these reflections when refining in reciprocal
+space. While this may be OK when changing only a small fraction of the model, a
+typical MDFF session re-fits every atom to the map. While there is still some
+argument as to the final effect of this, using maps including the free set WILL
+render R_free and R_free-R_work unreliable as measures of the quality of fit.
+Unfortunately there is no way to determine whether an arbitrary set of
+amplitudes and phases includes the free set or not, so it is up to you to ensure
+that free reflections are NOT included. A template for a suitable phenix.maps
+input file is provided below. For the above reasons, all static maps will be
+disabled as MDFF potentials by default, and must be explicitly enabled for
+simulation using the controls under the “Show map settings dialogue” button.)</strong></p>
+<p>The Clipper plugin uses some very simple heuristics to decide on the treatment
+of a given set of amplitudes and phases. In brief, if the name of the amplitude
+column is “F” or “FWT” or contains a 2, the resulting map will be treated as
+standard map (that is, displayed with a single positive contour and used as a
+MDFF potential). Any map  for which the amplitude column name is “FC” or
+contains “CALC” (case-insensitive) will be treated as an Fcalc map and hidden by
+default. Any column name not matching the above criteria will result in a
+difference map (equal positive and negative displayed contours, not used for
+MDFF).</p>
+</div>
+<div class="section" id="live-crystallographic-maps-experimental">
+<h4><a class="toc-backref" href="getting_started.html#id15">Live crystallographic maps <strong>(EXPERIMENTAL)</strong></a><a class="headerlink" href="getting_started.html#live-crystallographic-maps-experimental" title="Permalink to this headline">¶</a></h4>
+<p><strong>(NOTE: This feature is still experimental and undergoing further
+development. While it works well given good-quality data, its handling of
+outliers and pathologies such as ice rings, beam-stop shadows, anisotropy
+etc. is minimal to non-existent. If the R-factors calculated are more than
+~5% higher than those calculated by your favourite refinement package, you
+may be safer sticking with pre-calculated maps for now.)</strong></p>
+<p>If your MTZ file contains experimental intensities (I/sigI) or amplitudes
+(F/sigF), then a set of live sigma-a weighted crystallographic maps will be
+generated directly from the combination of these with phases calculated from the
+atomic model. Unlike with the pre-calculated maps, any changes to the atomic
+model automatically triggers a recalculation of all live maps. This happens in
+the background, with minimal effect on graphical performance other than a slight
+pause when the visualisation of the new maps is loaded in.</p>
+<p><em>(NOTE: live updating can be toggled using the “Live crystallographic map
+calculation” checkbox that appears on the “Sim settings” tab when a live dataset
+is associated with the selected model)</em></p>
+<p><em>(NOTE: live map updates do not update the MDFF potential while a simulation is
+running. The potential will only change once the simulation is finished.)</em></p>
+<p>Working directly with the experimental data has the distinct advantage that
+ISOLDE can know and control exactly what goes into each map. Three maps
+will be generated for visualisation purposes:</p>
+<ul class="simple">
+<li>a standard 2mFo-DFc map</li>
+<li>a 2mFo-DFc map with a moderate amount of B-factor sharpening or
+smoothing applied (with the amount of sharpening/smoothing decided
+heuristically based on resolution)</li>
+<li>a mFo-DFc difference map</li>
+</ul>
+<p>Each of the above maps is generated using the full set of reflections, and
+for this reason is blocked from use as a MDFF potential. Instead, ISOLDE
+also creates a special map (helpfully named “(LIVE) MDFF potential”)
+optimised for use as a MDFF potential (including exclusion of the free set).
+This map is hidden by default, but can be displayed via the Model Panel at
+any time.</p>
+</div>
+<div class="section" id="phenix-maps-template">
+<h4><a class="toc-backref" href="getting_started.html#id16"><cite>phenix.maps</cite> template</a><a class="headerlink" href="getting_started.html#phenix-maps-template" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="n">maps</span> <span class="p">{</span>
+   <span class="nb">input</span> <span class="p">{</span>
+     <span class="n">pdb_file_name</span> <span class="o">=</span> <span class="bp">None</span> <span class="c1"># Replace this with the name of your pdb file</span>
+     <span class="n">reflection_data</span> <span class="p">{</span>
+       <span class="n">file_name</span> <span class="o">=</span> <span class="bp">None</span> <span class="c1"># Replace this with the file containing your structure</span>
+                        <span class="c1"># factors (e.g. 1xxy-sf.cif or reflections.mtz)</span>
+       <span class="n">labels</span> <span class="o">=</span> <span class="bp">None</span>
+       <span class="n">high_resolution</span> <span class="o">=</span> <span class="bp">None</span>
+       <span class="n">low_resolution</span> <span class="o">=</span> <span class="bp">None</span>
+       <span class="n">outliers_rejection</span> <span class="o">=</span> <span class="bp">True</span>
+       <span class="n">french_wilson_scale</span> <span class="o">=</span> <span class="bp">True</span>
+       <span class="n">french_wilson</span> <span class="p">{</span>
+         <span class="n">max_bins</span> <span class="o">=</span> <span class="mi">60</span>
+         <span class="n">min_bin_size</span> <span class="o">=</span> <span class="mi">40</span>
+       <span class="p">}</span>
+       <span class="n">sigma_fobs_rejection_criterion</span> <span class="o">=</span> <span class="bp">None</span>
+       <span class="n">sigma_iobs_rejection_criterion</span> <span class="o">=</span> <span class="bp">None</span>
+       <span class="n">r_free_flags</span> <span class="p">{</span>
+         <span class="n">file_name</span> <span class="o">=</span> <span class="bp">None</span>
+         <span class="n">label</span> <span class="o">=</span> <span class="bp">None</span>
+         <span class="n">test_flag_value</span> <span class="o">=</span> <span class="bp">None</span>
+         <span class="n">ignore_r_free_flags</span> <span class="o">=</span> <span class="bp">False</span>
+       <span class="p">}</span>
+     <span class="p">}</span>
+   <span class="p">}</span>
+   <span class="n">output</span> <span class="p">{</span>
+     <span class="n">directory</span> <span class="o">=</span> <span class="bp">None</span>
+     <span class="n">prefix</span> <span class="o">=</span> <span class="bp">None</span>
+     <span class="n">job_title</span> <span class="o">=</span> <span class="bp">None</span>
+     <span class="n">fmodel_data_file_format</span> <span class="o">=</span> <span class="n">mtz</span>
+     <span class="n">include_r_free_flags</span> <span class="o">=</span> <span class="bp">False</span>
+   <span class="p">}</span>
+   <span class="n">scattering_table</span> <span class="o">=</span> <span class="n">wk1995</span> <span class="n">it1992</span> <span class="o">*</span><span class="n">n_gaussian</span> <span class="n">neutron</span> <span class="n">electron</span>
+   <span class="n">wavelength</span> <span class="o">=</span> <span class="bp">None</span>
+   <span class="n">bulk_solvent_correction</span> <span class="o">=</span> <span class="bp">True</span>
+   <span class="n">anisotropic_scaling</span> <span class="o">=</span> <span class="bp">True</span>
+   <span class="n">skip_twin_detection</span> <span class="o">=</span> <span class="bp">False</span>
+   <span class="n">omit</span> <span class="p">{</span>
+     <span class="n">method</span> <span class="o">=</span> <span class="o">*</span><span class="n">simple</span>
+     <span class="n">selection</span> <span class="o">=</span> <span class="bp">None</span>
+   <span class="p">}</span>
+   <span class="n">map_coefficients</span> <span class="p">{</span>
+     <span class="n">map_type</span> <span class="o">=</span> <span class="mi">2</span><span class="n">mFo</span><span class="o">-</span><span class="n">DFc</span>
+     <span class="n">format</span> <span class="o">=</span> <span class="o">*</span><span class="n">mtz</span> <span class="n">phs</span>
+     <span class="n">mtz_label_amplitudes</span> <span class="o">=</span> <span class="mi">2</span><span class="n">FOFCWT</span>
+     <span class="n">mtz_label_phases</span> <span class="o">=</span> <span class="n">PH2FOFCWT</span>
+     <span class="n">fill_missing_f_obs</span> <span class="o">=</span> <span class="bp">True</span>
+     <span class="n">sharpening</span> <span class="o">=</span> <span class="bp">False</span>
+     <span class="n">sharpening_b_factor</span> <span class="o">=</span> <span class="bp">None</span>
+     <span class="n">exclude_free_r_reflections</span> <span class="o">=</span> <span class="bp">True</span> <span class="c1"># IMPORTANT: keep this set to True</span>
+     <span class="n">isotropize</span> <span class="o">=</span> <span class="bp">True</span>
+   <span class="p">}</span>
+   <span class="n">map_coefficients</span> <span class="p">{</span>
+     <span class="n">map_type</span> <span class="o">=</span> <span class="mi">2</span><span class="n">mFo</span><span class="o">-</span><span class="n">DFc</span>
+     <span class="n">format</span> <span class="o">=</span> <span class="o">*</span><span class="n">mtz</span> <span class="n">phs</span>
+     <span class="n">mtz_label_amplitudes</span> <span class="o">=</span> <span class="mi">2</span><span class="n">FOFCWT_sharp</span>
+     <span class="n">mtz_label_phases</span> <span class="o">=</span> <span class="n">PH2FOFCWT_sharp</span>
+     <span class="n">fill_missing_f_obs</span> <span class="o">=</span> <span class="bp">True</span>
+     <span class="n">sharpening</span> <span class="o">=</span> <span class="bp">True</span>
+     <span class="n">sharpening_b_factor</span> <span class="o">=</span> <span class="mi">80</span> <span class="c1"># Reasonable for most ~3A maps</span>
+     <span class="n">exclude_free_r_reflections</span> <span class="o">=</span> <span class="bp">True</span> <span class="c1"># IMPORTANT: keep this set to True</span>
+     <span class="n">isotropize</span> <span class="o">=</span> <span class="bp">True</span>
+   <span class="p">}</span>
+   <span class="n">map_coefficients</span> <span class="p">{</span>
+     <span class="n">map_type</span> <span class="o">=</span> <span class="n">mFo</span><span class="o">-</span><span class="n">DFc</span>
+     <span class="n">format</span> <span class="o">=</span> <span class="o">*</span><span class="n">mtz</span> <span class="n">phs</span>
+     <span class="n">mtz_label_amplitudes</span> <span class="o">=</span> <span class="n">FOFCWT</span>
+     <span class="n">mtz_label_phases</span> <span class="o">=</span> <span class="n">PHFOFCWT</span>
+     <span class="n">fill_missing_f_obs</span> <span class="o">=</span> <span class="n">TRUE</span>
+     <span class="n">sharpening</span> <span class="o">=</span> <span class="bp">False</span>
+     <span class="n">sharpening_b_factor</span> <span class="o">=</span> <span class="bp">None</span>
+     <span class="n">exclude_free_r_reflections</span> <span class="o">=</span> <span class="bp">True</span> <span class="c1"># IMPORTANT: keep this set to True</span>
+     <span class="n">isotropize</span> <span class="o">=</span> <span class="bp">True</span>
+   <span class="p">}</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">What is ISOLDE all about?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../requirements.html">System Requirements</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">The ISOLDE GUI</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="getting_started.html#">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#starting-isolde">Starting ISOLDE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#preparing-a-model-for-simulation">Preparing a model for simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#adding-maps">Adding maps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="navigation.html">Visualisation and Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sim_settings.html">Basic simulation controls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rebuild.html">Manipulating your model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validate.html">Monitoring the quality of your model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python_api/index.html">ISOLDE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">The ISOLDE GUI</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">The ISOLDE GUI</a></li>
+      <li>Next: <a href="navigation.html" title="next chapter">Visualisation and Navigation</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/gui/getting_started.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

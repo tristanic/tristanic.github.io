@@ -1,0 +1,667 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>The ISOLDE Command Line &#8212; ISOLDE 1.4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/external_links.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Adaptive Restraint Schemes" href="isolde_restrain.html" />
+    <link rel="prev" title="Bulk Flexible Fitting" href="../tutorials/bulk_fitting/bulk_fitting.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="isolde_restrain.html">Adaptive Restraint Schemes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isolde_restrain.html#isolde-restrain-distances">isolde restrain distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_restrain.html#isolde-restrain-single-distance">isolde restrain single distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_restrain.html#isolde-release-distances">isolde release distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_restrain.html#isolde-adjust-distances">isolde adjust distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_restrain.html#isolde-restrain-torsions">isolde restrain torsions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_restrain.html#isolde-adjust-torsions">isolde adjust torsions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_restrain.html#isolde-release-torsions">isolde release torsions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="isolde_remote.html">Remote Control Options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isolde_remote.html#isolde-remote-rest-start">isolde remote rest start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_remote.html#isolde-remote-rest-stop">isolde remote rest stop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_remote.html#isolde-remote-rest-info">isolde remote rest info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_remote.html#isolde-remote-xmlrpc">isolde remote xmlrpc</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="the-isolde-command-line">
+<h1>The ISOLDE Command Line<a class="headerlink" href="isolde.html#the-isolde-command-line" title="Permalink to this headline">¶</a></h1>
+<p>While the primary mode of control of ISOLDE is via <a class="reference internal" href="../tools/ISOLDE.html#isolde-gui"><span class="std std-ref">The ISOLDE GUI</span></a>, if you
+prefer you can also perform many tasks via the command line, such as launching
+the GUI (<a class="reference internal" href="isolde.html#start"><span class="std std-ref">isolde start</span></a>), starting, stopping and pausing simulations (<a class="reference internal" href="isolde.html#sim"><span class="std std-ref">isolde sim</span></a>),
+and performing basic manipulations (<a class="reference internal" href="isolde.html#pepflip"><span class="std std-ref">isolde pepflip</span></a> and <a class="reference internal" href="isolde.html#cisflip"><span class="std std-ref">isolde cisflip</span></a>). Some
+functions are currently available <em>only</em> through the command line - in
+particular, <a class="reference internal" href="isolde_restrain.html#adaptive-restraint-schemes"><span class="std std-ref">Adaptive Restraint Schemes</span></a>.</p>
+<section id="isolde-tutorial">
+<span id="tutorial"></span><h2>isolde tutorial<a class="headerlink" href="isolde.html#isolde-tutorial" title="Permalink to this headline">¶</a></h2>
+<p>Brings up the ISOLDE <a class="reference internal" href="../tutorials/isolde.html#isolde-tutorials"><span class="std std-ref">Tutorials</span></a> help page, providing interactive
+case studies for working on models in ISOLDE.</p>
+</section>
+<section id="isolde-demo">
+<span id="demo"></span><h2>isolde demo<a class="headerlink" href="isolde.html#isolde-demo" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde demo <em>demoName</em> [<strong>modelOnly</strong> <em>true/false</em>] [<strong>startIsolde</strong> <em>true/false</em>]</p>
+<p>Primarily intended for use with the ISOLDE tutorials. Loads saved atomic
+coordinates for use in rebuilding.</p>
+<p><em>demoName</em>: either “cryo_em” or “crystal”</p>
+<p><em>modelOnly</em>: if true, load only the model and not the electron density map</p>
+<p><em>startIsolde</em>: if true, the ISOLDE GUI will be started.</p>
+</section>
+<section id="isolde-start">
+<span id="start"></span><h2>isolde start<a class="headerlink" href="isolde.html#isolde-start" title="Permalink to this headline">¶</a></h2>
+<p>Brings up <a class="reference internal" href="../tools/ISOLDE.html#isolde-gui"><span class="std std-ref">The ISOLDE GUI</span></a>. The first model in the list of open models will be
+automatically prepared with ISOLDE’s default visualisation mode. This also sets
+the display camera to orthographic projection and lighting to simple. It is
+strongly recommended that you do not change these settings during your ISOLDE
+session.</p>
+</section>
+<section id="isolde-set">
+<span id="set"></span><h2>isolde set<a class="headerlink" href="isolde.html#isolde-set" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde set [<strong>timeStepsPerGuiUpdate</strong> <em>integer</em>]
+[<strong>temperature</strong> <em>number</em>] [<strong>gpuDeviceIndex</strong> <em>integer</em>]</p>
+<p>Change various ISOLDE global settings.</p>
+</section>
+<section id="isolde-reset-forcefield">
+<h2>isolde reset forcefield<a class="headerlink" href="isolde.html#isolde-reset-forcefield" title="Permalink to this headline">¶</a></h2>
+<p>Delete cached forcefield files to reset to the as-installed state.</p>
+</section>
+<section id="isolde-report">
+<span id="report"></span><h2>isolde report<a class="headerlink" href="isolde.html#isolde-report" title="Permalink to this headline">¶</a></h2>
+<p>Sytax: isolde report [<strong>true|false</strong> (true)]
+[<strong>interval</strong> <em>integer</em> (20)]</p>
+<p>Start/stop reporting information on simulation performance (time per coordinate
+update and timesteps per second) to the status bar. The optional
+<em>interval</em> argument sets the number of coordinate updates to average over
+before reporting. Only valid while a simulation is running, and automatically
+terminates once that simulation stops.</p>
+</section>
+<section id="isolde-select">
+<span id="select"></span><h2>isolde select<a class="headerlink" href="isolde.html#isolde-select" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde select <em>model</em></p>
+<p>Set the specified model as ISOLDE’s current selected model. If the target model
+has not already been initialised for control by Clipper to provide ISOLDE’s
+standard view, this command will cause that to happen.</p>
+</section>
+<section id="isolde-sim">
+<span id="sim"></span><h2>isolde sim<a class="headerlink" href="isolde.html#isolde-sim" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde sim <em>cmd</em> [<em>atoms</em>] [<strong>discardTo</strong> <em>discardTo</em>]</p>
+<p>Start, stop or pause an interactive simulation.</p>
+<section id="isolde-sim-start-atoms">
+<h3>isolde sim start [<em>atoms</em>]<a class="headerlink" href="isolde.html#isolde-sim-start-atoms" title="Permalink to this headline">¶</a></h3>
+<p>Launches the ISOLDE GUI if not already running, and starts a simulation. If no
+atoms are specified, the simulation will encompass the entirety of the current
+selected model (or the first open model if ISOLDE is not already running). If
+<em>atoms</em> is specified, the selected atoms must come from a single model
+(if this is not the current selected model, ISOLDE will automatically switch).</p>
+</section>
+<section id="isolde-sim-stop-discardto-discardto">
+<h3>isolde sim stop [<strong>discardTo</strong> <em>discardTo</em>]<a class="headerlink" href="isolde.html#isolde-sim-stop-discardto-discardto" title="Permalink to this headline">¶</a></h3>
+<p><em>discardTo</em>: one of “checkpoint” or “start”</p>
+<p>Stop the currently running simulation, and optionally discard the results. If
+<em>discardTo</em> is not specified, the current state of the model will be kept.
+Otherwise, the atomic positions and states of all restraints will be reverted
+either to the starting state or the last saved checkpoint.</p>
+</section>
+<section id="isolde-sim-pause">
+<h3>isolde sim pause<a class="headerlink" href="isolde.html#isolde-sim-pause" title="Permalink to this headline">¶</a></h3>
+<p>Pauses the current simulation.</p>
+</section>
+<section id="isolde-sim-resume">
+<h3>isolde sim resume<a class="headerlink" href="isolde.html#isolde-sim-resume" title="Permalink to this headline">¶</a></h3>
+<p>Resumes a paused simulation.</p>
+</section>
+</section>
+<section id="isolde-pepflip">
+<span id="pepflip"></span><h2>isolde pepflip<a class="headerlink" href="isolde.html#isolde-pepflip" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde pepflip <em>atoms</em></p>
+<p>Attempt to flip the peptide bond N-terminal to each selected residue, starting a
+suitable simulation if none is currently running. Requires ISOLDE to already be
+initialised. Residues outside the model currently selected for ISOLDE (or
+outside the mobile selection if a simulation is running) will not be flipped.</p>
+</section>
+<section id="isolde-cisflip">
+<span id="cisflip"></span><h2>isolde cisflip<a class="headerlink" href="isolde.html#isolde-cisflip" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde cisflip <em>atoms</em></p>
+<p>Attempt to flip the peptide bond N-terminal to each selected residue from <em>cis</em>
+to <em>trans</em> or vice versa, starting a suitable simulation if none is currently
+running. Requires ISOLDE to already be initialised. Residues outside the model
+currently selected for ISOLDE (or outside the mobile selection if a simulation
+is running) will not be flipped.</p>
+</section>
+<section id="isolde-ignore">
+<span id="ignore"></span><h2>isolde ignore<a class="headerlink" href="isolde.html#isolde-ignore" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde ignore <em>residues</em></p>
+<p>Tell ISOLDE to ignore a selection of residues in future simulations. This will
+not take effect until the next simulation is started. Ignored residues will
+still be used for structure factor calculations, but do not take part in
+simulations in any way. Atoms directly bonded to an ignored residue will be
+fixed in space. This command is most useful in dealing with severe clashes that
+are otherwise intractable (e.g. docked homology models with intertwined loops):</p>
+<ul class="simple">
+<li><p>select one of the clashing chains</p></li>
+<li><p><em>isolde ignore sel</em> to ignore it</p></li>
+<li><p>start a simulation and remodel its counterpart into density</p></li>
+<li><p>stop the simulation, then <em>isolde ~ignore</em> to clear the list of ignored
+residues</p></li>
+<li><p>if necessary, ignore the selection you just remodelled and run a
+simulation to fix the other side of the problem area</p></li>
+<li><p>stop any running simulation, <em>isolde ~ignore</em>, then run a final simulation
+with everything included to resolve any remaining clashes.</p></li>
+</ul>
+<span id="~ignore"></span></section>
+<section id="id1">
+<span id="id2"></span><h2>isolde ~ignore<a class="headerlink" href="isolde.html#id1" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde ~ignore <em>residues</em></p>
+<p>Tell ISOLDE to stop ignoring a selection of residues for simulation purposes.
+This will not take effect until the next new simulation is started.</p>
+</section>
+<section id="isolde-stepto">
+<span id="stepto"></span><h2>isolde stepto<a class="headerlink" href="isolde.html#isolde-stepto" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde stepto [<em>residue or {next|prev}</em>] [<strong>viewDistance</strong> <em>number</em>]
+[<strong>interpolateFrames</strong> <em>integer</em>] [<strong>polymericOnly</strong> {<em>TRUE|false</em>}]</p>
+<p>Focus the camera on the specified residue, or the next/previous residue in the
+chain if no residue is specified. <em>isolde stepto next</em> will move the camera to
+the next residue in the model, while <em>isolde stepto prev</em> will move back to the
+previous one. The stepper will remember the last specified direction, so
+repeated calls of “isolde stepto” without arguments will keep moving along the
+chain in the same direction. Providing the <em>viewDistance</em> argument will cause
+the camera to zoom in/out to the specified distance; this distance will be
+maintained for future calls. If the current camera position is close, the view
+will slide smoothly to the new position over <em>interpolateFrames</em> frames, otherwise
+it will jump directly there. If <em>polymericOnly</em> is true (default), any residues
+not part of a protein or nucleic acid chain will be skipped. As for the other
+arguments, this will be remembered for all future calls.</p>
+<p>Each loaded model is given its own independent residue stepper - the settings
+you make for one will not be carried over to others.</p>
+</section>
+<section id="isolde-jumpto">
+<span id="jumpto"></span><h2>isolde jumpto<a class="headerlink" href="isolde.html#isolde-jumpto" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde jumpto [<em>next|prev</em>]</p>
+<p>Jump the residue stepper to the first residue of the next chain, or last residue
+of the previous chain.</p>
+</section>
+<section id="isolde-add-aa">
+<span id="add-aa"></span><h2>isolde add aa<a class="headerlink" href="isolde.html#isolde-add-aa" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde add aa <em>3-character resname</em> [<em>residue</em>] [<strong>addDirection</strong> <em>C|N</em>]
+[<strong>structure</strong> <em>model ID</em>] [<strong>chainID</strong> <em>string</em>] [<strong>number</strong> <em>integer</em>]
+[<strong>addBFactor</strong> <em>float</em>] [<strong>occupancy</strong> <em>float (1.0)</em>]
+[<strong>approxConformation</strong> <em>helix|strand (strand)</em>]</p>
+<p>Add an amino acid either to an existing terminal residue, or as a new chain or chain fragment.
+At its simplest, with a single terminal residue selected “isolde add aa ALA sel” will add
+an alanine residue to the terminus. By default, the B-factors of the new atoms will be the
+average B-factor of the backbone and CB atoms of the residue it attaches to; this can be
+adjusted up or down using the <em>addBfactor</em> argument. The <em>approxConformation</em> argument
+seeds the <em>phi</em> and <em>psi</em> angles for the new residue to alpha-helical or beta-strand
+geometry; as the name suggests the result is very approximate and <em>will</em> need energy
+minimisation.</p>
+<p>The <em>addDirection</em> argument is only required if the target existing residue is unbonded
+on both the N and C atoms.</p>
+<p>If <em>residue</em> is not specified, then <em>structure</em>, <em>chainID</em> and <em>number</em> must all be provided.
+The new residue will be placed at the current centre of rotation.</p>
+</section>
+<section id="isolde-add-ligand">
+<span id="add-ligand"></span><h2>isolde add ligand<a class="headerlink" href="isolde.html#isolde-add-ligand" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde add ligand <em>{residue ID}</em> [<em>model</em>]
+[<strong>position</strong> <em>list of three floats</em>] [<strong>bfactor</strong> <em>number</em>] [<strong>chain</strong> <em>string</em>]
+[<strong>distanceCutoff</strong> <em>number</em>] [<strong>simSettle</strong> {<em>true|FALSE</em>}]
+[<strong>useMdTemplate</strong> {<em>TRUE|false</em>}] [<strong>mdTemplateName</strong> <em>string</em>]</p>
+<p><em>NOTE: when placing ligands using this command, ISOLDE does not currently make
+any attempt at a preliminary fit prior to starting simulations - it will simply
+place the “ideal” coordinates specified in the template file. When adding large,
+flexible ligands this will almost always lead to severe clashes with the
+surroundings. In such cases, it is advisable to use</em> <strong>isolde ignore ~sel</strong> <em>to
+exclude everything but the ligand from simulations, perform an initial fit to
+the density using tugging and/or position restraints on key atoms, then use
+* **isolde ~ignore*</em> <em>to reinstate the rest of the model for simulations and
+continue on.</em></p>
+<p>Add a ligand based on its template in the Chemical Components Dictionary. The
+residue ID must match the 3-letter code for the ligand (if you don’t know this,
+you can search for it at <a class="reference external" href="http://ligand-expo.rcsb.org/">http://ligand-expo.rcsb.org/</a>). If ISOLDE is started,
+then the <em>model</em> argument is optional (if not provided, the ligand will be added
+to ISOLDE’s currently selected model). Otherwise, you will need to explicitly
+specify the model to add to. By default, the ligand will be added at the current
+centre of rotation; you may, however, specify an alternative location by
+providing coordinates as a comma-separated list after the <em>position</em> keyword.</p>
+<p>By default, the b-factor and chain assigned to the residue will be determined
+based on the closest atoms within <em>distanceCutoff</em> (default: 8 Angstroms) to the
+site of addition, but you may explicitly specify these if you wish. If
+<em>simSettle</em> is true, a local simulation will automatically be started - this is
+only advisable for small, rigid molecules for which severe clashes with the
+surroundings are unlikely.</p>
+<p>If <em>useMdTemplate</em> is true, the added residue will be checked against the
+corresponding molecular dynamics template (if present), and atoms will be added
+or removed as needed to match (templates provided by the CCD are often not in
+the protonation states most common under biological conditions). You should not
+usually need to use the <em>mdTemplateName</em> argument: if you have loaded a custom
+template, it will be found and used as long as its name matches the residue
+name.</p>
+</section>
+<section id="isolde-add-water">
+<span id="add-water"></span><h2>isolde add water<a class="headerlink" href="isolde.html#isolde-add-water" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde add water [<em>model</em>] [<strong>position</strong> <em>list of three floats</em>]
+[<strong>bfactor</strong> <em>number</em>] [<strong>chain</strong> <em>string</em>]
+[<strong>distanceCutoff</strong> <em>number</em>] [<strong>simSettle</strong> {<em>TRUE|false</em>}]</p>
+<p>Essentially a special case of <em>isolde add ligand</em>. The primary difference is
+that <em>simSettle</em> defaults to true (that is, adding a water will automatically
+start a local simulation to settle it). In addition, the default value for
+<em>distanceCutoff</em> is reduced from 8.0 to 3.0 Angstroms, on the basis that it is
+rarely a good idea to add a water outside of hydrogen bonding distance from the
+nearest existing atom(s).</p>
+</section>
+<section id="isolde-replace-ligand">
+<span id="replace-ligand"></span><h2>isolde replace ligand<a class="headerlink" href="isolde.html#isolde-replace-ligand" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde replace ligand <em>residue</em> <em>newResidueName</em></p>
+<p><em>(EXPERIMENTAL)</em></p>
+<p>Replace one ligand with a related one, keeping as many atoms common to both as
+possible. Matching of common atoms is performed by graph matching based on
+bonding between elements. Use with caution: the current implementation is not
+aware of bond order nor of chirality, so attempting to replace (for example) a
+D-sugar with its L-enantiomer will simply rename the residue while retaining the
+D coordinates. This will be improved upon in a future release.</p>
+</section>
+<section id="isolde-adjust-bfactors">
+<span id="adjust-bfactors"></span><h2>isolde adjust bfactors<a class="headerlink" href="isolde.html#isolde-adjust-bfactors" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde adjust bfactors <em>float</em> [<em>atoms</em>]</p>
+<p>Increase/decrease B-factors of a set of atoms by the chosen amount. If no atoms are
+specified, the change will be applied to all currently-selected atoms. Will raise a
+UserError if the change would reduce any B-factor below zero.</p>
+</section>
+<section id="isolde-modify-his">
+<span id="modify-his"></span><h2>isolde modify his<a class="headerlink" href="isolde.html#isolde-modify-his" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde modify his <em>residues</em> <em>{ND|NE|both}</em></p>
+<p>Modify one or more histidine residues to place the hydrogen on the
+specified atom. Should not be used while a simulation is running.</p>
+</section>
+<section id="isolde-parameterise">
+<span id="parameterise"></span><h2>isolde parameterise<a class="headerlink" href="isolde.html#isolde-parameterise" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde parameterise <em>residues</em> [<strong>override</strong> <em>true|FALSE</em>]
+[<strong>netCharge</strong> <em>integer</em>] [<strong>alwaysRaiseErrors</strong> <em>TRUE|false</em>]</p>
+<p>Parameterise one or more ligands for ISOLDE with the AMBER GAFF2
+force field using ANTECHAMBER. Limitations:</p>
+<ul class="simple">
+<li><p>Only applicable to molecules with no covalent bonds to other ligands/residues</p></li>
+<li><p>Only supports molecules made up of the elements C, N, O, S, P, H, F, Cl, Br, or I</p></li>
+<li><p>Hydrogens <strong>must</strong> be present and correct (it is up to you to ensure this)</p></li>
+<li><p>For ligands with multiple possible protonation states, only one protonation state
+is currently supported per residue name.</p></li>
+<li><p>Unless you know what you’re doing, the ligand should be complete (if you do truncate
+it, all instances of ligands with the same residue name will need to be truncated in
+the same way)</p></li>
+</ul>
+<p>Note that the time taken by ANTECHAMBER scales with (number of atoms)^3 - while for small
+molecules with less than a dozen or so heavy atoms it will typically complete in under a minute, for
+larger molecules such as phospholipids it can easily take over an hour.</p>
+<p>The resulting parameters will be written into files, one for each residue type, called
+{resname}.xml. If ISOLDE is already running these will be automatically added to its
+forcefield so those ligands should “just work” for the remainder of the session; for
+future sessions use the “Load residue MD definition(s)” button to add them.</p>
+<p>By default, if parameters for a residue with the same name already exist they will not
+be recalculated; this can be changed by setting <em>override</em> to true.</p>
+<p>In almost all cases the net charge on the molecule is estimated correctly by ChimeraX;
+if ANTECHAMBER fails with an error message in the Log mentioning an odd number of electrons,
+the most likely explanations are:</p>
+<ol class="arabic simple">
+<li><p>There is something wrong with your molecule (too many/too few hydrogens). Double-check
+or, if necessary, load a trusted exemplar and parameterise against that. Pay particular
+attention to ionisable groups and potential H-bonds with surrounding molecules. Note
+that some groups are capable of <a class="reference external" href="https://en.wikipedia.org/wiki/Tautomer">tautomerisation</a>:<img alt="tautomers" src="../_images/Tautomers.png" />
+Distinguishing between these should be done with great care and the application of
+chemical knowledge - in most such cases one tautomer is strongly preferred so alternatives
+should be considered only in the presence of strong stabilisation by surrounding
+interactions.</p></li>
+<li><p>ChimeraX incorrectly guessed the charge. If you know what it <em>should</em> be, you can
+specify it with the <em>netCharge</em> argument.</p></li>
+<li><p>Your molecule is actually some form of stable radical. These are not supported by
+ANTECHAMBER - you will need to turn to some more in-depth QM method to parameterise
+it.</p></li>
+</ol>
+<p>If <em>alwaysRaiseErrors</em> is true, then a failure to parameterise any given residue will
+raise a UserError halting the pipeline at that point. If it is false then any errors
+will be printed as warnings to the log, and parameterisation will still be attempted for
+any remaining residues.</p>
+</section>
+<section id="isolde-shorthand">
+<span id="shorthand"></span><h2>isolde shorthand<a class="headerlink" href="isolde.html#isolde-shorthand" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde shorthand</p>
+<p>Enables a set of shorthand aliases to commonly-used ISOLDE commands, and prints a summary
+to the log. <em>Note: you can permanently enable this by going to Favorites/Settings on the
+ChimeraX menu, choosing the “Startup” tab and adding “isolde shorthand” to the box labelled
+“Execute these commands at startup”.</em></p>
+<p>The current list of shorthand commands is as follows:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 91%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Alias</p></th>
+<th class="head"><p>Equivalent full command</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>st</p></td>
+<td><p>isolde step {arguments}</p></td>
+</tr>
+<tr class="row-odd"><td><p>aw</p></td>
+<td><p>isolde add water {arguments}</p></td>
+</tr>
+<tr class="row-even"><td><p>awsf</p></td>
+<td><p>isolde add water {arguments} sim false</p></td>
+</tr>
+<tr class="row-odd"><td><p>al</p></td>
+<td><p>isolde add ligand {arguments}</p></td>
+</tr>
+<tr class="row-even"><td><p>aa</p></td>
+<td><p>isolde add aa $1 sel {arguments}</p></td>
+</tr>
+<tr class="row-odd"><td><p>ht</p></td>
+<td><p>isolde mod his sel {arguments}</p></td>
+</tr>
+<tr class="row-even"><td><p>so</p></td>
+<td><p>setattr sel atoms occupancy {arguments}</p></td>
+</tr>
+<tr class="row-odd"><td><p>ab</p></td>
+<td><p>isolde adjust bfactors {arguments}</p></td>
+</tr>
+<tr class="row-even"><td><p>ss</p></td>
+<td><p>isolde sim start sel</p></td>
+</tr>
+<tr class="row-odd"><td><p>rt</p></td>
+<td><p>isolde release torsions sel {arguments}</p></td>
+</tr>
+<tr class="row-even"><td><p>rd</p></td>
+<td><p>isolde release distances sel {arguments}</p></td>
+</tr>
+<tr class="row-odd"><td><p>ra</p></td>
+<td><p>rd; rt</p></td>
+</tr>
+<tr class="row-even"><td><p>pf</p></td>
+<td><p>isolde pepflip sel</p></td>
+</tr>
+<tr class="row-odd"><td><p>cf</p></td>
+<td><p>isolde cisflip sel</p></td>
+</tr>
+<tr class="row-even"><td><p>cbb</p></td>
+<td><p>color bfactor {arguments}</p></td>
+</tr>
+<tr class="row-odd"><td><p>cbo</p></td>
+<td><p>color byattr occupancy {arguments}</p></td>
+</tr>
+<tr class="row-even"><td><p>cbc</p></td>
+<td><p>color {arguments} bychain; color {arguments} byhet</p></td>
+</tr>
+<tr class="row-odd"><td><p>cs</p></td>
+<td><p>clipper set contourSensitivity {arguments}</p></td>
+</tr>
+</tbody>
+</table>
+<span id="write-phenixRefineInput"></span>
+<span id="write"></span></section>
+<section id="isolde-write-phenixrefineinput">
+<span id="write-phenixrefineinput"></span><h2>isolde write phenixRefineInput<a class="headerlink" href="isolde.html#isolde-write-phenixrefineinput" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde write phenixRefineInput <em>model ID</em>
+[<strong>modelFileName</strong> <em>filename</em>] [<strong>paramFileName</strong> <em>filename</em>]
+[<strong>includeHydrogens</strong> <em>true|FALSE</em>] [<strong>numProcessors</strong> <em>integer (1)</em>]
+[<strong>numMacrocycles</strong> <em>integer (6)</em>] [<strong>nqhFlips</strong> <em>true|FALSE</em>]
+[<strong>scatteringType</strong> <em>xray|electron|neutron (xray)</em>]</p>
+<p><strong>(IMPORTANT NOTE: This command will only work correctly for crystallographic datasets - for
+cryoEM models use the “isolde write phenixRsrInput” command)</strong></p>
+<p><em>(NOTE: ISOLDE does not provide Phenix-compatible restraints for non-standard residues and
+ligands. If you have any )</em></p>
+<p>Writes a model file defined by <em>modelFileName</em> (default: {model name}_for_phenix.cif),
+a reflections file ({model name}_for_phenix.mtz) and a parameter file defined by
+<em>paramFileName</em> (default: refine.eff) with settings pre-defined to those that typically
+work best for models coming from ISOLDE. To use the result you will need to have
+Phenix installed; navigate to the working directory in a terminal window and run:</p>
+<p>phenix.refine {parameter file}.eff</p>
+<p>(instructions for this will be written to the log.)</p>
+<p>Specifically, the model is used as its own reference for torsion restraints, and
+rotamer, Ramachandran and secondary structure restraints are disabled.
+Additionally, automatic weighting of X-ray/XYZ and X-ray/adp terms is enabled.
+The aim is to limit the refinement to only subtle movements, primarily
+tightening the bond and angle distributions while maintaining the overall
+geometry of your model. Note that Phenix’s approach to automatic
+weighting involves running a number of refinements (typically 12) at each step
+and choosing the best result. In Unix environments the <em>numProcessors</em> argument
+allows these to run in parallel. By default, hydrogens are <em>not</em> passed to
+Phenix; you can change this by setting <em>includeHydrogens</em> to <em>true</em>, but this
+may on occasion fail in Phenix due to incorrectly-named hydrogens on some
+non-standard residues. This will be addressed in a future version.</p>
+<span id="write-phenixRsrInput"></span></section>
+<section id="isolde-write-phenixrsrinput">
+<span id="write-phenixrsrinput"></span><h2>isolde write phenixRsrInput<a class="headerlink" href="isolde.html#isolde-write-phenixrsrinput" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde write phenixRsrInput <em>model ID</em> <em>resolution</em> <em>map ID</em>
+[<strong>modelFileName</strong> <em>filename</em>] [<strong>paramFileName</strong> <em>filename</em>]
+[<strong>restrainPositions</strong> <em>true|FALSE</em>] [<strong>includeHydrogens</strong> <em>true|FALSE</em>]</p>
+<p><strong>(IMPORTANT NOTE: This command will only work correctly for cryo-EM maps - for
+crystallographic datasets use the “isolde write phenixRefineInput” command)</strong></p>
+<p>Writes a model file defined by <em>modelFileName</em> (default: {model
+name}_for_phenix.cif) and a parameter file defined by <em>paramFileName</em> (default:
+refine.eff) with settings pre-defined to those that typically work best for
+models coming from ISOLDE. To use the result you will need to have Phenix installed;
+navigate to the working directory in a terminal window and run:</p>
+<p>phenix.real_space_refine {parameter file}.eff</p>
+<p>(instructions for this will be written to the log.)</p>
+<p>Specifically, the model is used as its own reference
+for torsion restraints, and rotamer, Ramachandran and secondary structure
+restraints are disabled. Additionally, the refinement strategy is limited to
+global minimisation and B-factor (ADP) refinement - most importantly, grid
+searching (i.e. automated searching of different side-chain conformations)
+is disabled. The aim is to limit the refinement to only subtle
+movements, primarily tightening the bond and angle distributions while
+maintaining the overall geometry of your model.</p>
+<p>The <em>map ID</em> argument should correspond to a map loaded from a file, not one
+generated by ChimeraX (e.g. via the “volume gaussian” command). Usually, this
+will be a map associated with the model via Clipper, but that is not a necessity.
+If you have only a single map associated with your model you can specify it with
+just the top-level identifier (e.g. “#1”); if you have multiple maps associated
+you will need to burrow down in the Models viewer to identify the correct one
+(should be #<em>x</em>.1.1.<em>y</em> where <em>x</em> is your top-level model identifier and <em>y</em>
+is the actual map you want).</p>
+<p>The <em>resolution</em> should correspond to the nominal resolution of the map (i.e. as
+reported in the wwPDB or EMDB entry, or the 0.143 FSC level if you’re working on
+a new dataset). Unfortunately this isn’t stored in any reliable way in existing
+formats, so ChimeraX doesn’t automatically know what it is. The value you specify
+will affect some of the weighting decisions made by <em>phenix.real_space_refine</em>.</p>
+<p>Setting the <em>restrainPositions</em> argument to <em>true</em> instructs <em>phenix.real_space_refine</em>
+to restrain all heavy atoms to their starting positions using top-out restraints,
+on top of the default torsion restraints. This can be useful where your model includes
+domains fitted into very weak or fuzzy density.</p>
+<p>By default, hydrogens are <em>not</em> passed to
+Phenix; you can change this by setting <em>includeHydrogens</em> to <em>true</em>, but this
+may on occasion fail in Phenix due to incorrectly-named hydrogens on some
+non-standard residues. This will be addressed in a future version.</p>
+<span id="write-refmacRestraints"></span></section>
+<section id="isolde-write-refmacrestraints">
+<span id="write-refmacrestraints"></span><h2>isolde write refmacRestraints<a class="headerlink" href="isolde.html#isolde-write-refmacrestraints" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde write refmacRestraints <em>model ID</em> [<strong>distanceCutoff</strong> <em>number (4.5)</em>]
+[<strong>includeWaters</strong> <em>true|FALSE</em>] [<strong>fileName</strong> <em>filename (RESTRAINTS.txt)</em>]</p>
+<p>Writes a REFMAC input file similar to one generated by ProSMART to restrain heavy atom interatomic
+distances to their current values. Note that this does <em>not</em> write the model itself - you
+should save that separately. The resulting file can be used via the CCP-EM GUI, or at the
+command line via:</p>
+<p>refmac5 {all other command-line arguments} &lt; <em>filename</em></p>
+<p>The <em>distanceCutoff</em> argument specifies the maximum distance between atoms to be restrained.
+The default value is the same as that used by ProSMART. Note that the total number of restraints
+blows out <strong>extremely</strong> rapidly with increasing <em>distanceCutoff</em>, so increasing this value
+substantially would be inadvisable.</p>
+</section>
+<section id="reset-forcefield">
+<span id="id3"></span><h2>isolde reset forcefield<a class="headerlink" href="isolde.html#reset-forcefield" title="Permalink to this headline">¶</a></h2>
+<p>Syntax: isolde reset forcefield</p>
+<p>Reload ISOLDE’s forcefield from scratch. This removes the cached version (stored as a pickle file
+for faster startup) and reloads everything from the original ffXML files. Any custom ligand
+definitions loaded in this session will need to be re-loaded if you wish to continue using them.
+This command exists mostly for developer/debugging use and is primarily used when testing
+modifications/additions to the core force field.</p>
+</section>
+<section id="isolde-restrain-distances">
+<span id="restrain-distances"></span><h2>isolde restrain distances<a class="headerlink" href="isolde.html#isolde-restrain-distances" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="isolde_restrain.html#adaptive-restraint-schemes"><span class="std std-ref">Adaptive Restraint Schemes</span></a></p>
+</section>
+<section id="isolde-release-distances">
+<span id="release-distances"></span><h2>isolde release distances<a class="headerlink" href="isolde.html#isolde-release-distances" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="isolde_restrain.html#adaptive-restraint-schemes"><span class="std std-ref">Adaptive Restraint Schemes</span></a></p>
+</section>
+<section id="isolde-adjust-distances">
+<span id="adjust-distances"></span><h2>isolde adjust distances<a class="headerlink" href="isolde.html#isolde-adjust-distances" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="isolde_restrain.html#adaptive-restraint-schemes"><span class="std std-ref">Adaptive Restraint Schemes</span></a></p>
+</section>
+<section id="isolde-restrain-torsions">
+<span id="restrain-torsions"></span><h2>isolde restrain torsions<a class="headerlink" href="isolde.html#isolde-restrain-torsions" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="isolde_restrain.html#adaptive-dihedral-restraint-cmd"><span class="std std-ref">isolde restrain torsions</span></a></p>
+</section>
+<section id="isolde-adjust-torsions">
+<span id="adjust-torsions"></span><h2>isolde adjust torsions<a class="headerlink" href="isolde.html#isolde-adjust-torsions" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="isolde_restrain.html#adaptive-dihedral-restraint-cmd"><span class="std std-ref">isolde restrain torsions</span></a></p>
+</section>
+<section id="isolde-release-torsions">
+<span id="release-torsions"></span><h2>isolde release torsions<a class="headerlink" href="isolde.html#isolde-release-torsions" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="isolde_restrain.html#adaptive-dihedral-restraint-cmd"><span class="std std-ref">isolde restrain torsions</span></a></p>
+</section>
+<section id="isolde-remote-rest-start">
+<span id="remote-rest-start"></span><span id="remote-xmlrpc"></span><h2>isolde remote rest start<a class="headerlink" href="isolde.html#isolde-remote-rest-start" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="isolde_remote.html#remote-control-cmd"><span class="std std-ref">Remote Control Options</span></a></p>
+</section>
+<section id="isolde-remote-rest-stop">
+<span id="remote-rest-stop"></span><h2>isolde remote rest stop<a class="headerlink" href="isolde.html#isolde-remote-rest-stop" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="isolde_remote.html#remote-control-cmd"><span class="std std-ref">Remote Control Options</span></a></p>
+</section>
+<section id="isolde-remote-rest-info">
+<span id="remote-rest-info"></span><h2>isolde remote rest info<a class="headerlink" href="isolde.html#isolde-remote-rest-info" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="isolde_remote.html#remote-control-cmd"><span class="std std-ref">Remote Control Options</span></a></p>
+</section>
+<section id="isolde-remote-xmlrpc">
+<h2>isolde remote xmlrpc<a class="headerlink" href="isolde.html#isolde-remote-xmlrpc" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="isolde_remote.html#remote-control-cmd"><span class="std std-ref">Remote Control Options</span></a></p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../isolde.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../isolde.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/ISOLDE.html">The ISOLDE GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isolde_restrain.html">Adaptive Restraint Schemes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isolde_remote.html">Remote Control Options</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="isolde.html#">The ISOLDE Command Line</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-tutorial">isolde tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-demo">isolde demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-start">isolde start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-set">isolde set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-reset-forcefield">isolde reset forcefield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-report">isolde report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-select">isolde select</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-sim">isolde sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-pepflip">isolde pepflip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-cisflip">isolde cisflip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-ignore">isolde ignore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#id1">isolde ~ignore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-stepto">isolde stepto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-jumpto">isolde jumpto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-add-aa">isolde add aa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-add-ligand">isolde add ligand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-add-water">isolde add water</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-replace-ligand">isolde replace ligand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-adjust-bfactors">isolde adjust bfactors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-modify-his">isolde modify his</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-parameterise">isolde parameterise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-shorthand">isolde shorthand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-write-phenixrefineinput">isolde write phenixRefineInput</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-write-phenixrsrinput">isolde write phenixRsrInput</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-write-refmacrestraints">isolde write refmacRestraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#reset-forcefield">isolde reset forcefield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-restrain-distances">isolde restrain distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-release-distances">isolde release distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-adjust-distances">isolde adjust distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-restrain-torsions">isolde restrain torsions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-adjust-torsions">isolde adjust torsions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-release-torsions">isolde release torsions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-remote-rest-start">isolde remote rest start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-remote-rest-stop">isolde remote rest stop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-remote-rest-info">isolde remote rest info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-remote-xmlrpc">isolde remote xmlrpc</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/isolde.html">ISOLDE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../isolde.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../tutorials/bulk_fitting/bulk_fitting.html" title="previous chapter">Bulk Flexible Fitting</a></li>
+      <li>Next: <a href="isolde_restrain.html" title="next chapter">Adaptive Restraint Schemes</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016-2022, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/commands/isolde.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

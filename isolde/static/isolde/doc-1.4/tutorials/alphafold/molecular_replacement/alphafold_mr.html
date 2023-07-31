@@ -1,0 +1,725 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Starting From a Molecular Replacement Solution for a Flexible Protein &#8212; ISOLDE 1.4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/external_links.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Bulk Flexible Fitting" href="../../bulk_fitting/bulk_fitting.html" />
+    <link rel="prev" title="Building Into CryoEM Maps With Your Own AlphaFold Multimer Models" href="../multimer/alphafold_multimer_cryoem.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="starting-from-a-molecular-replacement-solution-for-a-flexible-protein">
+<span id="alphafold-mr-tutorial"></span><h1>Starting From a Molecular Replacement Solution for a Flexible Protein<a class="headerlink" href="alphafold_mr.html#starting-from-a-molecular-replacement-solution-for-a-flexible-protein" title="Permalink to this headline">¶</a></h1>
+<p><strong>NOTE: Most links on this page will only work correctly when the page is
+loaded in ChimeraX’s help viewer. Unless the necessary files have been
+pre-fetched you will also need to be connected to the Internet. Please close any
+open models before starting this tutorial.</strong></p>
+<p><strong>The instructions in the tutorial below assume you are using a wired mouse
+with a scroll wheel doubling as the middle mouse button. While everything
+should also work well on touchpads in Windows and Linux, support for Apple’s
+multi-touch touchpad is a work in progress. Known issues with the latter are
+that clipping planes will not update when zooming, and recontouring of maps is
+not possible.</strong></p>
+<p>If you wish to leave this tutorial part-way through and return to it later, you
+can save the state (all open models, maps, restraints etc.) to a ChimeraX session
+file via the File/Save menu option or with the command:</p>
+<p><em>save tutorial_session.cxs</em></p>
+<p>You can of course also save the working model to PDB or mmCIF - again, via the
+menu or with your choice of the below commands:</p>
+<p><em>save model.pdb #1</em></p>
+<p><em>save model.cif #1</em></p>
+<p>To save without hydrogens, instead do:</p>
+<p><em>sel ~H; save {your choice of filename and extension} selectedOnly true</em></p>
+<p>The above commands will save to your current working directory. They are not
+provided as links here because that would save them to the directory containing
+this tutorial file, which is probably <em>not</em> what you want.</p>
+<section id="tutorial-flexibly-fitting-an-alphafold-model-to-match-a-molecular-replacement-solution">
+<h2>Tutorial: Flexibly fitting an AlphaFold model to match a molecular replacement solution<a class="headerlink" href="alphafold_mr.html#tutorial-flexibly-fitting-an-alphafold-model-to-match-a-molecular-replacement-solution" title="Permalink to this headline">¶</a></h2>
+<p><em>Level: Moderate to Hard</em></p>
+<div class="toctree-wrapper compound">
+</div>
+<p><strong>This tutorial will write a number of files to your current working directory.
+To avoid clutter and confusion it is best if you create and change to a fresh
+directory first.</strong></p>
+<p><a class="reference external" href="cxcmd:cd browse;isolde tut prep alphafold_mr">Click here to choose a directory and populate it with tutorial data</a></p>
+<p>Solving a crystallographic dataset by molecular replacement differs from fitting into
+cryo-EM density in two important ways. First, there is the fact that the quality of
+a crystallographic map is dependent on both the quality and completeness of the atomic
+model: too many missing ordered atoms, or two many atoms far out of position, and the
+map degrades to the point of uninterpretability. Second, the crystallographic model is
+one repeat unit in a continuous array of contacting copies - out-of-position atoms will
+commonly end up overlapping with neighbouring repeat units.</p>
+<p>The problem is that the vast majority of proteins like to <em>move</em> at various scales, from
+sidechains and loops to large-scale interdomain rearrangements. In these cases, successful
+molecular replacement relies on first breaking down your search model into rigid fragments,
+including trimming away mobile loops. It is common for 10-50% of protein residues to be
+discarded in this process, which can be a real shame when your search model is actually
+good quality, just in a different conformation. Historically, the standard approach has
+been to extend from the MR solution by iteratively tracing as much of the residual density
+as possible (manually or via various automatic tools) interspersed with rebuilding and
+refining. Depending on the quality of the dataset this can be quite slow, painful and
+error-prone.</p>
+<p>In this tutorial we will explore a way to short-circuit this task - instead of building out
+from the MR solution, we will use it (and to start with, the initial map generated from it)
+as a guide to refit the <em>complete</em> original model (in this case an AlphaFold model, but
+essentially the same procedure could be used with an existing experimental model if you
+have one). As our example, we’ll be recapitulating <a class="reference external" href="https://www.rcsb.org/structure/3NOW">3now</a>, the 3 Angstrom structure of
+<em>Drosophila</em> UNC-45. This largely alpha-helical structure forms a lopsided “V”, and
+AlphaFold models disagree with the experimental structure primarily in the tightness of
+the central angle allowing rigid overlay of only one leg at a time:</p>
+<figure class="align-default" id="id56">
+<img alt="../../../_images/3now_vs_colabfold.jpg" src="../../../_images/3now_vs_colabfold.jpg" />
+<figcaption>
+<p><span class="caption-text">Experimental structure in green, <a class="reference external" href="https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb">ColabFold</a> model in purple.</span><a class="headerlink" href="alphafold_mr.html#id56" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>As described above, the sensible approach here is to break the predicted model into two
+domains for molecular replacement. For this tutorial, I’ve done that using
+<a class="reference external" href="https://phenix-online.org/version_docs/dev-4380/reference/process_predicted_model.html">phenix.process_predicted_model</a>, which does three things:</p>
+<ul class="simple">
+<li><p>Converts the pLDDT values in the model to estimated B-factors,</p></li>
+<li><p>Breaks the model into domains based on analysis of the PAE matrix, and</p></li>
+<li><p>Trims off low-confidence loops and tails.</p></li>
+</ul>
+<p>From there, I’ve run molecular replacement with <a class="reference external" href="https://scripts.iucr.org/cgi-bin/paper?he5368">Phaser</a>, leading to a very high-confidence
+solution (Log-Likelihood Gain 2331, translation function Z-score 47). That’s where we’re going
+to start.</p>
+<p>First, use the ChimeraX <strong>File/Open</strong> dialog to open the file 3now_phaser.1.pdb. You should see
+something like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/mr_solution.jpg" src="../../../_images/mr_solution.jpg" />
+</figure>
+<p>Now, open the predicted model (3now_662d5_unrelaxed_rank_1_model_2.pdb), then align it to the
+C-terminal region of the MR solution with:</p>
+<p><a class="reference external" href="cxcmd:match #2 to #1:400-900">match #2 to #1:400-900</a></p>
+<figure class="align-default">
+<img alt="../../../_images/mr_solution_af_overlay.jpg" src="../../../_images/mr_solution_af_overlay.jpg" />
+</figure>
+<p>This second model is going to become our working model. If you haven’t already started ISOLDE,
+launch it now:</p>
+<p><a class="reference external" href="cxcmd:isolde start">isolde start</a></p>
+<p>... and tell it to focus on the second model either by using the “Working on:” drop-down menu, or via
+the command:</p>
+<p><a class="reference external" href="cxcmd:isolde select #2">isolde select #2</a></p>
+<p>Before we actually load the MTZ file, there’s one very important thing we need to do. Since this
+is an AlphaFold model the B-factor column is currently filled with pLDDT values, which are no good
+for crystallographic calculations. Luckily, as described in the supplementary information of
+<a class="reference external" href="https://doi.org/10.1126/science.abj8754">the original RoseTTAFold manuscript</a>, there’s a fairly strong relationship between pLDDT and
+experimental B-factors, allowing us to estimate the latter. On the top ChimeraX menu, go to
+<strong>ISOLDE/Prep/Convert pLDDTs to B-factors</strong> to make this conversion.</p>
+<p>Once that’s done, we can go ahead and open the MTZ file provided by Phaser. The easiest way to
+do that is via the “Add map(s) to working model” widget on the ISOLDE GUI:</p>
+<figure class="align-default">
+<img alt="../../../_images/add_maps_widget.png" src="../../../_images/add_maps_widget.png" />
+</figure>
+<p>Click the “From crystallographic dataset” button and choose 3now_phaser.1.mtz.</p>
+<p><em>(NOTE: Because the Phaser MTZ file does not contain free flags, ISOLDE will choose a new set at this
+point.)</em></p>
+<p>Your display should now look something like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/mtz_loaded.jpg" src="../../../_images/mtz_loaded.jpg" />
+</figure>
+<p>The R-factors calculated from the experimental structure factors should appear
+briefly in the bottom right corner (don’t worry if you don’t see them yet -
+they’ll pop up again once we add hydrogens). They’re currently hovering around
+0.6 - telling us that (due to the n-terminal portion of the model being way out
+of position) the maps being generated by ISOLDE itself are currently far from
+useful. That’s OK, since the MTZ file also contains a “static” map
+pre-calculated by Phaser from the MR solution (well, actually it contains three,
+but we’re only interested in one). Open the “Precalculated Crystallographic Map
+Settings” widget on ISOLDE’s General tab to take a look:</p>
+<figure class="align-default">
+<img alt="../../../_images/precalc_maps_widget.png" src="../../../_images/precalc_maps_widget.png" />
+</figure>
+<p>The three maps here are, in order:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 76%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>FC, PHIC</p></td>
+<td><p>Structure factors calculated from the MR model. This
+map will <em>always</em> look like the starting model, and is
+not useful for our purposes.</p></td>
+</tr>
+<tr class="row-odd"><td><p>FWT, PHWT</p></td>
+<td><p>The 2mFo-DFc structure factors (Two times the observed
+amplitudes minus the calculated amplitudes combined with
+phases from the calculated map; the “m” and “D” are
+weighting factors). This is the map we want to work
+with.</p></td>
+</tr>
+<tr class="row-even"><td><p>DELFWT, PHDELWT</p></td>
+<td><p>The mFo-DFc map. Not enormously useful to us in this
+case.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Let’s delete the maps we don’t need:</p>
+<p><a class="reference external" href="cxcmd:close #2.1.1.5|#2.1.1.7">close #2.1.1.5|#2.1.1.7</a></p>
+<p>... and enable the remaining map for fitting by checking the MDFF checkbox.
+This will pop up a warning message:</p>
+<figure class="align-default">
+<img alt="../../../_images/precalc_map_mdff_warning.png" src="../../../_images/precalc_map_mdff_warning.png" />
+</figure>
+<p>In general you should pay close attention to this message: if for any reason
+you choose to do the majority of your fitting with a precalculated map rather
+than ISOLDE’s own live maps, it is up to you to make sure that map was
+calculated without free reflections included. In this case, though, we’ll
+only be using this map fairly briefly for initial fitting, so there’s very
+little risk here. Go ahead and click OK.</p>
+<p>Personally, I also prefer to switch from mesh to transparent surface visualisation
+here, but that’s up to you.</p>
+<p>Now, collapse the precalculated maps widget and open the “Dynamic Crystallographic
+Maps” widget above it. It should look like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/dynamic_maps_widget.png" src="../../../_images/dynamic_maps_widget.png" />
+</figure>
+<p>Since these aren’t much use to us just yet, we should disable MDFF here and
+hide all the maps to reduce visual confusion:</p>
+<figure class="align-default">
+<img alt="../../../_images/dynamic_maps_hidden.png" src="../../../_images/dynamic_maps_hidden.png" />
+</figure>
+<p>Now you can collapse that widget if you like. We’re almost ready to start now -
+we just need to add hydrogens:</p>
+<p><a class="reference external" href="cxcmd:addh #2">addh #2</a></p>
+<p>... and add some restraints to reinforce the model during this initial fitting
+(without these, models this far out of density tend to get pretty mangled). For
+the restraint reference, let’s open a copy of the reference model
+(<strong>File/Open</strong>, and choose 3now_662d5_unrelaxed_rank_1_model_2.pdb).</p>
+<p>Switch to ISOLDE’s Restraints tab, and expand the “Reference Models” widget.
+Choose the model you just opened in the “Reference model:” drop-down menu. The
+widget should now look like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/reference_model_no_PAE.png" src="../../../_images/reference_model_no_PAE.png" />
+</figure>
+<p>Click the “Load PAE matrix” button, choose the file
+3now_662d5_unrelaxed_rank_1_model_2_scores.json, and click OK. In the “Assign
+restraints” window, check the checkboxes under Distances and Torsions. The
+widget should now look like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/reference_model_with_PAE.png" src="../../../_images/reference_model_with_PAE.png" />
+</figure>
+<p>Feel free to expand the Options and play around with the settings, but when
+you’re done, make sure to leave it looking like this before continuing:</p>
+<figure class="align-default">
+<img alt="../../../_images/reference_model_options_widget.png" src="../../../_images/reference_model_options_widget.png" />
+</figure>
+<p>Click the Apply button to add distance and torsion restraints to your working
+model. The main window should now look like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/restraints_applied.jpg" src="../../../_images/restraints_applied.jpg" />
+</figure>
+<p>With the restraints applied, we no longer need to keep the reference model around.
+Go ahead and close it:</p>
+<p><a class="reference external" href="cxcmd:close #3">close #3</a></p>
+<p>One last thing: with the default mask radius of 4 Angstroms (applied when starting
+a simulation) the N-terminal portion of the map is too far from our working model
+to be shown. Increase it to 9 Angstroms (On ISOLDE’s General tab).</p>
+<p><strong>(NOTE: very large mask radius values can significantly impact on simulation
+performance, particularly when working with live maps. Don’t forget to set it back
+to a smaller value once this bulk fitting task is done.)</strong></p>
+<p>Now, go ahead and start a simulation. Select the model and press the play button
+on the left of ISOLDE’s ribbon menu, or:</p>
+<p><a class="reference external" href="cxcmd:sel #2;isolde sim start sel">sel #2; isolde sim start sel</a></p>
+<p>Click the pause button once the simulation starts. Now, for big bulk-movement tasks
+like this the default all-atom view can make it a bit hard to see the forest through
+the trees:</p>
+<figure class="align-default">
+<img alt="../../../_images/sim_started.jpg" src="../../../_images/sim_started.jpg" />
+</figure>
+<p>... so I’d recommend reducing to a C-alpha trace by hiding all other atoms:</p>
+<p><a class="reference external" href="cxcmd:hide ~&#64;CA">hide ~&#64;CA</a></p>
+<figure class="align-default">
+<img alt="../../../_images/ca_trace.jpg" src="../../../_images/ca_trace.jpg" />
+</figure>
+<p>Now, select the first 300 residues:</p>
+<p><a class="reference external" href="cxcmd:sel #2:1-300">sel #2:1-300</a></p>
+<p>... and choose the “Tug selection” mouse mode on ISOLDE’s ribbon menu:</p>
+<figure class="align-default">
+<img alt="../../../_images/tug_selection_mode.png" src="../../../_images/tug_selection_mode.png" />
+</figure>
+<p>Your <em>right-click-and-drag</em> tugging actions will now be distributed across all selected
+atoms. Resume the simulation, and use this to help the N-terminal domain into place.
+It’s generally best to use a series of short tugs with breaks in between rather than
+one aggressive action - your goal is to “help” the model into place, not force-fit it.
+It should only take 3-4 such short tugs for it to fall into place.</p>
+<p>Before:</p>
+<figure class="align-default">
+<img alt="../../../_images/tug_selection_start.jpg" src="../../../_images/tug_selection_start.jpg" />
+</figure>
+<p>After:</p>
+<figure class="align-default">
+<img alt="../../../_images/tug_selection_end.jpg" src="../../../_images/tug_selection_end.jpg" />
+</figure>
+<p>Once your simulation looks like the latter image, hit the green stop button. Take a look
+at the bottom right of the ChimeraX window - the R-factors, previously hovering around
+0.6, should now be down to the vicinity of 0.4. Don’t worry if the R-work is above R-free
+(hinting at overfitting) at this stage - we’re about to drop the Phaser map and switch
+to ISOLDE’s live potential - which strictly excludes the free set - for all further rebuilding,
+which will rapidly wipe out any model bias.</p>
+<figure class="align-default">
+<img alt="../../../_images/r_factors_after_bulk_fit.png" src="../../../_images/r_factors_after_bulk_fit.png" />
+</figure>
+<p>So let’s go ahead and make that switch-over. Disable MDFF on Phaser’s FWT,PHWT map, and hide
+it:</p>
+<figure class="align-default">
+<img alt="../../../_images/disable_precalc_mdff.png" src="../../../_images/disable_precalc_mdff.png" />
+</figure>
+<p>Actually, if you prefer you can just close it entirely - it’s not needed from here on:</p>
+<p><a class="reference external" href="cxcmd:close #2.1.1.6">close #2.1.1.6</a></p>
+<p>... display all dynamic maps except the MDFF potential, and enable MDFF on the latter.</p>
+<figure class="align-default">
+<img alt="../../../_images/enable_dynamic_mdff.png" src="../../../_images/enable_dynamic_mdff.png" />
+</figure>
+<p>If you wanted to, you <em>could</em> display the MDFF potential as well, but in general it’s not
+that useful. It differs only from the 2mFo-DFc map you see in that it excludes the free
+reflections - the displayed maps should be slightly more informative since they include all
+reflections.</p>
+<p>You’ll probably want to re-contour the maps - after a big rearrangement like this the map
+sigma values can change quite substantially. Remember, <em>alt-scroll</em> to adjust the contour
+of a map, and <em>ctrl-scroll</em> to select the map to contour. I’d suggest setting the mFo-DFc
+map to +/- 3 sigma, the sharpened 2mFo-DFc map to 1.5 sigma, and the unsharpened 2mFo-DFc
+to 1 sigma (approximately - the exact values don’t matter).</p>
+<p>At this stage we can also close the original MR model:</p>
+<p><a class="reference external" href="cxcmd:close #1">close #1</a></p>
+<p>Before we start our next simulation, if you’re like me you’ll probably be finding that cobweb
+of distance restraints a bit hard to see through. To cut down on the clutter, we can tell
+ISOLDE to only show those that are stretched away from their target values. You can do this
+on ISOLDE’s “Manage/Release Adaptive Restraints” widget on the Restraints tab - just drag
+the “Display threshold” slider to the right:</p>
+<figure class="align-default">
+<img alt="../../../_images/adjust_restraint_display_threshold.png" src="../../../_images/adjust_restraint_display_threshold.png" />
+</figure>
+<p>This widget also contains some useful tools for selectively releasing distance and torsion
+restraints - we’ll be needing these in a bit, because there are various sites where the
+AlphaFold model disagrees with the experimental density. Some of these disagreements are
+probably simply due to the slightly different overall conformation and the lack of crystal
+contacts - but some do look like true errors on AlphaFold’s part. Before we get into looking
+through all that in detail, let’s first run a quick simulation in the new map.</p>
+<p>First, remember to reduce the mask radius to 4 Angstroms. When you’ve done that, start a new
+whole-model simulation.</p>
+<p><a class="reference external" href="cxcmd:sel #2;isolde sim start sel">sel #2; isolde sim start sel</a></p>
+<p>Let it settle for a minute or so, then stop the simulation.</p>
+<p><a class="reference external" href="cxcmd:isolde sim stop">isolde sim stop</a></p>
+<p>Now, time to get into the detailed rebuilding. Before getting started on that, just browse
+around a bit. You’ll see quite a few places where the model disagrees quite substantially
+with the map. While some of these are probably examples of real conformational variability,
+others are probably errors made by AlphaFold - remember, while it’s an <em>amazingly</em> good
+structure prediction tool, it’s not perfect. In these sites, what we’ll need to do is
+selectively release the local reference restraints, and rebuild using small local simulations.</p>
+<p>Before starting that, though, it’s worth taking a look at the N- and C-termini to see if there
+are any unstructured tail residues that should be culled. To cut down on typing, let’s first
+activate ISOLDE’s shorthand commands:</p>
+<p><a class="reference external" href="cxcmd:isolde shorthand">isolde shorthand</a></p>
+<p>... which, among other things, creates the command “st” as an alias for “isolde stepTo”. To go
+to the N-terminus, do:</p>
+<p><a class="reference external" href="cxcmd:st first">st first</a></p>
+<figure class="align-default">
+<img alt="../../../_images/st_first.jpg" src="../../../_images/st_first.jpg" />
+</figure>
+<p>I hope you’ll agree that looks pretty good (allowing for some minor rearrangement of the N-terminal
+residue). Let’s take a look at the other end:</p>
+<p><a class="reference external" href="cxcmd:st last">st last</a></p>
+<figure class="align-default">
+<img alt="../../../_images/st_last.jpg" src="../../../_images/st_last.jpg" />
+</figure>
+<p>That, on the other hand, looks terrible. Work your way backwards until you find something in good
+density (either by simply zooming out and panning along the chain, or by repeated use of <a class="reference external" href="cxcmd:st">st</a> -
+the “st last” command automatically set the step direction to backwards; you can also explicitly
+set the direction with “st next” or “st prev”).</p>
+<p>The last residue I find that looks reasonably good is Tyr 783:</p>
+<figure class="align-default">
+<img alt="../../../_images/tyr783.jpg" src="../../../_images/tyr783.jpg" />
+</figure>
+<p>There is density for a few more residues beyond that (but they’re out of position), and then nothing
+- this tail is probably unstructured, and should be removed. Let’s get rid of it:</p>
+<p><a class="reference external" href="cxcmd:del #2/A:787-810">del #2/A:787-810</a></p>
+<p>... and we may as well fix some of the local issues while we’re at it. It looks to me like the
+remaining C-terminal residues should actually be alpha-helical, and the Phe747/Met752 sidechains
+are clearly wrong:</p>
+<figure class="align-default">
+<img alt="../../../_images/phe747-met752.jpg" src="../../../_images/phe747-met752.jpg" />
+</figure>
+<p>Select these residues, either by <em>ctrl-click</em> and <em>ctrl-shift-click</em>, or:</p>
+<p><a class="reference external" href="cxcmd:sel :747,752,781-786">sel :747,752,781-786</a></p>
+<p>... and start a simulation. Shorthand for “isolde sim start sel” is:</p>
+<p><a class="reference external" href="cxcmd:ss">ss</a></p>
+<p>Let’s take care of those sidechains first. Select them:</p>
+<p><a class="reference external" href="cxcmd:sel :747,752">sel :747,752</a></p>
+<p>... and use the two “Release all selected” buttons on ISOLDE’s “Manage/Release Adaptive Restraints”
+widget to release their distance and torsion restraints. If you prefer, you can also
+do this using shorthand commands:</p>
+<p><a class="reference external" href="cxcmd:rd">rd</a></p>
+<p>to release all distance restraints on the selected atoms;</p>
+<p><a class="reference external" href="cxcmd:rt">rt</a></p>
+<p>to release all torsion restraints on the selected <em>residues</em>; or</p>
+<p><a class="reference external" href="cxcmd:ra">ra</a></p>
+<p>to release both distances <em>and</em> torsions.</p>
+<p>The Phe is close enough to fall into density on its own once released, but the Met will
+need some help - I’d recommend just tugging it into position with the right mouse button.
+They should now look something like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/phe747-met752_fixed.jpg" src="../../../_images/phe747-met752_fixed.jpg" />
+</figure>
+<p>Now for that C-terminus. First, release the restraints on the tail residues:</p>
+<p><a class="reference external" href="cxcmd:sel :783-786;ra">sel :783-786;ra</a></p>
+<p>Now, to make things easier let’s add some restraints driving this segment towards
+alpha-helix. Expand the “Secondary Structure” widget on ISOLDE’s restraints tab.
+Extend the selection by 4-5 residues towards the N-terminus using the “Extend backward”
+button in the “Selection Tools” bar at the bottom of the ISOLDE panel. Then click
+the “Alpha helix” button in the Secondary Structure widget. The resulting restraints
+almost certainly won’t be able to converge on their own from this wildly different
+conformation, but a little helpful tugging should get you there:</p>
+<figure class="align-default">
+<img alt="../../../_images/c_term_helix.jpg" src="../../../_images/c_term_helix.jpg" />
+</figure>
+<p>Once you get there, go ahead and stop your simulation.</p>
+<p>From here, there are many ways you can attack the remaining rebuilding tasks.
+Perhaps the best way at this early stage is to use ISOLDE’s “Problem Zones”
+widget, which looks for the largest spatial clusters of unsatisfied restraints,
+clashes, and geometry outliers. Switch to that tab now and click the Update
+button at bottom right. Click the top entry that appears in the table. The
+result should look something like this (although the precise numbers will
+of course differ):</p>
+<figure class="align-default">
+<img alt="../../../_images/problem_zones1.png" src="../../../_images/problem_zones1.png" />
+</figure>
+<p>The atoms associated with the problems in the cluster are selected and the view
+is centred on them, so all you have to do is click play or:</p>
+<p><a class="reference external" href="cxcmd:ss">ss</a></p>
+<p>... to start working on it. Now, this region might look a little ugly and
+daunting at first, but it’s actually one of the easiest cases to deal with:
+spend a little time looking around in it, and you’ll realise that the vast
+majority of the issues are simply due to the restraints disagreeing slightly
+with the density (this is actually the interface between the two legs of the “V”,
+which of course shifted quite a bit in our first step). Given that the density
+here is nice and strong, simply releasing the distance restraints on the
+mobile selection should solve most of our problems. If you’ve cleared the
+selection, click the “Within map mask” button at the bottom of the ISOLDE window
+to select all atoms currently in the map. Then, go to the “Manage/Release
+Adaptive Restraints” widget on ISOLDE’s Restraints tab, and click the
+“Release all selected” button in the distance restraints (top) section:</p>
+<figure class="align-default">
+<img alt="../../../_images/release_distance_restraints.png" src="../../../_images/release_distance_restraints.png" />
+</figure>
+<p>... or just use the command:</p>
+<p><a class="reference external" href="cxcmd:rd">rd</a></p>
+<p>For this site, you shouldn’t need to do much more than let it settle for a
+little bit. While a handful of sidechains are clearly out of position, it’s
+up to you whether to handle them now - saving them for the later detailed
+cleanup is an entirely valid strategy. When the simulation shows no more
+sign of concerted bulk movement, stop it.</p>
+<p><a class="reference external" href="cxcmd:isolde sim stop">isolde sim stop</a></p>
+<p>Let’s move on to something slightly more challenging. Just outside this region,
+the 179-184 loop is badly out:</p>
+<p><a class="reference external" href="cxcmd:sel :179-184;view sel">sel :179-184; view sel</a></p>
+<figure class="align-default">
+<img alt="../../../_images/179-185_loop.jpg" src="../../../_images/179-185_loop.jpg" />
+</figure>
+<p><em>(NOTE: this is the same site tackled at the end of the video accompanying our -
+not published at the time of ISOLDE 1.4’s release - 2022 CCP4 Study Weekend manuscript,
+but that used the pre-existing AlphaFold-EBI model for UNIPROT sequence Q9VHW4, where
+3now is actually Q960B1. The difference between the two sequences is only two fairly innocuous
+point mutations, but for whatever reason this loop is actually substantially better in
+the newer model. In the AlphaFold-EBI model Trp185 (right hand side of the above image)
+and Leu150 had rotamers assigned which placed them on the opposite “side” of each other,
+and the loop itself was in a dramatically different conformation. The job here is
+much easier by comparison.)</em></p>
+<p>By now you probably know what to do. Start a simulation:</p>
+<p><a class="reference external" href="cxcmd:ss">ss</a></p>
+<p>... then release the restraints and rebuild. It should come out looking like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/179-185_loop_corrected.jpg" src="../../../_images/179-185_loop_corrected.jpg" />
+</figure>
+<p>Now, let’s try something a bit more… ok, <em>much</em> more challenging. Residues 455-479
+are modelled as a short alpha-helix out on the end of a clearly highly-flexible arm.
+In the deposited model <em>(comparing to the known solution is cheating a bit, I know -
+but bear with me for teaching purposes)</em> this is in a dramatically different position,
+packed into a crystallographic interface:</p>
+<figure class="align-default" id="id57">
+<img alt="../../../_images/455-479_loop.jpg" src="../../../_images/455-479_loop.jpg" />
+<figcaption>
+<p><span class="caption-text">Short blue and long red dashed lines connect equivalent N- and C-terminal residues
+respectively.</span><a class="headerlink" href="alphafold_mr.html#id57" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Now, the biggest problem when modelling a big change like this is that the map is masked
+around where the atoms are <em>now</em>, not where you want them to be. While you <em>could</em>
+increase the mask radius substantially, that comes at a big performance cost. There’s a
+neat trick you can use, though. First, focus on the region containing the unfilled density
+where this loop should go:</p>
+<p><a class="reference external" href="cxcmd:view :636 0.5">view :636 pad 0.5</a></p>
+<figure class="align-default">
+<img alt="../../../_images/unfilled_density.jpg" src="../../../_images/unfilled_density.jpg" />
+</figure>
+<p>... Hmm. Actually, hold that thought. At the top of this image, it’s clear that some
+symmetry atoms are poking out into the density we want to fit. Let’s take care of that
+first. <em>Double-click</em> on any symmetry atom to recentre the view on its equivalent
+real atom.</p>
+<figure class="align-default">
+<img alt="../../../_images/recentred_on_bad_loop.jpg" src="../../../_images/recentred_on_bad_loop.jpg" />
+</figure>
+<p>Not the greatest fit in the world here! By now you know the drill: explore along the
+chain in one direction until the model is back in register with the density, take note,
+then explore in the other direction for the same. Select the stretch in between and
+start a simulation:</p>
+<p><a class="reference external" href="cxcmd:sel :356-374;ss">sel :356-374; ss</a></p>
+<p>Release the local restraints:</p>
+<p><a class="reference external" href="cxcmd:ra">ra</a></p>
+<p>... and rebuild, starting from one end. Don’t expect perfection yet - due to the
+surrounding messiness this region is legitimately difficult. You’ll probably find
+it easy enough to rebuild the first few residues from each end, but things will
+get more confusing from there. It would be quite a reasonable strategy to just
+delete the worst residues for now and build them back later, but it is possible to
+get there without resorting to that. Anyway, once you’ve done your best, stop
+the sim.</p>
+<p>Back to what we were doing:</p>
+<p><a class="reference external" href="cxcmd:view :636">view :636</a></p>
+<p>The restraints on this side are <em>also</em> fighting the density, so do a little more
+light rebuilding:</p>
+<p><a class="reference external" href="cxcmd:sel :634-640;ss">sel :634-640; ss</a></p>
+<p><a class="reference external" href="cxcmd:ra">ra</a></p>
+<p>In my case, only Asp635 needed a little extra help. When done, stop your simulation.</p>
+<p>Now, centre the view roughly in between His 636 and the symmetry copy of Asp362,
+and expand the spotlight radius out to 25 Angstroms using the spinbox on ISOLDE’s
+General tab or:</p>
+<p><a class="reference external" href="cxcmd:clipper spotlight radius 25">clipper spotlight radius 25</a></p>
+<p>The aim here is to get all the density corresponding to our unfitted loop visible at
+once:</p>
+<figure class="align-default">
+<img alt="../../../_images/expanded_spotlight.jpg" src="../../../_images/expanded_spotlight.jpg" />
+</figure>
+<p>Now, what we’re going to do is take a snapshot of this segment of difference
+density. Look at the “Dynamic Crystallographic Map Settings” widget to get the model
+ID of the mFo-DFc map (2.1.1.3). Then:</p>
+<p><a class="reference external" href="cxcmd:vol copy #2.1.1.3;show #2.1.1.3 model">vol copy #2.1.1.3; show #2.1.1.3 model</a></p>
+<p>The copy will appear in the Models panel as model #1, and will have exactly the
+same style and contour as your existing mFo-DFc map making it effectively invisible.
+We’re also only really interested in the positive contour in this case. Let’s
+make some adjustments to get it to stand out:</p>
+<p><a class="reference external" href="cxcmd:vol #1 style surface transparency 0.5 sdLevel 2 color yellow">vol #1 style surface transparency 0.5 sdLevel 2 color yellow</a></p>
+<p>Set the spotlight radius back to 15:</p>
+<p><a class="reference external" href="cxcmd:clipper spot rad 15">clipper spot radius 15</a></p>
+<figure class="align-default">
+<img alt="../../../_images/copied_map_fragment.jpg" src="../../../_images/copied_map_fragment.jpg" />
+</figure>
+<p>The point of this map is to give you a temporary visual guide for the rearrangement -
+since it isn’t associated with the model it isn’t clipped by the spotlight, and
+doesn’t play any physical role in the simulation.</p>
+<p>Now, before starting a simulation for a very large rearrangement like this, it
+is very important to select not only the atoms you want to <em>move</em>, but also those
+that they will be <em>contacting</em> once moved into the target position. Remember, in order
+to keep simulations as responsive as possible, ISOLDE only simulates a small region
+around your selection - if ISOLDE hides a residue when starting a simulation, the
+simulation doesn’t actually know that residue exists at all! It’s easy enough to make
+the selection manually with <em>ctrl-click</em>, <em>ctrl-shift-click</em>, ChimeraX’s up/down key
+selection promotion/demotion mechanism, and/or ISOLDE’s selection manipulation buttons.
+Otherwise, just use the command below:</p>
+<p><a class="reference external" href="cxcmd:sel :454-480,590-600,634-638;ss">sel :454-480,590-600,634-638;ss</a></p>
+<p>When things start moving, pause the simulation:</p>
+<p><a class="reference external" href="cxcmd:isolde sim pause">isolde sim pause</a></p>
+<figure class="align-default">
+<img alt="../../../_images/loop_sim_messy.jpg" src="../../../_images/loop_sim_messy.jpg" />
+</figure>
+<p>This is still a very messy view, with the loop protruding way out into the symmetry
+atoms and effectively hidden. To make life easier, we can temporarily hide those:</p>
+<p><a class="reference external" href="cxcmd:hide #2.3 model">hide #2.3 model</a></p>
+<p>... and also hide our live maps for the time being:</p>
+<p><a class="reference external" href="cxcmd:hide #!2.1 model">hide #!2.1 model</a></p>
+<p><em>(NOTE: if you haven’t seen it before, the “#!” operator tells ChimeraX to set the
+hide flag only on model 2.1, while leaving the flags on its sub-models unchanged.
+That makes sure that when we reinstate it, the current hide/show state of all the
+maps will be retained.)</em></p>
+<figure class="align-default">
+<img alt="../../../_images/loop_sim_less_messy.jpg" src="../../../_images/loop_sim_less_messy.jpg" />
+</figure>
+<p>This gives us something a little easier to start from. The first thing we’ll want to
+do is release most of the clearly-wrong restraints. Let’s leave the restraints in the
+helix in place for now, and release the flanking coil segments:</p>
+<p><a class="reference external" href="cxcmd:sel :454-460,470-480;ra">sel :454-460,470-480; ra</a></p>
+<p>The next step will be easier if we first do a little detective work. Look along the
+density corresponding to the loop, looking for bulky sidechains. Here, I’ve marked
+the biggest ones using the “Point” right-mouse mode on ChimeraX’s Markers tab:</p>
+<figure class="align-default">
+<img alt="../../../_images/marked_big_sidechains.jpg" src="../../../_images/marked_big_sidechains.jpg" />
+</figure>
+<p>A good place to start would be the stretch of density in the foreground below, which
+from the way it connects in the vicinity of Asp480 clearly corresponds to the
+C-terminal arm of the loop (show/hide the Map Manager (model 2.1) on the Models
+panel to convince yourself of this).</p>
+<figure class="align-default">
+<img alt="../../../_images/loop_cterm_arm.jpg" src="../../../_images/loop_cterm_arm.jpg" />
+</figure>
+<p>Trace along the strand to this until you get to the first sidechain blob I’ve marked
+(between Leu596 and Tyr638). The pocket this projects into looks very hydrophobic
+(surrounded primarily by carbon atoms), and the shape is very “Ile-like”:</p>
+<figure class="align-default">
+<img alt="../../../_images/ile_density.jpg" src="../../../_images/ile_density.jpg" />
+</figure>
+<p>Go back to Asp480, and trace along the protein chain looking for a match (from the
+distance, we want something around 6-10 residues from Asp480). Ile472 looks like a
+strong contender. <em>ctrl-click</em> its C-beta atom (the first carbon of the sidechain)
+to select:</p>
+<figure class="align-default">
+<img alt="../../../_images/ile_472.jpg" src="../../../_images/ile_472.jpg" />
+</figure>
+<p>Now, move back to the target density. Place the crosshairs about where you’d expect
+the C-beta to sit in the density. Go to the “Position Restraints” widget on ISOLDE’s
+Restraints tab, and click the “Pin to pivot” button. Your view should now look like
+this:</p>
+<figure class="align-default" id="id58">
+<img alt="../../../_images/ile_472_pin.jpg" src="../../../_images/ile_472_pin.jpg" />
+<figcaption>
+<p><span class="caption-text">Pardon the yellow-on-yellow colour scheme here - I didn’t think quite this far
+ahead when choosing the map colour!</span><a class="headerlink" href="alphafold_mr.html#id58" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Let’s see if this makes sense. Resume the simulation:</p>
+<p><a class="reference external" href="cxcmd:isolde sim resume">isolde sim resume</a></p>
+<p>You’ll probably need to give the Ile a little help to get all the way into position
+(if like me you placed markers, don’t forget to switch the right mouse button back to
+tugging mode on the ribbon menu or with <a class="reference external" href="cxcmd:ui mousemode right &quot;isolde tug atom&quot;">ui mousemode right “isolde tug atom”</a> first!).
+Once it’s there, reinstate the view of ISOLDE’s live maps and symmetry atoms with:</p>
+<p><a class="reference external" href="cxcmd:show #2.3|#!2.1 models">show #2.3|#!2.1 models</a></p>
+<p>Don’t worry about the helix just yet - a good sanity-check would be to see how well you
+can get the stretch between Ile472 and Asp480 to fit the density. Here’s where I got
+to after some playing:</p>
+<figure class="align-default">
+<img alt="../../../_images/loop_cterm_fitted.jpg" src="../../../_images/loop_cterm_fitted.jpg" />
+</figure>
+<p>I think that clearly shows we’re on the right track! That’s reassuring… now would
+be a very good time to take a checkpoint.</p>
+<figure class="align-default">
+<img alt="../../../_images/save_checkpoint.png" src="../../../_images/save_checkpoint.png" />
+</figure>
+<p>Now, move back to Ile472 and start rebuilding N-terminal to it <em>(you’ll need to release
+some restraints on the helix - turns most of it isn’t strictly helical in this case after
+all)</em>. Whenever you feel the temporary map is no longer needed, go ahead and close it with:</p>
+<p><a class="reference external" href="cxcmd:close #1">close #1</a></p>
+<p>With the exception of the N-terminal arm, the density here is very strong - keep at it
+and you should progress fairly straightforwardly. In places where tugging feels a bit
+confusing or imprecise, try using temporary position restraints like the one we applied
+to Ile472 to help. Here’s where I ended up (the labelled residues correspond to the
+bulky sidechain densities I originally marked in the temporary map).</p>
+<figure class="align-default">
+<img alt="../../../_images/loop_fitted.jpg" src="../../../_images/loop_fitted.jpg" />
+</figure>
+<p>If you’ve managed to get this far, congratulations! You’ve just tackled what is
+arguably the hardest part of this case study. While there is still quite a bit of
+work needed to bring this model to “final” quality, most of it is quite
+straightforward using the toolkit you’ve just learned. My general strategy
+from here would be to keep working through the “Problem Zones” widget until
+it finds no more clusters. At that point I’d run a refinement (you can prepare
+input for <em>phenix.refine</em> with the <a class="reference external" href="help:user/commands/isolde.html#write-phenixRefineInput">isolde write phenixRefineInput</a> command)
+to improve the model B-factors while I take a coffee break. Starting a fresh
+ISOLDE session with the resulting model should give you better-quality maps for
+the final end-to-end polish (just <a class="reference external" href="cxcmd:st">st</a> through from first to last residue,
+starting little micro-sims to explore/correct any issues you find). After that,
+I’d save and run what in most cases would be the final refinement (in some
+particularly challenging datasets you might need another round or two).</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../isolde.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../isolde.html">Home</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../tools/ISOLDE.html">The ISOLDE GUI</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../tools/intro.html">What is ISOLDE all about?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tools/requirements.html">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tools/gui/index.html">GUI Details</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../isolde.html">Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../commands/isolde_restrain.html">Adaptive Restraint Schemes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../commands/isolde_remote.html">Remote Control Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../commands/isolde.html">The ISOLDE Command Line</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/isolde.html">ISOLDE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools/citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools/contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../isolde.html">Documentation overview</a><ul>
+  <li><a href="../../../tools/ISOLDE.html">The ISOLDE GUI</a><ul>
+  <li><a href="../../isolde.html">Tutorials</a><ul>
+      <li>Previous: <a href="../multimer/alphafold_multimer_cryoem.html" title="previous chapter">Building Into CryoEM Maps With Your Own AlphaFold Multimer Models</a></li>
+      <li>Next: <a href="../../bulk_fitting/bulk_fitting.html" title="next chapter">Bulk Flexible Fitting</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016-2022, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../../_sources/tutorials/alphafold/molecular_replacement/alphafold_mr.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
