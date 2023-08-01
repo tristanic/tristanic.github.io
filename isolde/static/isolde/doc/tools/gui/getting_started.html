@@ -1,19 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Getting Started &#8212; ISOLDE 1.4 documentation</title>
+    <title>Getting Started &#8212; ISOLDE 1.6.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/external_links.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -36,32 +35,32 @@
           <div class="body" role="main">
             
   <section id="getting-started">
-<h1>Getting Started<a class="headerlink" href="getting_started.html#getting-started" title="Permalink to this headline">¶</a></h1>
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<div class="contents local topic" id="contents">
+<nav class="contents local" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="getting_started.html#starting-isolde" id="id10">Starting ISOLDE</a></p></li>
-<li><p><a class="reference internal" href="getting_started.html#preparing-a-model-for-simulation" id="id11">Preparing a model for simulation</a></p></li>
-<li><p><a class="reference internal" href="getting_started.html#adding-maps" id="id12">Adding maps</a></p>
+<li><p><a class="reference internal" href="#starting-isolde" id="id10">Starting ISOLDE</a></p></li>
+<li><p><a class="reference internal" href="#preparing-a-model-for-simulation" id="id11">Preparing a model for simulation</a></p></li>
+<li><p><a class="reference internal" href="#adding-maps" id="id12">Adding maps</a></p>
 <ul>
-<li><p><a class="reference internal" href="getting_started.html#real-space-maps" id="id13">Real-space maps</a></p></li>
-<li><p><a class="reference internal" href="getting_started.html#x-ray-maps-or-other-maps-calculated-from-fourier-coefficients" id="id14">X-ray maps (or other maps calculated from Fourier coefficients)</a></p>
+<li><p><a class="reference internal" href="#real-space-maps" id="id13">Real-space maps</a></p></li>
+<li><p><a class="reference internal" href="#x-ray-maps-or-other-maps-calculated-from-fourier-coefficients" id="id14">X-ray maps (or other maps calculated from Fourier coefficients)</a></p>
 <ul>
-<li><p><a class="reference internal" href="getting_started.html#static-pre-calculated-crystallographic-maps" id="id15">Static (pre-calculated) crystallographic maps</a></p></li>
-<li><p><a class="reference internal" href="getting_started.html#live-crystallographic-maps" id="id16">Live crystallographic maps</a></p></li>
-<li><p><a class="reference internal" href="getting_started.html#phenix-maps-template" id="id17"><cite>phenix.maps</cite> template</a></p></li>
+<li><p><a class="reference internal" href="#static-pre-calculated-crystallographic-maps" id="id15">Static (pre-calculated) crystallographic maps</a></p></li>
+<li><p><a class="reference internal" href="#live-crystallographic-maps" id="id16">Live crystallographic maps</a></p></li>
+<li><p><a class="reference internal" href="#phenix-maps-template" id="id17"><cite>phenix.maps</cite> template</a></p></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-</div>
+</nav>
 <p><strong>(If you are reading this from within the ChimeraX Help browser,
 you may prefer trying out the</strong> <a class="reference internal" href="../../tutorials/intro/crystal_intro/crystal_intro.html#isolde-intro-tutorial"><span class="std std-ref">Introduction to crystallographic model rebuilding in ISOLDE</span></a> <strong>interactive
 tutorial.)</strong></p>
 <section id="starting-isolde">
-<h2><a class="toc-backref" href="getting_started.html#id10">Starting ISOLDE</a><a class="headerlink" href="getting_started.html#starting-isolde" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Starting ISOLDE</a><a class="headerlink" href="#starting-isolde" title="Permalink to this heading">¶</a></h2>
 <p>Assuming you already have ISOLDE installed (if not, you can do so via
 <em>Tools/More Tools…</em> in the ChimeraX menu), then you have three different
 ways to start it up:</p>
@@ -88,15 +87,11 @@ atoms around the display centre. Second, ISOLDE’s live geometry markup
 (highlighting suspicious protein backbone and sidechain conformations) will
 be added to the model:</p>
 <figure class="align-default" id="id5">
-<img alt="Basic rota/rama/omega markup" src="../../_images/basic_display.png" />
+<img alt="Basic rota/rama/omega markup" src="../../_images/basic_display.jpg" />
 <figcaption>
-<p><span class="caption-text">Basics of ISOLDE validation markup (<em>sans</em> map)</span><a class="headerlink" href="getting_started.html#id5" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Basics of ISOLDE validation markup (<em>sans</em> map)</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 <div class="legend">
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 5%" />
-<col style="width: 95%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p>a</p></td>
 <td><p>Crosshairs denoting the pivot point (centre of rotation) of
@@ -157,7 +152,7 @@ ISOLDE installed, you can add them to any loaded model using the</em> <code clas
 <code class="docutils literal notranslate"><span class="pre">rota</span></code> <em>commands)</em></p>
 </section>
 <section id="preparing-a-model-for-simulation">
-<span id="preparing-a-model"></span><h2><a class="toc-backref" href="getting_started.html#id11">Preparing a model for simulation</a><a class="headerlink" href="getting_started.html#preparing-a-model-for-simulation" title="Permalink to this headline">¶</a></h2>
+<span id="preparing-a-model"></span><h2><a class="toc-backref" href="#id11" role="doc-backlink">Preparing a model for simulation</a><a class="headerlink" href="#preparing-a-model-for-simulation" title="Permalink to this heading">¶</a></h2>
 <p><em>(Note: if you just want to load up a model and maps ready to play with, use the
 command</em> <code class="docutils literal notranslate"><span class="pre">isolde</span> <span class="pre">demo</span> <span class="pre">crystal_intro</span></code> <em>)</em></p>
 <p>While getting a clear picture of potential problems in a model is already
@@ -194,13 +189,13 @@ breaks:</p>
 <figure class="align-default" id="id6">
 <img alt="Dangling N-terminal residue" src="../../_images/nterm.png" />
 <figcaption>
-<p><span class="caption-text">This dangling N-terminus is fine</span><a class="headerlink" href="getting_started.html#id6" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">This dangling N-terminus is fine</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <figure class="align-default" id="id7">
 <img alt="Dangling C-terminal residue" src="../../_images/cterm.png" />
 <figcaption>
-<p><span class="caption-text">.. as is this dangling C-terminus</span><a class="headerlink" href="getting_started.html#id7" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">.. as is this dangling C-terminus</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Additionally, for all protein residues other than proline, sidechain
@@ -250,7 +245,7 @@ a model, and offers to remove them if present.</p></li>
 </div></blockquote>
 </section>
 <section id="adding-maps">
-<span id="id3"></span><h2><a class="toc-backref" href="getting_started.html#id12">Adding maps</a><a class="headerlink" href="getting_started.html#adding-maps" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2><a class="toc-backref" href="#id12" role="doc-backlink">Adding maps</a><a class="headerlink" href="#adding-maps" title="Permalink to this heading">¶</a></h2>
 <p>The primary use of ISOLDE is of course the fitting and refinement of an atomic
 model into one or more experimental maps. This is achieved via an interactive
 implementation of <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2430731/">molecular dynamics flexible fitting (MDFF)</a>. In brief, MDFF
@@ -265,7 +260,7 @@ Depending on your needs, three general types of maps are supported as described
 below, and a model may be associated with any combination (and any number,
 memory permitting) of these map types.</p>
 <section id="real-space-maps">
-<h3><a class="toc-backref" href="getting_started.html#id13">Real-space maps</a><a class="headerlink" href="getting_started.html#real-space-maps" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Real-space maps</a><a class="headerlink" href="#real-space-maps" title="Permalink to this heading">¶</a></h3>
 <p><strong>(NOTE: within ChimeraX, you may prefer to familiarise yourself with the
 use of real-space maps in the interactive</strong> <a class="reference internal" href="../../tutorials/bulk_fitting/bulk_fitting.html#bulk-fitting-tutorial"><span class="std std-ref">Bulk Flexible Fitting</span></a>
 <strong>tutorial.)</strong></p>
@@ -292,11 +287,11 @@ will tell fitmap to update coordinates without changing the transform.)</strong>
 <p><code class="docutils literal notranslate"><span class="pre">clipper</span> <span class="pre">associate</span> <span class="pre">#2</span> <span class="pre">to</span> <span class="pre">#1</span></code></p>
 <p>This should change your view of the model and map from something like this:</p>
 <figure class="align-default">
-<img alt="Default ChimeraX model/map view" src="../../_images/6eyd_with_map_initial.png" />
+<img alt="Default ChimeraX model/map view" src="../../_images/6eyd_with_map_initial.jpg" />
 </figure>
 <p>to a visualisation mode similar to the traditional crystallographic view:</p>
 <figure class="align-default" id="id8">
-<img alt="View after registering map with Clipper" src="../../_images/6eyd_with_map_clipper.png" />
+<img alt="View after registering map with Clipper" src="../../_images/6eyd_with_map_clipper.jpg" />
 <figcaption>
 <p><span class="caption-text">Default Clipper/ISOLDE “spotlight” model/map view. The map appears as a
 sphere of density around the centre of rotation. Residues with atoms within
@@ -304,7 +299,7 @@ the spotlight radius have their atoms shown; the remainder of the molecule
 is shown as a minimalist cartoon. You can adjust the spotlight radius using
 the command <code class="docutils literal notranslate"><span class="pre">clipper</span> <span class="pre">spotlight</span> <span class="pre">radius</span> <span class="pre">&lt;radius&gt;</span></code> or using the “Mask and
 spotlight settings” widget on ISOLDE’s General tab - but keep in mind that
-large radii will begin to cause noticeable lag in navigation.</span><a class="headerlink" href="getting_started.html#id8" title="Permalink to this image">¶</a></p>
+large radii will begin to cause noticeable lag in navigation.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Upon registration, ISOLDE automatically registers the map as a MDFF potential.
@@ -313,7 +308,7 @@ automatically set by analysis of the gradients in the region close to the
 atomic model.</p>
 </section>
 <section id="x-ray-maps-or-other-maps-calculated-from-fourier-coefficients">
-<h3><a class="toc-backref" href="getting_started.html#id14">X-ray maps (or other maps calculated from Fourier coefficients)</a><a class="headerlink" href="getting_started.html#x-ray-maps-or-other-maps-calculated-from-fourier-coefficients" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">X-ray maps (or other maps calculated from Fourier coefficients)</a><a class="headerlink" href="#x-ray-maps-or-other-maps-calculated-from-fourier-coefficients" title="Permalink to this heading">¶</a></h3>
 <p>An x-ray crystallography experiment yields a set of measured intensities
 corresponding to the amplitude component of the Fourier transform of the
 electron density in the crystal environment. In order to generate a real-space
@@ -359,11 +354,11 @@ safely closed via ChimeraX’s model panel:</p>
 crystallographic map associated with an atomic model. The unwanted maps may
 be closed by selecting their entry in the tree then clicking the “Close”
 button at top right. You can close an entire crystallographic dataset by
-selecting the corresponding entry with name starting “Crystallographic maps”.</span><a class="headerlink" href="getting_started.html#id9" title="Permalink to this image">¶</a></p>
+selecting the corresponding entry with name starting “Crystallographic maps”.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <section id="static-pre-calculated-crystallographic-maps">
-<h4><a class="toc-backref" href="getting_started.html#id15">Static (pre-calculated) crystallographic maps</a><a class="headerlink" href="getting_started.html#static-pre-calculated-crystallographic-maps" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id15" role="doc-backlink">Static (pre-calculated) crystallographic maps</a><a class="headerlink" href="#static-pre-calculated-crystallographic-maps" title="Permalink to this heading">¶</a></h4>
 <p><strong>(WARNING: in many refinement packages (including Phenix) the default behaviour
 is to include the free reflections when generating maps for visualisation and
 manual model building. By Parseval’s theorem this is equivalent in effect to
@@ -387,7 +382,7 @@ Map Settings” widget (where you can also adjust display styles and colours):</
 </figure>
 </section>
 <section id="live-crystallographic-maps">
-<h4><a class="toc-backref" href="getting_started.html#id16">Live crystallographic maps</a><a class="headerlink" href="getting_started.html#live-crystallographic-maps" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id16" role="doc-backlink">Live crystallographic maps</a><a class="headerlink" href="#live-crystallographic-maps" title="Permalink to this heading">¶</a></h4>
 <p><strong>(NOTE: While ISOLDE’s live crystallographic maps work well in the majority of
 cases, there is currently no handling of severe data pathologies such as twinning,
 strong translational non-crystallographic symmetry, strong ice rings, etc.. In
@@ -428,7 +423,7 @@ hidden by default, but can be displayed via the Model Panel or the “Dynamic
 Crystallographic Map Settings” widget at any time.</p>
 </section>
 <section id="phenix-maps-template">
-<h4><a class="toc-backref" href="getting_started.html#id17"><cite>phenix.maps</cite> template</a><a class="headerlink" href="getting_started.html#phenix-maps-template" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id17" role="doc-backlink"><cite>phenix.maps</cite> template</a><a class="headerlink" href="#phenix-maps-template" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="n">maps</span> <span class="p">{</span>
    <span class="nb">input</span> <span class="p">{</span>
      <span class="n">pdb_file_name</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># Replace this with the name of your pdb file</span>
@@ -558,17 +553,17 @@ Crystallographic Map Settings” widget at any time.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016-2022, Tristan Croll.
+      &copy;2016-2023, Tristan Croll.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="../../_sources/tools/gui/getting_started.rst.txt"

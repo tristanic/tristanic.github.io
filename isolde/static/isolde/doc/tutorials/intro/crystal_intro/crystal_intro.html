@@ -1,19 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Introduction to crystallographic model rebuilding in ISOLDE &#8212; ISOLDE 1.4 documentation</title>
+    <title>Introduction to crystallographic model rebuilding in ISOLDE &#8212; ISOLDE 1.6.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/jquery.js"></script>
-    <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/external_links.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -36,11 +35,10 @@
           <div class="body" role="main">
             
   <section id="introduction-to-crystallographic-model-rebuilding-in-isolde">
-<span id="isolde-intro-tutorial"></span><h1>Introduction to crystallographic model rebuilding in ISOLDE<a class="headerlink" href="crystal_intro.html#introduction-to-crystallographic-model-rebuilding-in-isolde" title="Permalink to this headline">¶</a></h1>
+<span id="isolde-intro-tutorial"></span><h1>Introduction to crystallographic model rebuilding in ISOLDE<a class="headerlink" href="#introduction-to-crystallographic-model-rebuilding-in-isolde" title="Permalink to this heading">¶</a></h1>
 <p><strong>(NOTE: Most links on this page will only work correctly when the page is
 loaded in ChimeraX’s help viewer. You will also need to be connected to the
-Internet. Please close ISOLDE and any open models before starting this
-tutorial.)</strong></p>
+Internet. Please close any open models before starting this tutorial.)</strong></p>
 <p><strong>(The instructions in the tutorial below assume you are using a wired mouse
 with a scroll wheel doubling as the middle mouse button. While everything
 should also work well on touchpads in Windows and Linux, support for Apple’s
@@ -48,7 +46,7 @@ multi-touch touchpad is a work in progress. Known issues with the latter are
 that clipping planes will not update when zooming, and recontouring of maps is
 not possible.)</strong></p>
 <section id="tutorial-diagnosing-and-rebuilding-errors-in-a-3a-crystal-structure">
-<h2>Tutorial: Diagnosing and rebuilding errors in a 3Å crystal structure<a class="headerlink" href="crystal_intro.html#tutorial-diagnosing-and-rebuilding-errors-in-a-3a-crystal-structure" title="Permalink to this headline">¶</a></h2>
+<h2>Tutorial: Diagnosing and rebuilding errors in a 3Å crystal structure<a class="headerlink" href="#tutorial-diagnosing-and-rebuilding-errors-in-a-3a-crystal-structure" title="Permalink to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 </div>
 <p>Building models into low-resolution crystallographic density maps has
@@ -66,7 +64,7 @@ message similar to that below:</p>
 </figure>
 <p>In crystallographic model building it is standard practice to leave a random
 selection of measured reflections (typically 5% or 2000 reflections, whichever
-is higher) as a guard against overfitting (see <a class="reference external" href="https://www.nature.com/articles/355472a0">Brunger, 1992</a>). While it is
+is lower) as a guard against overfitting (see <a class="reference external" href="https://www.nature.com/articles/355472a0">Brunger, 1992</a>). While it is
 now standard practice for structure factors deposited to the wwPDB to include
 the free reflections used by the original modellers, this was not always the
 case. When no free flags are found a fresh set will be created for you - in
@@ -75,7 +73,8 @@ a fresh MTZ file incorporating these:</p>
 <p><a class="reference external" href="cxcmd:save ~/Desktop/1a0m.mtz #1">save ~/Desktop/1a0m.mtz #1</a></p>
 <p><em>(OPTIONAL: personally I prefer to work with a white background. If you’re
 the same, you can change it using ChimeraX’s icons in the “Home” tab at top,
-or with the following command)</em></p>
+or with the following command. You can also change it permanently using
+Favorites/Settings on the ChimeraX menu.)</em></p>
 <p><a class="reference external" href="cxcmd:set bgColor white">set bgColor white</a></p>
 <p>Now, zoom in by <strong>scrolling</strong> the mouse, and let’s go ahead and look at the
 model you just opened.</p>
@@ -91,7 +90,7 @@ would hope given the resolution! While ultra-high-resolution models like this
 aren’t really what ISOLDE was designed for, this one makes for a nice “toy” to
 play with while learning the controls.</p>
 <section id="getting-around">
-<h3>Getting around<a class="headerlink" href="crystal_intro.html#getting-around" title="Permalink to this headline">¶</a></h3>
+<h3>Getting around<a class="headerlink" href="#getting-around" title="Permalink to this heading">¶</a></h3>
 <p>While zoomed in, you’ll notice a small set of axes displayed in the middle of
 the screen:</p>
 <figure class="align-default">
@@ -117,7 +116,7 @@ using a command like <a class="reference external" href="cxcmd:clipper spotlight
 </ol>
 <ol class="arabic" start="2">
 <li><p>Zoom out until you have a clear border all around the displayed atoms, then
-pan tthe mouse to the left. As you go, you’ll see a single cartoon start to stand out
+pan the mouse to the left. As you go, you’ll see a single cartoon start to stand out
 from the rest:</p>
 <figure class="align-default">
 <img alt="../../../_images/separate_asu.jpg" src="../../../_images/separate_asu.jpg" />
@@ -132,7 +131,7 @@ re-centre your view on the equivalent “real” atom.</p>
 </ol>
 </section>
 <section id="adjusting-your-maps">
-<h3>Adjusting your maps<a class="headerlink" href="crystal_intro.html#adjusting-your-maps" title="Permalink to this headline">¶</a></h3>
+<h3>Adjusting your maps<a class="headerlink" href="#adjusting-your-maps" title="Permalink to this heading">¶</a></h3>
 <p>When you load a model with structure factors, the Clipper plugin generates three
 maps: a standard 2mFo-DFc map; a second 2mFo-DFc map with either sharpening or
 smoothing applied depending on resolution (maps better than 2.5Å are smoothed,
@@ -164,7 +163,7 @@ available options, use <a class="reference external" href="cxcmd:usage clipper i
 <p>Once you’re done, go back to the scrolling-sphere mode using <a class="reference external" href="cxcmd:clipper spotlight">clipper spotlight</a>.</p>
 </section>
 <section id="running-your-first-simulation">
-<h3>Running your first simulation<a class="headerlink" href="crystal_intro.html#running-your-first-simulation" title="Permalink to this headline">¶</a></h3>
+<h3>Running your first simulation<a class="headerlink" href="#running-your-first-simulation" title="Permalink to this heading">¶</a></h3>
 <p>Let’s go ahead and start ISOLDE. You can do this from the menu
 (<strong>Tools/General/ISOLDE</strong>) or by simply running the command <a class="reference external" href="cxcmd:isolde start">isolde start</a>.</p>
 <p>A dialog box will pop up, notifying you that this model contains alternate conformers,
@@ -288,7 +287,7 @@ A running summary of the current R-factors is provided in the status bar at
 bottom right.</p>
 </section>
 <section id="interacting-with-the-model">
-<h3>Interacting with the model<a class="headerlink" href="crystal_intro.html#interacting-with-the-model" title="Permalink to this headline">¶</a></h3>
+<h3>Interacting with the model<a class="headerlink" href="#interacting-with-the-model" title="Permalink to this heading">¶</a></h3>
 <p>Now, try tugging on an atom using the right mouse button.</p>
 <figure class="align-default">
 <img alt="../../../_images/tugging.jpg" src="../../../_images/tugging.jpg" />
@@ -300,18 +299,18 @@ adjusting the H-bonding of a hydroxyl group or water (for example), to make any
 larger changes you should choose a heavier atom to pull.)</em></p>
 <p>This should result in something like the above. There are a few things to note
 here:</p>
-<ul>
+<ul class="simple">
 <li><p>The change in the maps (the large red blob around the sulphur atom, and the
 green blob where it <strong>used</strong> to be) is clearly telling you this is wrong
 (quite apart from the R-factors, which in this case have spiked from about
 0.19 to around 0.26);</p></li>
 <li><p>Tugging on the sulphur has had a knock-on effect on the adjacent Asn sidechain
-(top) - to re-iterate, in ISOLDE, all atoms feel each other.</p>
-<p><strong>(IMPORTANT NOTE: during simulations, the model will only feel the map as it
-was at the moment the simulation started. Subsequent changes will not take
-effect until you stop the simulation and start a new one.)</strong></p>
-</li>
+(top) - to re-iterate, in ISOLDE, all atoms feel each other.</p></li>
 </ul>
+<p>You might wonder how the changes you see in the map affect the forces felt by the
+model. In short: every time the instantaneous R-work drops below the previous best
+value seen in the current simulation, the corresponding map is automatically
+used to update the fitting potential.</p>
 <p>Unless you’ve done something particularly drastic, upon releasing the tugging
 force the model should snap back into place. In my case, here’s the model ~5
 seconds later, with Rwork/Rfree back at 0.185/0.194:</p>
@@ -325,7 +324,7 @@ will find three buttons allowing you to switch between this and “tug residue�
 this model.</p>
 </section>
 <section id="general-model-controls">
-<h3>General model controls<a class="headerlink" href="crystal_intro.html#general-model-controls" title="Permalink to this headline">¶</a></h3>
+<h3>General model controls<a class="headerlink" href="#general-model-controls" title="Permalink to this heading">¶</a></h3>
 <p>You may have noticed that ISOLDE’s blue play button has changed into a red pause
 symbol. Go ahead and click this to pause the simulation while we explore some of
 the other available controls.</p>
@@ -357,14 +356,15 @@ atoms will move much more “loosely”, more red and green will appear in the
 difference map, and the R-factors should increase to 0.24-0.26.</p>
 <p>Injection of random positional error like this is one valid way to reduce the
 incidence of model bias that may arise due to the fact that we are not using the
-original free set. Clicking the green “STOP” button at bottom right will stop
-the simulation and save the instantaneous coordinates. Now, set the weight back
-to 0.8, <a class="reference external" href="cxcmd:select #1">select the model</a> and start a fresh simulation. You should see the
-R-factors quickly drop back to the vicinity of 0.19-0.21. Now, drop the
-temperature to zero using the slider near the bottom of the General tab. Wait
-for the R-factors to settle to constant values, and hit the green STOP button.
-Now start a new simulation - you should see the R-factors drop a little as the
-updated potential takes effect.</p>
+original free set. Note that since the fitting potential in a running simulation
+is only updated when the R-work drops to a new low, in this case you’ll have to
+stop the current simulation for the changes to take effect. Clicking the green
+“STOP” button at bottom right will stop the simulation and save the
+instantaneous coordinates. Now, set the weight back to 0.8, <a class="reference external" href="cxcmd:select #1">select the model</a>
+and start a fresh simulation. You should see the R-factors quickly drop back to
+the vicinity of 0.19-0.21. Now, drop the temperature to zero using the slider
+near the bottom of the General tab. Wait for the R-factors to settle to constant
+values, and hit the green STOP button.</p>
 <p>You may choose to continue with the temperature set to zero if you like, but
 personally I always prefer to have at least a little thermal motion happening -
 if for no other reason that it makes it easy to tell at a glance when a
@@ -381,7 +381,7 @@ and green, and the R-factors shoot up into the 0.4-0.6 range:</p>
 <figure class="align-default" id="id38">
 <img alt="../../../_images/big_mess.jpg" src="../../../_images/big_mess.jpg" />
 <figcaption>
-<p><span class="caption-text">Whoops.</span><a class="headerlink" href="crystal_intro.html#id38" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Whoops.</span><a class="headerlink" href="#id38" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Click the red chequered flag to put everything back as it was. This is designed
@@ -394,7 +394,7 @@ state. The red one discards the simulation entirely, returning the model to the
 state it was in at the moment the play button was pressed.</p>
 </section>
 <section id="rebuilding">
-<h3>Rebuilding<a class="headerlink" href="crystal_intro.html#rebuilding" title="Permalink to this headline">¶</a></h3>
+<h3>Rebuilding<a class="headerlink" href="#rebuilding" title="Permalink to this heading">¶</a></h3>
 <p>While 1a0m is a useful model for learning to find your way around in ISOLDE,
 being very high-resolution and close to error-free means there is not really
 anything much to rebuild. So, let’s close it and move on to a more real-world
@@ -714,17 +714,17 @@ command provides various extra options - do</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016-2022, Tristan Croll.
+      &copy;2016-2023, Tristan Croll.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="../../../_sources/tutorials/intro/crystal_intro/crystal_intro.rst.txt"

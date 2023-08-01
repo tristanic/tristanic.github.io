@@ -1,19 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>ISOLDE Python API &#8212; ISOLDE 1.4 documentation</title>
+    <title>ISOLDE Python API &#8212; ISOLDE 1.6.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/external_links.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -36,10 +35,49 @@
           <div class="body" role="main">
             
   <section id="isolde-python-api">
-<h1>ISOLDE Python API<a class="headerlink" href="isolde.html#isolde-python-api" title="Permalink to this headline">¶</a></h1>
+<h1>ISOLDE Python API<a class="headerlink" href="#isolde-python-api" title="Permalink to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="isolde_main.html">The primary ISOLDE object</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="isolde_main.html">The primary ISOLDE object</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.IsoldeParams"><code class="docutils literal notranslate"><span class="pre">IsoldeParams</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde"><code class="docutils literal notranslate"><span class="pre">Isolde</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.__init__"><code class="docutils literal notranslate"><span class="pre">Isolde.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.add_checkpoint_block"><code class="docutils literal notranslate"><span class="pre">Isolde.add_checkpoint_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.can_checkpoint"><code class="docutils literal notranslate"><span class="pre">Isolde.can_checkpoint</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.change_selected_model"><code class="docutils literal notranslate"><span class="pre">Isolde.change_selected_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.checkpoint"><code class="docutils literal notranslate"><span class="pre">Isolde.checkpoint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.commit_sim"><code class="docutils literal notranslate"><span class="pre">Isolde.commit_sim()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.discard_sim"><code class="docutils literal notranslate"><span class="pre">Isolde.discard_sim()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.equilibrate"><code class="docutils literal notranslate"><span class="pre">Isolde.equilibrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.flip_peptide_bond"><code class="docutils literal notranslate"><span class="pre">Isolde.flip_peptide_bond()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.flip_peptide_omega"><code class="docutils literal notranslate"><span class="pre">Isolde.flip_peptide_omega()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.ignored_residues"><code class="docutils literal notranslate"><span class="pre">Isolde.ignored_residues</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.load_model_and_data"><code class="docutils literal notranslate"><span class="pre">Isolde.load_model_and_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.minimize"><code class="docutils literal notranslate"><span class="pre">Isolde.minimize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.params"><code class="docutils literal notranslate"><span class="pre">Isolde.params</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.pause"><code class="docutils literal notranslate"><span class="pre">Isolde.pause()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.pause_sim_toggle"><code class="docutils literal notranslate"><span class="pre">Isolde.pause_sim_toggle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.remove_checkpoint_block"><code class="docutils literal notranslate"><span class="pre">Isolde.remove_checkpoint_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.reset_sim_params"><code class="docutils literal notranslate"><span class="pre">Isolde.reset_sim_params()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.resume"><code class="docutils literal notranslate"><span class="pre">Isolde.resume()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.revert_to_checkpoint"><code class="docutils literal notranslate"><span class="pre">Isolde.revert_to_checkpoint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.selected_atoms"><code class="docutils literal notranslate"><span class="pre">Isolde.selected_atoms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.selected_model"><code class="docutils literal notranslate"><span class="pre">Isolde.selected_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.selected_model_has_maps"><code class="docutils literal notranslate"><span class="pre">Isolde.selected_model_has_maps</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.selected_model_has_mdff_enabled"><code class="docutils literal notranslate"><span class="pre">Isolde.selected_model_has_mdff_enabled</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.show_master_help_in_browser"><code class="docutils literal notranslate"><span class="pre">Isolde.show_master_help_in_browser()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.sim_handler"><code class="docutils literal notranslate"><span class="pre">Isolde.sim_handler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.sim_manager"><code class="docutils literal notranslate"><span class="pre">Isolde.sim_manager</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.sim_paused"><code class="docutils literal notranslate"><span class="pre">Isolde.sim_paused</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.simulation_mode"><code class="docutils literal notranslate"><span class="pre">Isolde.simulation_mode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.simulation_running"><code class="docutils literal notranslate"><span class="pre">Isolde.simulation_running</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.smoothing"><code class="docutils literal notranslate"><span class="pre">Isolde.smoothing</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.smoothing_alpha"><code class="docutils literal notranslate"><span class="pre">Isolde.smoothing_alpha</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.start_sim"><code class="docutils literal notranslate"><span class="pre">Isolde.start_sim()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.stop_tugging"><code class="docutils literal notranslate"><span class="pre">Isolde.stop_tugging()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="isolde_main.html#chimerax.isolde.isolde.Isolde.tug_atom_to"><code class="docutils literal notranslate"><span class="pre">Isolde.tug_atom_to()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="core_objects.html">Core Dihedral Classes</a><ul>
@@ -88,7 +126,14 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="restraints.html">Restraints and Steering Forces</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="restraints.html#general-principles">General Principles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="restraints.html#general-utilities">General Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="restraints.html#general-utilities">General Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#chimerax.isolde.restraints.restrain_torsions_to_template"><code class="docutils literal notranslate"><span class="pre">restraints.restrain_torsions_to_template()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#chimerax.isolde.restraints.restrain_atom_distances_to_template"><code class="docutils literal notranslate"><span class="pre">restraints.restrain_atom_distances_to_template()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#chimerax.isolde.restraints.restrain_small_ligands"><code class="docutils literal notranslate"><span class="pre">restraints.restrain_small_ligands()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#chimerax.isolde.restraints.restrain_secondary_structure"><code class="docutils literal notranslate"><span class="pre">restraints.restrain_secondary_structure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="restraints.html#chimerax.isolde.restraints.restrain_ca_distances_to_template"><code class="docutils literal notranslate"><span class="pre">restraints.restrain_ca_distances_to_template()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="restraints.html#change-tracking">Change Tracking</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="restraints.html#restraintchangetracker">RestraintChangeTracker</a></li>
 </ul>
@@ -150,18 +195,24 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="scripted_manipulations.html">(Semi-)Automated Manipulations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="scripted_manipulations.html#peptide-bond-flipper">Peptide_Bond_Flipper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scripted_manipulations.html#proteinregistershifter">ProteinRegisterShifter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripted_manipulations.html#peptide-bond-flipper">Peptide_Bond_Flipper</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scripted_manipulations.html#chimerax.isolde.manipulations.Peptide_Bond_Flipper"><code class="docutils literal notranslate"><span class="pre">Peptide_Bond_Flipper</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scripted_manipulations.html#proteinregistershifter">ProteinRegisterShifter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scripted_manipulations.html#chimerax.isolde.manipulations.ProteinRegisterShifter"><code class="docutils literal notranslate"><span class="pre">ProteinRegisterShifter</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sim_management.html">Simulation Setup and Management</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sim_management.html#general-principles">General Principles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sim_management.html#module-chimerax.isolde.openmm">Simulation Management Classes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="sim_management.html#simparams">SimParams</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sim_management.html#sim-construct">Sim_Construct</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sim_management.html#sim-manager">Sim_Manager</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sim_management.html#sim-handler">Sim_Handler</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sim_management.html#openmm-thread-handler">OpenMM_Thread_Handler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#simconstruct">SimConstruct</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#simmanager">SimManager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#simhandler">SimHandler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim_management.html#openmmthreadhandler">OpenmmThreadHandler</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="sim_management.html#custom-forces">Custom Forces</a><ul>
@@ -177,11 +228,35 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">General Utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="utils.html#session-extensions">Session Extensions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils.html#module-chimerax.isolde.view">View</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#session-extensions">Session Extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.session_extensions.get_adaptive_dihedral_restraint_mgr"><code class="docutils literal notranslate"><span class="pre">get_adaptive_dihedral_restraint_mgr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.session_extensions.get_adaptive_distance_restraint_mgr"><code class="docutils literal notranslate"><span class="pre">get_adaptive_distance_restraint_mgr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.session_extensions.get_all_adaptive_distance_restraint_mgrs"><code class="docutils literal notranslate"><span class="pre">get_all_adaptive_distance_restraint_mgrs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.session_extensions.get_chiral_restraint_mgr"><code class="docutils literal notranslate"><span class="pre">get_chiral_restraint_mgr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.session_extensions.get_distance_restraint_mgr"><code class="docutils literal notranslate"><span class="pre">get_distance_restraint_mgr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.session_extensions.get_mdff_mgr"><code class="docutils literal notranslate"><span class="pre">get_mdff_mgr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.session_extensions.get_position_restraint_mgr"><code class="docutils literal notranslate"><span class="pre">get_position_restraint_mgr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.session_extensions.get_proper_dihedral_restraint_mgr"><code class="docutils literal notranslate"><span class="pre">get_proper_dihedral_restraint_mgr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.session_extensions.get_rama_annotator"><code class="docutils literal notranslate"><span class="pre">get_rama_annotator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.session_extensions.get_rota_annotator"><code class="docutils literal notranslate"><span class="pre">get_rota_annotator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.session_extensions.get_rotamer_restraint_mgr"><code class="docutils literal notranslate"><span class="pre">get_rotamer_restraint_mgr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.session_extensions.get_tuggable_atoms_mgr"><code class="docutils literal notranslate"><span class="pre">get_tuggable_atoms_mgr()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-chimerax.isolde.view">View</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.view.focus_on_coord"><code class="docutils literal notranslate"><span class="pre">focus_on_coord()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.view.focus_on_selection"><code class="docutils literal notranslate"><span class="pre">focus_on_selection()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#module-chimerax.isolde.ctypes">Ctypes Support</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils.html#module-chimerax.isolde.delayed_reaction">Threading</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils.html#module-chimerax.isolde.param_mgr">Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-chimerax.isolde.delayed_reaction">Threading</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.delayed_reaction.delayed_reaction"><code class="docutils literal notranslate"><span class="pre">delayed_reaction()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-chimerax.isolde.param_mgr">Parameter Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#chimerax.isolde.param_mgr.Param_Mgr"><code class="docutils literal notranslate"><span class="pre">Param_Mgr</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -202,7 +277,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../commands/isolde_restrain.html">Adaptive Restraint Schemes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../commands/isolde_remote.html">Remote Control Options</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../commands/isolde.html">The ISOLDE Command Line</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="isolde.html#">ISOLDE Python API</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ISOLDE Python API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="isolde_main.html">The primary ISOLDE object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="core_objects.html">Core Dihedral Classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="interpolation.html"><em>n</em>-Dimensional Interpolation</a></li>
@@ -235,17 +310,17 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016-2022, Tristan Croll.
+      &copy;2016-2023, Tristan Croll.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="../_sources/api/isolde.rst.txt"
