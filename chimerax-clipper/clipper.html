@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>ChimeraX-Clipper: electron density and symmetry tools for ChimeraX &#8212; ChimeraX-Clipper 0.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ChimeraX-Clipper Commands" href="commands/clipper.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="chimerax-clipper-electron-density-and-symmetry-tools-for-chimerax">
+<h1>ChimeraX-Clipper: electron density and symmetry tools for ChimeraX<a class="headerlink" href="#chimerax-clipper-electron-density-and-symmetry-tools-for-chimerax" title="Permalink to this heading">¶</a></h1>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commands/clipper.html">ChimeraX-Clipper Commands</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="commands/clipper.html#clipper-open">clipper open</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands/clipper.html#clipper-save">clipper save</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands/clipper.html#clipper-associate">clipper associate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands/clipper.html#clipper-spotlight">clipper spotlight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands/clipper.html#clipper-isolate">clipper isolate</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/clipper.html">ChimeraX-Clipper API</a></li>
+</ul>
+</div>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h2>
+<p>ChimeraX-Clipper makes use of a modified version of the <a class="reference external" href="http://www.ysbl.york.ac.uk/~cowtan/clipper/doc/">Clipper</a> library from
+Kevin Cowtan to add support for crystallographic symmetry and structure factor
+calculations to ChimeraX. In addition, it adds visualisation modes suited to
+macromolecular model building, and a convenience API to provide a unified
+environment handling both cryo-EM and crystallographic data. It is a core
+library required by <a class="reference external" href="https://isolde.cimr.cam.ac.uk">ISOLDE</a>. All source code is available on <a class="reference external" href="https://github.com/tristanic/chimerax-clipper">GitHub</a> and
+is licensed under the GNU Lesser General Public License v3.0.</p>
+<p>ChimeraX-Clipper consists of three essential parts:</p>
+<ol class="arabic simple">
+<li><p>A near-complete wrapping of the core Clipper libraries (modified for
+multithreading in key routines) using <a class="reference external" href="https://github.com/pybind/pybind11">PyBind11</a>. Documentation for this
+layer is currently minimal - but since the bindings are for the most part a
+direct reflection of the underlying C++ objects the <a class="reference external" href="http://www.ysbl.york.ac.uk/~cowtan/clipper/doc/annotated.html">Clipper API documentation</a>
+is quite useful.</p></li>
+<li><p>A C++ extension layer (also wrapped using PyBind11) built on the core API,
+to implement key tasks which need to run in separate threads to avoid
+disruption to the ChimeraX GUI. In particular, this code handles the
+parallelised, background structure factor calculations used to generate new
+crystallographic maps on changes to the model. Documentation of this layer
+is also currently minimal.</p></li>
+<li><p>A ChimeraX-specific Python layer designed to facilitate quick scripting. This
+component <em>is</em> documented here.</p></li>
+</ol>
+</section>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="#">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commands/clipper.html">ChimeraX-Clipper Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/clipper.html">ChimeraX-Clipper API</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="commands/clipper.html" title="next chapter">ChimeraX-Clipper Commands</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/clipper.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
