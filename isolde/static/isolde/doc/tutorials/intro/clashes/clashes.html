@@ -1,0 +1,397 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Dealing with severe clashes &#8212; ISOLDE 1.6.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/external_links.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Top-Down Modelling with AlphaFold-DB Models" href="../../alphafold/from_scratch/from_scratch.html" />
+    <link rel="prev" title="Introduction to cryo-EM model rebuilding in ISOLDE" href="../cryo_intro/cryo_intro.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="dealing-with-severe-clashes">
+<span id="isolde-clashes-tutorial"></span><h1>Dealing with severe clashes<a class="headerlink" href="#dealing-with-severe-clashes" title="Permalink to this heading">¶</a></h1>
+<p><strong>(NOTE: Most links on this page will only work correctly when the page is
+loaded in ChimeraX’s help viewer. You will also need to be connected to the
+Internet. Please close any open models before starting this tutorial.)</strong></p>
+<div class="toctree-wrapper compound">
+</div>
+<p>There are two general approaches to starting the process of model building in
+a new dataset:</p>
+<ol class="loweralpha simple">
+<li><p>“Ground-up” - tracing the protein backbone through the density starting
+either from nothing (typically only possible in cryo-EM maps) or from
+docked fragments representing the rigid cores of individual domains
+(the typical approach with molecular replacement in crystallography);</p></li>
+<li><p>“Top-down” - docking an entire complex or multiple individual chains
+to give the best rigid-body fit(s), and then working to flexibly re-fit
+the result into the map.</p></li>
+</ol>
+<p>Given the wealth of high-quality structures (both experimental and predicted)
+now available, the latter approach has become far more feasible than it
+once was, and in many cases can be much faster than the ground-up approach.
+See <a class="reference internal" href="../../alphafold/from_scratch/from_scratch.html#alphafold-top-down-tutorial"><span class="std std-ref">Top-Down Modelling with AlphaFold-DB Models</span></a>, <a class="reference internal" href="../../alphafold/multimer/alphafold_multimer_cryoem.html#alphafold-multimer-cryoem-tutorial"><span class="std std-ref">Building Into CryoEM Maps With Your Own AlphaFold Multimer Models</span></a>
+and <a class="reference internal" href="../../alphafold/molecular_replacement/alphafold_mr.html#alphafold-mr-tutorial"><span class="std std-ref">Starting From a Molecular Replacement Solution for a Flexible Protein</span></a> for worked examples of top-down model building
+in ISOLDE.</p>
+<p>One very common problem encountered in top-down building is the introduction of
+severe clashes (like those pictured below) when independently rigid-body docking
+multiple chains. This of course is not surprising, since the majority of
+proteins have at least <em>some</em> internal flexibility - life would be quite boring
+if they didn’t!</p>
+<figure class="align-default">
+<img alt="../../../_images/really_bad_clashes.jpg" src="../../../_images/really_bad_clashes.jpg" />
+</figure>
+<p>In a traditional classical molecular dynamics forcefield, really severe clashes
+like these are catastrophic. The main culprit is the Lennard-Jones potential
+(pictured below). A nice, simple (and computationally cheap) mathematical
+formula giving a good representation of real-world van der Waals interactions
+when atoms are <em>not</em> badly clashing, for small distances (below the sum of van
+der Waals radii of the two atoms) the interaction energy quickly shoots towards
+infinity, inversely proportional to distance to the 12th power - which means
+that the applied force is proportional to 1/distance to the <em>13th</em> power!</p>
+<figure class="align-default">
+<img alt="../../../_images/lennard_jones.svg" src="../../../_images/lennard_jones.svg" /></figure>
+<p>To give you an idea of the scale of the problem, if we tried to simply start
+dynamics with, say, a pair of oxygen atoms placed with a center-to-center
+spacing of 0.5 Angstroms, then after the first 1 femtosecond time step they
+would be flying apart at about 160 times the speed of light! A physical
+impossibility, of course - but remember that classical MD knows only about
+Newton’s laws, and nothing of relativity.</p>
+<p>The above explains why we always run a quick energy minimisation before starting
+dynamics, carefully moving atoms to find a local minimum stable enough so things
+won’t explode. But here we often run into a new problem: GPUs, while extremely
+powerful, are generally only designed to work fast with single-precision
+(32-bit) values - and the forces generated by bad clashes can easily exceed the
+range of what can be represented in this format. When that happens, the energy
+minimiser is left with no gradients to interpret, and gets stuck. Prior to
+ISOLDE 1.6, that’s what would lead to this dreaded scenario:</p>
+<figure class="align-default">
+<img alt="../../../_images/clashes_popup.png" src="../../../_images/clashes_popup.png" />
+</figure>
+<p>The solution to both these problems is to replace the problematic functional
+form with a so-called “soft-core” potential that removes the problematic
+infinity at <em>r=0</em>. Starting with version 1.6, ISOLDE uses the soft-core van der
+Waals implementation described in <a class="reference external" href="https://aip.scitation.org/doi/10.1063/1.3607597">Pham and Shirts (2011)</a>, replacing the
+standard Lennard-Jones potential:</p>
+<div class="math">
+<p><img src="../../../_images/math/bdbc33a4c6ce2e29a4decbbed0a290469ce644f0.png" alt="E_{\text{VDW}} = 4 \epsilon_{ij}\left [ \left ( \tfrac{\sigma_{ij}}{r_{ij}} \right )^{12} - \left ( \tfrac{\sigma_{ij}}{r_{ij}} \right )^{6} \right ]"/></p>
+</div><p>with the somewhat more complex but significantly more flexible:</p>
+<div class="math">
+<p><img src="../../../_images/math/ada3ce1970d02c0745eb7bff3f1be2d5df8e457e.png" alt="E_{\text{VDW}} = 4 \epsilon_{ij} \lambda^{\frac{1}{a}}  \left [ \left ( \tfrac{1}{\alpha(1-\lambda)^b + (r_{ij}/\sigma_{ij})^c} \right )^{12/c} - \left ( \tfrac{1}{\alpha(1-\lambda)^b + (r_{ij}/\sigma_{ij})^c} \right )^{6/c} \right ]"/></p>
+</div><p>... where <img class="math" src="../../../_images/math/0daf8a24f3d2f3fba4ee50e631bdfc13a11c4c3d.png" alt="\epsilon_{ij}"/> and <img class="math" src="../../../_images/math/2eb2f8ac48a3a8ba176ff7cd6b764dd0e33063ee.png" alt="\sigma_{ij}"/> are parameters defined
+by the force field for each atom pair <em>i,j</em>. Of the newly added terms (<em>a</em>, <em>b</em>,
+<em>c</em>, <em>α</em> and <em>λ</em>), only the <em>λ</em> parameter is important for day to day use,
+controlling the overall “softness” - <em>λ</em> = 1 recapitulates the standard
+Lennard-Jones potential, while <em>λ</em> = 0 turns off nonbonded interactions entirely
+(not generally recommended). For the record, the standard values for the other
+parameters used in ISOLDE are <em>a</em> = 1, <em>b</em> = 2, <em>c</em> = 6, and <em>α</em> = 0.2.</p>
+<p>While generally much less of a problem except in the most extreme clashes,
+charge interaction energies also approach ±infinity proportional to 1/distance.
+In ISOLDE the standard Coulombic potential:</p>
+<div class="math">
+<p><img src="../../../_images/math/e3b5233778a494789997ccd98127f12aa06564e9.png" alt="E_{\text{Coul}} = \frac{1}{4 \pi \varepsilon_0} \frac{Q_iQ_j}{r_{ij}}"/></p>
+</div><p>is replaced with:</p>
+<div class="math">
+<p><img src="../../../_images/math/f16d213426b836123ccd423255fae67718ad336b.png" alt="E_{\text{Coul}} = \frac{1}{4 \pi \varepsilon_0} Q_iQ_j * \left ( \frac{1}{\alpha (1-\lambda)^{4b} + r_{ij}^c} \right )^{1/c}"/></p>
+</div><p>... where <img class="math" src="../../../_images/math/8888fd229a3005133ea948b6f41c31565e096839.png" alt="\varepsilon_0"/> is a physical constant known as the permittivity
+of free space, and <em>b</em>, <em>c</em>, <em>α</em> and <em>λ</em> have the same values as those used in
+the soft-core van der Waals potential.</p>
+<p><em>(Note: corresponding changes are also made to the implicit solvent force terms.
+That’s too much to get into here, but suffice to say that this correction fades
+towards zero - i.e. towards a vacuum environment - with decreasing λ.)</em></p>
+<p>So that’s the underlying theory. Here’s what the resulting potentials look like
+for a few different values of <em>λ</em>, for a pair of oxygen atoms each with a
+partial charge of -0.25:</p>
+<figure class="align-default">
+<img alt="../../../_images/soft_core_forces_labelled.svg" src="../../../_images/soft_core_forces_labelled.svg" /></figure>
+<p>The upshot here is that for values of <em>λ</em> greater than about 0.8, the van der
+Waals and Coulombic potentials are essentially identical to the unmodified forms
+within the “normal” regime, only diverging at very high energies. Lower values
+become increasingly unphysical and are not recommended for day-to-day use - but
+as we’ll see, temporarily reducing <em>λ</em> can be extremely useful for escaping
+severe entanglements like the one pictured above.</p>
+<p>So, let’s get in to that. The example we’re going to work with is <a class="reference external" href="https://rcsb.org/structure/7W3V">7w3v</a> (EMDB ID 32294).</p>
+<figure class="align-default">
+<img alt="../../../_images/7w3v_deposited.jpg" src="../../../_images/7w3v_deposited.jpg" />
+</figure>
+<p>We’re not going to work with the actual deposited model, however - that’s
+already in quite good shape. Rather, we’re going to start from docked AlphaFold
+models of the two chains. This complex makes a good case study because it
+highlights one of the weaknesses of AlphaFold: while it’s (usually) very good at
+predicting <em>short-range</em> conformations, it’s not so great at long-range order -
+predictions for long thin proteins like the “C” shaped leucine-rich repeat seen
+here will almost never match the experimental structure over their entire length
+(sometimes because of natural flexibility, sometimes because AlphaFold simply
+gets lost).</p>
+<p>You might be asking, “why not just use AlphaFold-multimer to predict the complex
+directly?”. That’s a good question, and in many cases that might be a viable
+strategy. In this case, however, that’s not possible: this is a complex between
+a plant immune receptor and a protein from a microbial pathogen. Currently,
+AlphaFold-multimer and its relatives are only able to make predictions for
+(some) <em>intra</em>-species complexes, since their implementations are unable to
+detect coevolution signals <em>between</em> species.</p>
+<p>One more answer to the above question is simply, “time”. Multimer prediction is
+currently somewhat hit-and-miss, and takes on the order of an hour or two per
+run. When a freely and instantly accessible database of predictions for almost
+all existing monomeric structures <a class="reference external" href="https://alphafold.ebi.ac.uk/">already exists</a> and your map is of good
+quality, in many cases it will prove much faster to simply start from the
+individual monomers.</p>
+<p>Clicking the following link will load the docked (and trimmed) AlphaFold models
+and the cryo-EM map and prep them for ISOLDE, and also load the full-length
+AlphaFold models from the <a class="reference external" href="https://alphafold.ebi.ac.uk/">AlphaFold database</a>:</p>
+<p><a class="reference external" href="cxcmd:isolde demo clashes_intro">isolde demo clashes_intro</a></p>
+<p><em>(Remember, if you - like me - prefer the transparent surface map representation
+over wireframe, you can switch to that style using the “Noncrystallographic Map
+Settings” widget.)</em></p>
+<p>Go to ISOLDE’s Validate tab and expand the Clashes widget:</p>
+<figure class="align-default">
+<img alt="../../../_images/clashes_table.png" src="../../../_images/clashes_table.png" />
+</figure>
+<p>Hmm… not what you generally want to see - given that the radius of a carbon
+atom is about 1.7 Angstroms, a 3.1 Angstrom clash is getting very close to as
+bad as it can be (3.4 Angstroms, with the atoms exactly on top of each other).
+No matter - we can still sort this out fairly straightforwardly. But first,
+let’s have a look at how this happened. Click on the top entry in the table to
+focus the view on it, then zoom out a bit. Let’s also open the deposited structure
+to compare:</p>
+<p><a class="reference external" href="cxcmd:open 7w3v;color #4/A orange;color #4/C brown">open 7w3v; color #4/A orange; color #4/C brown</a></p>
+<figure class="align-default">
+<img alt="../../../_images/comparison_to_deposited.jpg" src="../../../_images/comparison_to_deposited.jpg" />
+</figure>
+<p>True to form, AlphaFold appears to have gotten the big leucine-rich repeat
+domain generally correct locally, but has pulled a bit too tight in the
+long-range curvature - creating a severe overlap with chain A. Prior to ISOLDE
+1.6 the approach to a problem like this would have been to fit each chain
+individually before combining them into one model and painstakingly
+checking/reducing any remaining clashes before moving forward. Nowadays it’s
+much easier. Let’s close the deposited model and start experimenting.</p>
+<p><a class="reference external" href="cxcmd:close #4">close #4</a></p>
+<p>First, let’s just confirm what would happen if you tried to start this simulation
+without softcore potentials. Go to the Nonbonded Potentials widget on ISOLDE’s
+General tab, and uncheck the “Use softcore nonbonded potentials” box.</p>
+<figure class="align-default">
+<img alt="../../../_images/unchecked_softcore_potentials.png" src="../../../_images/unchecked_softcore_potentials.png" />
+</figure>
+<p><strong>(NOTE: if you are using a machine without a high-end Nvidia GPU or generally
+find simulations running too slow for your liking, try switching the “Simulation
+Fidelity/Speed” to “Lowest/Fastest” on ISOLDE’s General tab before starting a
+new simulation.)</strong></p>
+<p>Now try to start a simulation. Select the model and click ISOLDE’s play button, or:</p>
+<p><a class="reference external" href="cxcmd:isolde sim start #1">isolde sim start #1</a></p>
+<p>The minimiser will spend some time trying and failing to find a way out of the
+mess, before bringing up the clashes popup menu and (after you click OK) opening
+the clashes widget. There’s really not much to be done in this state, and we’ll
+need to start a new simulation to introduce the softcore potentials. Close the
+clashes widget, and click either ISOLDE’s red stop button or the link below to
+throw out this simulation.</p>
+<p><a class="reference external" href="cxcmd:isolde sim stop discardTo start">isolde sim stop discardTo start</a></p>
+<p>Now, check the “Use softcore nonbonded potentials” checkbox and try again.</p>
+<figure class="align-default">
+<img alt="../../../_images/checked_softcore_potentials.png" src="../../../_images/checked_softcore_potentials.png" />
+</figure>
+<p><a class="reference external" href="cxcmd:isolde sim start #1">isolde sim start #1</a></p>
+<figure class="align-default">
+<img alt="../../../_images/ridiculously_stretched_bonds.jpg" src="../../../_images/ridiculously_stretched_bonds.jpg" />
+</figure>
+<p>Well… at least it started this time - but I’m sure you’ll agree that this
+result isn’t particularly great either. Let’s throw out this simulation and talk
+strategy.</p>
+<p><a class="reference external" href="cxcmd:isolde sim stop discardTo start">isolde sim stop discardTo start</a></p>
+<p>There are two key problems we need to overcome here:</p>
+<ol class="loweralpha simple">
+<li><p>The nonbonded potentials are still too strong to let the trapped atoms escape; and</p></li>
+</ol>
+<p>(b) Even if we weaken them further, the interactions in the entangled region are
+still going to badly mess up the local structure.</p>
+<p>Let’s tackle the second problem first. The local starting geometry of each individual
+chain is generally very good, so let’s go ahead and restrain them using local distance
+and torsion restraints (see <a class="reference internal" href="../../../tools/gui/rebuild.html#reference-model-restraints"><span class="std std-ref">Reference Models</span></a>). Expand the
+Reference Models widget on ISOLDE’s Restraints tab, click the “Reference model:”
+drop-down menu and click “2: AlphaFold Q30BZ2”. This will be automatically identified
+as corresponding to chain A, and aligned to the working model accordingly. Check both
+the “Distances” and “Torsions” checkboxes, then click “Apply”.</p>
+<figure class="align-default">
+<img alt="../../../_images/reference_model_restraints_widget.png" src="../../../_images/reference_model_restraints_widget.png" />
+</figure>
+<p>Now choose “3: AlphaFold A0A2I8B6R1” and apply restraints to chain C in the same way.
+This time you’ll get a pop-up warning message looking like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/plddt_warning.png" src="../../../_images/plddt_warning.png" />
+</figure>
+<p>Since you know this is actually an AlphaFold model, this warning can be safely
+ignored (click “No”). The essential problem here is that the “pLDDT” values used
+by AlphaFold to denote confidence are stored in the B-factor column, but aren’t
+actually B-factors. In fact, they’re inversely related - in general, high pLDDT
+values should correspond to low B-factors and vice versa. Since ISOLDE’s
+reference model tools aren’t meant just for AlphaFold models, it uses some
+simple sanity-check heuristics to decide if a model’s B factors actually “look
+like” pLDDT values. One of these is based on the idea that on average, alpha
+helices and beta strands have lower B-factors (and higher pLDDT) than other
+residues. But there are exceptions to every rule - in this chain, helices and
+strands make up just 43% of residues according to dssp, and their average pLDDT
+(86.1) is ever so slightly lower than the average for the remainder (87.4).
+Such is life - no method is entirely foolproof.</p>
+<p><em>(NOTE: while it’s already been done for you here, you can download the
+pre-calculated model for almost any protein in the UniProt database with
+“alphafold fetch {uniprot ID}”.)</em></p>
+<p>That’s all we need those AlphaFold models for, so you can go ahead and close
+them now:</p>
+<p><a class="reference external" href="cxcmd:close #2,3">close #2,3</a></p>
+<p>Zooming in should now reveal a somewhat cobwebby view like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/cobweb.jpg" src="../../../_images/cobweb.jpg" />
+</figure>
+<p>Let’s tidy that up a bit by telling ISOLDE to show only strained distance
+restraints. Collapse the Reference Models widget, and open the
+Manage/Release Adaptive Restraints widget underneath it. Drag the “Display
+Threshold” slider a little to the right:</p>
+<figure class="align-default">
+<img alt="../../../_images/display_threshold.png" src="../../../_images/display_threshold.png" />
+</figure>
+<p>All the distance restraint markup will disappear from the model. They’re not
+gone, though - any restraint that deviates beyond the display threshold will
+automatically appear.</p>
+<p>Now switch back to the General tab, and take a closer look at the Nonbonded
+Potentials widget.</p>
+<figure class="align-default">
+<img alt="../../../_images/checked_softcore_potentials.png" src="../../../_images/checked_softcore_potentials.png" />
+</figure>
+<p>You’ll notice there are <strong>two</strong> <em>λ</em> sliders. The top one controls the softness
+during energy minimisation (a generally non-interactive step that happens at
+the start of each simulation; when coordinates are changed in a
+non-simulation-driven way - e.g. by setting a sidechain to the rotamer preview
+coordinates; or in the rare situation when ISOLDE detects one or more atoms
+moving at an excessive velocity). Under most circumstances you shouldn’t need
+to change the default value of this, but feel free to experiment.</p>
+<p>The bottom slider controls the softness during actual interactive dynamics.
+Drag that one back and forth and watch what it does to the plot underneath
+(note that the bottom half of the plot is on a linear scale to show the details
+in the region important to equlibrium behaviour, while the top half is on a
+log scale). When you’re done, hit the “Reset” button to the right of the slider
+to return to the default value of 0.95.</p>
+<p>Now, let’s start a new simulation and see what happens:</p>
+<p><a class="reference external" href="cxcmd:isolde sim start #1">isolde sim start #1</a></p>
+<p>After a few seconds it should start looking something like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/clash_zone_with_restraints.jpg" src="../../../_images/clash_zone_with_restraints.jpg" />
+</figure>
+<p>The extra “reinforcement” provided by the restraints is helping chain C settle
+correctly towards its density, but atoms in the clash zone are still trapped
+by their nonbonded interactions. Now, <strong>without</strong> pausing the simulation,
+try gradually dragging the <em>λ</em> (equil) slider to the left. As the value approaches
+about 0.5 you should start to see some new movement, and at around 0.25 you
+should hit the point where the van der Waals potential barriers drop far enough
+to be overcome by standard covalent bonds and reference model restraints. If things
+have gone correctly, the problem region should now look something like this:</p>
+<figure class="align-default">
+<img alt="../../../_images/settled.jpg" src="../../../_images/settled.jpg" />
+</figure>
+<p>When it does, hit the “Reset” button beside the <em>λ</em> (equil) to return to the
+default potential setting, then go ahead and stop your simulation.</p>
+<p>If you have a browse around through the model, you’ll see that the overall fit is
+now much improved - but there remain numerous local imperfections. Some (perhaps
+most) look to be attributable to conformational changes induced by binding
+(assuming that the AlphaFold model for each chain is most representative of the
+unbound state), but others are probably due to mistakes made by AlphaFold itself -
+always remember: while it’s usually very good, it’s by no means perfect.</p>
+<p>However, fixing model/map discrepancies and errors like these is already covered in
+some detail in the <a class="reference internal" href="../../alphafold/from_scratch/from_scratch.html#alphafold-top-down-tutorial"><span class="std std-ref">Top-Down Modelling with AlphaFold-DB Models</span></a>, <a class="reference internal" href="../../alphafold/multimer/alphafold_multimer_cryoem.html#alphafold-multimer-cryoem-tutorial"><span class="std std-ref">Building Into CryoEM Maps With Your Own AlphaFold Multimer Models</span></a>
+and <a class="reference internal" href="../../alphafold/molecular_replacement/alphafold_mr.html#alphafold-mr-tutorial"><span class="std std-ref">Starting From a Molecular Replacement Solution for a Flexible Protein</span></a> tutorials, so I won’t rehash that here. Suffice
+to say that with this model and map, you’re now at about the state where those
+tutorials begin.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../isolde.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../isolde.html">Home</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../tools/ISOLDE.html">The ISOLDE GUI</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../tools/intro.html">What is ISOLDE all about?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tools/requirements.html">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tools/gui/index.html">GUI Details</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../isolde.html">Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../commands/isolde_restrain.html">Adaptive Restraint Schemes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../commands/isolde_remote.html">Remote Control Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../commands/isolde.html">The ISOLDE Command Line</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/isolde.html">ISOLDE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools/citing.html">Citing ISOLDE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools/contact.html">Contact Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../isolde.html">Documentation overview</a><ul>
+  <li><a href="../../../tools/ISOLDE.html">The ISOLDE GUI</a><ul>
+  <li><a href="../../isolde.html">Tutorials</a><ul>
+      <li>Previous: <a href="../cryo_intro/cryo_intro.html" title="previous chapter">Introduction to cryo-EM model rebuilding in ISOLDE</a></li>
+      <li>Next: <a href="../../alphafold/from_scratch/from_scratch.html" title="next chapter">Top-Down Modelling with AlphaFold-DB Models</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016-2023, Tristan Croll.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="../../../_sources/tutorials/intro/clashes/clashes.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

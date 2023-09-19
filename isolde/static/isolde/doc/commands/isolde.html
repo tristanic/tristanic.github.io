@@ -1,19 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>The ISOLDE Command Line &#8212; ISOLDE 1.4 documentation</title>
+    <title>The ISOLDE Command Line &#8212; ISOLDE 1.6.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/external_links.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -57,20 +56,20 @@
 </ul>
 </div>
 <section id="the-isolde-command-line">
-<h1>The ISOLDE Command Line<a class="headerlink" href="isolde.html#the-isolde-command-line" title="Permalink to this headline">¶</a></h1>
+<h1>The ISOLDE Command Line<a class="headerlink" href="#the-isolde-command-line" title="Permalink to this heading">¶</a></h1>
 <p>While the primary mode of control of ISOLDE is via <a class="reference internal" href="../tools/ISOLDE.html#isolde-gui"><span class="std std-ref">The ISOLDE GUI</span></a>, if you
 prefer you can also perform many tasks via the command line, such as launching
-the GUI (<a class="reference internal" href="isolde.html#start"><span class="std std-ref">isolde start</span></a>), starting, stopping and pausing simulations (<a class="reference internal" href="isolde.html#sim"><span class="std std-ref">isolde sim</span></a>),
-and performing basic manipulations (<a class="reference internal" href="isolde.html#pepflip"><span class="std std-ref">isolde pepflip</span></a> and <a class="reference internal" href="isolde.html#cisflip"><span class="std std-ref">isolde cisflip</span></a>). Some
+the GUI (<a class="reference internal" href="#start"><span class="std std-ref">isolde start</span></a>), starting, stopping and pausing simulations (<a class="reference internal" href="#sim"><span class="std std-ref">isolde sim</span></a>),
+and performing basic manipulations (<a class="reference internal" href="#pepflip"><span class="std std-ref">isolde pepflip</span></a> and <a class="reference internal" href="#cisflip"><span class="std std-ref">isolde cisflip</span></a>). Some
 functions are currently available <em>only</em> through the command line - in
 particular, <a class="reference internal" href="isolde_restrain.html#adaptive-restraint-schemes"><span class="std std-ref">Adaptive Restraint Schemes</span></a>.</p>
 <section id="isolde-tutorial">
-<span id="tutorial"></span><h2>isolde tutorial<a class="headerlink" href="isolde.html#isolde-tutorial" title="Permalink to this headline">¶</a></h2>
+<span id="tutorial"></span><h2>isolde tutorial<a class="headerlink" href="#isolde-tutorial" title="Permalink to this heading">¶</a></h2>
 <p>Brings up the ISOLDE <a class="reference internal" href="../tutorials/isolde.html#isolde-tutorials"><span class="std std-ref">Tutorials</span></a> help page, providing interactive
 case studies for working on models in ISOLDE.</p>
 </section>
 <section id="isolde-demo">
-<span id="demo"></span><h2>isolde demo<a class="headerlink" href="isolde.html#isolde-demo" title="Permalink to this headline">¶</a></h2>
+<span id="demo"></span><h2>isolde demo<a class="headerlink" href="#isolde-demo" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde demo <em>demoName</em> [<strong>modelOnly</strong> <em>true/false</em>] [<strong>startIsolde</strong> <em>true/false</em>]</p>
 <p>Primarily intended for use with the ISOLDE tutorials. Loads saved atomic
 coordinates for use in rebuilding.</p>
@@ -79,7 +78,7 @@ coordinates for use in rebuilding.</p>
 <p><em>startIsolde</em>: if true, the ISOLDE GUI will be started.</p>
 </section>
 <section id="isolde-start">
-<span id="start"></span><h2>isolde start<a class="headerlink" href="isolde.html#isolde-start" title="Permalink to this headline">¶</a></h2>
+<span id="start"></span><h2>isolde start<a class="headerlink" href="#isolde-start" title="Permalink to this heading">¶</a></h2>
 <p>Brings up <a class="reference internal" href="../tools/ISOLDE.html#isolde-gui"><span class="std std-ref">The ISOLDE GUI</span></a>. The first model in the list of open models will be
 automatically prepared with ISOLDE’s default visualisation mode. This also sets
 the display camera to orthographic projection and lighting to simple. It is
@@ -87,17 +86,17 @@ strongly recommended that you do not change these settings during your ISOLDE
 session.</p>
 </section>
 <section id="isolde-set">
-<span id="set"></span><h2>isolde set<a class="headerlink" href="isolde.html#isolde-set" title="Permalink to this headline">¶</a></h2>
+<span id="set"></span><h2>isolde set<a class="headerlink" href="#isolde-set" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde set [<strong>timeStepsPerGuiUpdate</strong> <em>integer</em>]
 [<strong>temperature</strong> <em>number</em>] [<strong>gpuDeviceIndex</strong> <em>integer</em>]</p>
 <p>Change various ISOLDE global settings.</p>
 </section>
 <section id="isolde-reset-forcefield">
-<h2>isolde reset forcefield<a class="headerlink" href="isolde.html#isolde-reset-forcefield" title="Permalink to this headline">¶</a></h2>
+<h2>isolde reset forcefield<a class="headerlink" href="#isolde-reset-forcefield" title="Permalink to this heading">¶</a></h2>
 <p>Delete cached forcefield files to reset to the as-installed state.</p>
 </section>
 <section id="isolde-report">
-<span id="report"></span><h2>isolde report<a class="headerlink" href="isolde.html#isolde-report" title="Permalink to this headline">¶</a></h2>
+<span id="report"></span><h2>isolde report<a class="headerlink" href="#isolde-report" title="Permalink to this heading">¶</a></h2>
 <p>Sytax: isolde report [<strong>true|false</strong> (true)]
 [<strong>interval</strong> <em>integer</em> (20)]</p>
 <p>Start/stop reporting information on simulation performance (time per coordinate
@@ -107,18 +106,18 @@ before reporting. Only valid while a simulation is running, and automatically
 terminates once that simulation stops.</p>
 </section>
 <section id="isolde-select">
-<span id="select"></span><h2>isolde select<a class="headerlink" href="isolde.html#isolde-select" title="Permalink to this headline">¶</a></h2>
+<span id="select"></span><h2>isolde select<a class="headerlink" href="#isolde-select" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde select <em>model</em></p>
 <p>Set the specified model as ISOLDE’s current selected model. If the target model
 has not already been initialised for control by Clipper to provide ISOLDE’s
 standard view, this command will cause that to happen.</p>
 </section>
 <section id="isolde-sim">
-<span id="sim"></span><h2>isolde sim<a class="headerlink" href="isolde.html#isolde-sim" title="Permalink to this headline">¶</a></h2>
+<span id="sim"></span><h2>isolde sim<a class="headerlink" href="#isolde-sim" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde sim <em>cmd</em> [<em>atoms</em>] [<strong>discardTo</strong> <em>discardTo</em>]</p>
 <p>Start, stop or pause an interactive simulation.</p>
 <section id="isolde-sim-start-atoms">
-<h3>isolde sim start [<em>atoms</em>]<a class="headerlink" href="isolde.html#isolde-sim-start-atoms" title="Permalink to this headline">¶</a></h3>
+<h3>isolde sim start [<em>atoms</em>]<a class="headerlink" href="#isolde-sim-start-atoms" title="Permalink to this heading">¶</a></h3>
 <p>Launches the ISOLDE GUI if not already running, and starts a simulation. If no
 atoms are specified, the simulation will encompass the entirety of the current
 selected model (or the first open model if ISOLDE is not already running). If
@@ -126,7 +125,7 @@ selected model (or the first open model if ISOLDE is not already running). If
 (if this is not the current selected model, ISOLDE will automatically switch).</p>
 </section>
 <section id="isolde-sim-stop-discardto-discardto">
-<h3>isolde sim stop [<strong>discardTo</strong> <em>discardTo</em>]<a class="headerlink" href="isolde.html#isolde-sim-stop-discardto-discardto" title="Permalink to this headline">¶</a></h3>
+<h3>isolde sim stop [<strong>discardTo</strong> <em>discardTo</em>]<a class="headerlink" href="#isolde-sim-stop-discardto-discardto" title="Permalink to this heading">¶</a></h3>
 <p><em>discardTo</em>: one of “checkpoint” or “start”</p>
 <p>Stop the currently running simulation, and optionally discard the results. If
 <em>discardTo</em> is not specified, the current state of the model will be kept.
@@ -134,16 +133,16 @@ Otherwise, the atomic positions and states of all restraints will be reverted
 either to the starting state or the last saved checkpoint.</p>
 </section>
 <section id="isolde-sim-pause">
-<h3>isolde sim pause<a class="headerlink" href="isolde.html#isolde-sim-pause" title="Permalink to this headline">¶</a></h3>
+<h3>isolde sim pause<a class="headerlink" href="#isolde-sim-pause" title="Permalink to this heading">¶</a></h3>
 <p>Pauses the current simulation.</p>
 </section>
 <section id="isolde-sim-resume">
-<h3>isolde sim resume<a class="headerlink" href="isolde.html#isolde-sim-resume" title="Permalink to this headline">¶</a></h3>
+<h3>isolde sim resume<a class="headerlink" href="#isolde-sim-resume" title="Permalink to this heading">¶</a></h3>
 <p>Resumes a paused simulation.</p>
 </section>
 </section>
 <section id="isolde-pepflip">
-<span id="pepflip"></span><h2>isolde pepflip<a class="headerlink" href="isolde.html#isolde-pepflip" title="Permalink to this headline">¶</a></h2>
+<span id="pepflip"></span><h2>isolde pepflip<a class="headerlink" href="#isolde-pepflip" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde pepflip <em>atoms</em></p>
 <p>Attempt to flip the peptide bond N-terminal to each selected residue, starting a
 suitable simulation if none is currently running. Requires ISOLDE to already be
@@ -151,7 +150,7 @@ initialised. Residues outside the model currently selected for ISOLDE (or
 outside the mobile selection if a simulation is running) will not be flipped.</p>
 </section>
 <section id="isolde-cisflip">
-<span id="cisflip"></span><h2>isolde cisflip<a class="headerlink" href="isolde.html#isolde-cisflip" title="Permalink to this headline">¶</a></h2>
+<span id="cisflip"></span><h2>isolde cisflip<a class="headerlink" href="#isolde-cisflip" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde cisflip <em>atoms</em></p>
 <p>Attempt to flip the peptide bond N-terminal to each selected residue from <em>cis</em>
 to <em>trans</em> or vice versa, starting a suitable simulation if none is currently
@@ -160,7 +159,7 @@ currently selected for ISOLDE (or outside the mobile selection if a simulation
 is running) will not be flipped.</p>
 </section>
 <section id="isolde-ignore">
-<span id="ignore"></span><h2>isolde ignore<a class="headerlink" href="isolde.html#isolde-ignore" title="Permalink to this headline">¶</a></h2>
+<span id="ignore"></span><h2>isolde ignore<a class="headerlink" href="#isolde-ignore" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde ignore <em>residues</em></p>
 <p>Tell ISOLDE to ignore a selection of residues in future simulations. This will
 not take effect until the next simulation is started. Ignored residues will
@@ -181,13 +180,13 @@ with everything included to resolve any remaining clashes.</p></li>
 </ul>
 <span id="~ignore"></span></section>
 <section id="id1">
-<span id="id2"></span><h2>isolde ~ignore<a class="headerlink" href="isolde.html#id1" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>isolde ~ignore<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde ~ignore <em>residues</em></p>
 <p>Tell ISOLDE to stop ignoring a selection of residues for simulation purposes.
 This will not take effect until the next new simulation is started.</p>
 </section>
 <section id="isolde-stepto">
-<span id="stepto"></span><h2>isolde stepto<a class="headerlink" href="isolde.html#isolde-stepto" title="Permalink to this headline">¶</a></h2>
+<span id="stepto"></span><h2>isolde stepto<a class="headerlink" href="#isolde-stepto" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde stepto [<em>residue or {next|prev}</em>] [<strong>viewDistance</strong> <em>number</em>]
 [<strong>interpolateFrames</strong> <em>integer</em>] [<strong>polymericOnly</strong> {<em>TRUE|false</em>}]</p>
 <p>Focus the camera on the specified residue, or the next/previous residue in the
@@ -206,13 +205,13 @@ arguments, this will be remembered for all future calls.</p>
 you make for one will not be carried over to others.</p>
 </section>
 <section id="isolde-jumpto">
-<span id="jumpto"></span><h2>isolde jumpto<a class="headerlink" href="isolde.html#isolde-jumpto" title="Permalink to this headline">¶</a></h2>
+<span id="jumpto"></span><h2>isolde jumpto<a class="headerlink" href="#isolde-jumpto" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde jumpto [<em>next|prev</em>]</p>
 <p>Jump the residue stepper to the first residue of the next chain, or last residue
 of the previous chain.</p>
 </section>
 <section id="isolde-add-aa">
-<span id="add-aa"></span><h2>isolde add aa<a class="headerlink" href="isolde.html#isolde-add-aa" title="Permalink to this headline">¶</a></h2>
+<span id="add-aa"></span><h2>isolde add aa<a class="headerlink" href="#isolde-add-aa" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde add aa <em>3-character resname</em> [<em>residue</em>] [<strong>addDirection</strong> <em>C|N</em>]
 [<strong>structure</strong> <em>model ID</em>] [<strong>chainID</strong> <em>string</em>] [<strong>number</strong> <em>integer</em>]
 [<strong>addBFactor</strong> <em>float</em>] [<strong>occupancy</strong> <em>float (1.0)</em>]
@@ -231,7 +230,7 @@ on both the N and C atoms.</p>
 The new residue will be placed at the current centre of rotation.</p>
 </section>
 <section id="isolde-add-ligand">
-<span id="add-ligand"></span><h2>isolde add ligand<a class="headerlink" href="isolde.html#isolde-add-ligand" title="Permalink to this headline">¶</a></h2>
+<span id="add-ligand"></span><h2>isolde add ligand<a class="headerlink" href="#isolde-add-ligand" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde add ligand <em>{residue ID}</em> [<em>model</em>]
 [<strong>position</strong> <em>list of three floats</em>] [<strong>bfactor</strong> <em>number</em>] [<strong>chain</strong> <em>string</em>]
 [<strong>distanceCutoff</strong> <em>number</em>] [<strong>simSettle</strong> {<em>true|FALSE</em>}]
@@ -268,7 +267,7 @@ template, it will be found and used as long as its name matches the residue
 name.</p>
 </section>
 <section id="isolde-add-water">
-<span id="add-water"></span><h2>isolde add water<a class="headerlink" href="isolde.html#isolde-add-water" title="Permalink to this headline">¶</a></h2>
+<span id="add-water"></span><h2>isolde add water<a class="headerlink" href="#isolde-add-water" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde add water [<em>model</em>] [<strong>position</strong> <em>list of three floats</em>]
 [<strong>bfactor</strong> <em>number</em>] [<strong>chain</strong> <em>string</em>]
 [<strong>distanceCutoff</strong> <em>number</em>] [<strong>simSettle</strong> {<em>TRUE|false</em>}]</p>
@@ -280,7 +279,7 @@ rarely a good idea to add a water outside of hydrogen bonding distance from the
 nearest existing atom(s).</p>
 </section>
 <section id="isolde-replace-ligand">
-<span id="replace-ligand"></span><h2>isolde replace ligand<a class="headerlink" href="isolde.html#isolde-replace-ligand" title="Permalink to this headline">¶</a></h2>
+<span id="replace-ligand"></span><h2>isolde replace ligand<a class="headerlink" href="#isolde-replace-ligand" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde replace ligand <em>residue</em> <em>newResidueName</em></p>
 <p><em>(EXPERIMENTAL)</em></p>
 <p>Replace one ligand with a related one, keeping as many atoms common to both as
@@ -291,20 +290,20 @@ D-sugar with its L-enantiomer will simply rename the residue while retaining the
 D coordinates. This will be improved upon in a future release.</p>
 </section>
 <section id="isolde-adjust-bfactors">
-<span id="adjust-bfactors"></span><h2>isolde adjust bfactors<a class="headerlink" href="isolde.html#isolde-adjust-bfactors" title="Permalink to this headline">¶</a></h2>
+<span id="adjust-bfactors"></span><h2>isolde adjust bfactors<a class="headerlink" href="#isolde-adjust-bfactors" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde adjust bfactors <em>float</em> [<em>atoms</em>]</p>
 <p>Increase/decrease B-factors of a set of atoms by the chosen amount. If no atoms are
 specified, the change will be applied to all currently-selected atoms. Will raise a
 UserError if the change would reduce any B-factor below zero.</p>
 </section>
 <section id="isolde-modify-his">
-<span id="modify-his"></span><h2>isolde modify his<a class="headerlink" href="isolde.html#isolde-modify-his" title="Permalink to this headline">¶</a></h2>
+<span id="modify-his"></span><h2>isolde modify his<a class="headerlink" href="#isolde-modify-his" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde modify his <em>residues</em> <em>{ND|NE|both}</em></p>
 <p>Modify one or more histidine residues to place the hydrogen on the
 specified atom. Should not be used while a simulation is running.</p>
 </section>
 <section id="isolde-parameterise">
-<span id="parameterise"></span><h2>isolde parameterise<a class="headerlink" href="isolde.html#isolde-parameterise" title="Permalink to this headline">¶</a></h2>
+<span id="parameterise"></span><h2>isolde parameterise<a class="headerlink" href="#isolde-parameterise" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde parameterise <em>residues</em> [<strong>override</strong> <em>true|FALSE</em>]
 [<strong>netCharge</strong> <em>integer</em>] [<strong>alwaysRaiseErrors</strong> <em>TRUE|false</em>]</p>
 <p>Parameterise one or more ligands for ISOLDE with the AMBER GAFF2
@@ -352,7 +351,7 @@ will be printed as warnings to the log, and parameterisation will still be attem
 any remaining residues.</p>
 </section>
 <section id="isolde-shorthand">
-<span id="shorthand"></span><h2>isolde shorthand<a class="headerlink" href="isolde.html#isolde-shorthand" title="Permalink to this headline">¶</a></h2>
+<span id="shorthand"></span><h2>isolde shorthand<a class="headerlink" href="#isolde-shorthand" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde shorthand</p>
 <p>Enables a set of shorthand aliases to commonly-used ISOLDE commands, and prints a summary
 to the log. <em>Note: you can permanently enable this by going to Favorites/Settings on the
@@ -360,10 +359,6 @@ ChimeraX menu, choosing the “Startup” tab and adding “isolde shorthand” 
 “Execute these commands at startup”.</em></p>
 <p>The current list of shorthand commands is as follows:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 9%" />
-<col style="width: 91%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Alias</p></th>
 <th class="head"><p>Equivalent full command</p></th>
@@ -429,7 +424,7 @@ ChimeraX menu, choosing the “Startup” tab and adding “isolde shorthand” 
 <span id="write-phenixRefineInput"></span>
 <span id="write"></span></section>
 <section id="isolde-write-phenixrefineinput">
-<span id="write-phenixrefineinput"></span><h2>isolde write phenixRefineInput<a class="headerlink" href="isolde.html#isolde-write-phenixrefineinput" title="Permalink to this headline">¶</a></h2>
+<span id="write-phenixrefineinput"></span><h2>isolde write phenixRefineInput<a class="headerlink" href="#isolde-write-phenixrefineinput" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde write phenixRefineInput <em>model ID</em>
 [<strong>modelFileName</strong> <em>filename</em>] [<strong>paramFileName</strong> <em>filename</em>]
 [<strong>includeHydrogens</strong> <em>true|FALSE</em>] [<strong>numProcessors</strong> <em>integer (1)</em>]
@@ -460,7 +455,7 @@ may on occasion fail in Phenix due to incorrectly-named hydrogens on some
 non-standard residues. This will be addressed in a future version.</p>
 <span id="write-phenixRsrInput"></span></section>
 <section id="isolde-write-phenixrsrinput">
-<span id="write-phenixrsrinput"></span><h2>isolde write phenixRsrInput<a class="headerlink" href="isolde.html#isolde-write-phenixrsrinput" title="Permalink to this headline">¶</a></h2>
+<span id="write-phenixrsrinput"></span><h2>isolde write phenixRsrInput<a class="headerlink" href="#isolde-write-phenixrsrinput" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde write phenixRsrInput <em>model ID</em> <em>resolution</em> <em>map ID</em>
 [<strong>modelFileName</strong> <em>filename</em>] [<strong>paramFileName</strong> <em>filename</em>]
 [<strong>restrainPositions</strong> <em>true|FALSE</em>] [<strong>includeHydrogens</strong> <em>true|FALSE</em>]</p>
@@ -504,7 +499,7 @@ may on occasion fail in Phenix due to incorrectly-named hydrogens on some
 non-standard residues. This will be addressed in a future version.</p>
 <span id="write-refmacRestraints"></span></section>
 <section id="isolde-write-refmacrestraints">
-<span id="write-refmacrestraints"></span><h2>isolde write refmacRestraints<a class="headerlink" href="isolde.html#isolde-write-refmacrestraints" title="Permalink to this headline">¶</a></h2>
+<span id="write-refmacrestraints"></span><h2>isolde write refmacRestraints<a class="headerlink" href="#isolde-write-refmacrestraints" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde write refmacRestraints <em>model ID</em> [<strong>distanceCutoff</strong> <em>number (4.5)</em>]
 [<strong>includeWaters</strong> <em>true|FALSE</em>] [<strong>fileName</strong> <em>filename (RESTRAINTS.txt)</em>]</p>
 <p>Writes a REFMAC input file similar to one generated by ProSMART to restrain heavy atom interatomic
@@ -518,7 +513,7 @@ blows out <strong>extremely</strong> rapidly with increasing <em>distanceCutoff<
 substantially would be inadvisable.</p>
 </section>
 <section id="reset-forcefield">
-<span id="id3"></span><h2>isolde reset forcefield<a class="headerlink" href="isolde.html#reset-forcefield" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2>isolde reset forcefield<a class="headerlink" href="#reset-forcefield" title="Permalink to this heading">¶</a></h2>
 <p>Syntax: isolde reset forcefield</p>
 <p>Reload ISOLDE’s forcefield from scratch. This removes the cached version (stored as a pickle file
 for faster startup) and reloads everything from the original ffXML files. Any custom ligand
@@ -526,44 +521,186 @@ definitions loaded in this session will need to be re-loaded if you wish to cont
 This command exists mostly for developer/debugging use and is primarily used when testing
 modifications/additions to the core force field.</p>
 </section>
+<section id="isolde-benchmark">
+<span id="benchmark"></span><h2>isolde benchmark<a class="headerlink" href="#isolde-benchmark" title="Permalink to this heading">¶</a></h2>
+<p>Syntax: isolde benchmark [<strong>maxSize</strong> <em>(small|medium|large|huge)</em>]
+[<strong>outputFile</strong> <em>(filename|browse)</em>] [<strong>warningDialog</strong> <em>(TRUE|false)</em>]
+[<strong>maxCoordUpdates</strong> <em>number (120)</em>] [<strong>minCoordUpdates</strong> <em>number (10)</em>]
+[<strong>maxSimTime</strong> <em>number (300)</em>]</p>
+<p>Runs a series of predefined simulations on selected models from the wwPDB and generates a performance
+report. This is designed to run non-interactively and can take a while to run (particularly for the
+first time, since the models and their maps/structure factors are downloaded from the wwPDB). For each
+model, ISOLDE will first run a simulation of the entire structure, followed by a simulation seeded from
+a single selected atom near the model centre (more representative of day-to-day use).</p>
+<p>Running
+statistics are printed to the ChimeraX log, and written as text to the file defined by <em>outputFile</em> (if
+<em>outputFile</em> is not specified, the file will be written to <em>isolde_benchmark.log</em> in the current working
+directory). As for most other ChimeraX commands involving filenames, the argument <em>outputFile browse</em>
+will open a system file browser allowing you to choose a directory and filename.</p>
+<p><em>maxSize</em> defines the largest set of models to benchmark against. Particularly on slower machines/connections it
+is advisable to avoid the <em>huge</em> benchmarks, since the time needed for these models is almost as much as the
+others put together. The benchmarks that will actually be run are:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Size</p></th>
+<th class="head" colspan="2"><p>Crystal benchmark</p></th>
+<th class="head" colspan="3"><p>Cryo-EM benchmark</p></th>
+</tr>
+<tr class="row-even"><th class="head"><p>.</p></th>
+<th class="head"><p>PDB ID</p></th>
+<th class="head"><p>Details</p></th>
+<th class="head"><p>PDB ID</p></th>
+<th class="head"><p>EMDB ID</p></th>
+<th class="head"><p>Details</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td><p>small</p></td>
+<td><p>3io0</p></td>
+<td><p>229 residues, 3.0 Å</p></td>
+<td><p>7rzq</p></td>
+<td><p>24774</p></td>
+<td><p>322 residues, 2.09 Å</p></td>
+</tr>
+<tr class="row-even"><td><p>medium</p></td>
+<td><p>6nak</p></td>
+<td><p>1383 residues, 3.14 Å</p></td>
+<td><p>8ehg</p></td>
+<td><p>28147</p></td>
+<td><p>1372 residues, 2.24 Å</p></td>
+</tr>
+<tr class="row-odd"><td><p>large</p></td>
+<td><p>8cjh</p></td>
+<td><p>2892 residues, 2.98 Å</p></td>
+<td><p>7nhs</p></td>
+<td><p>12339</p></td>
+<td><p>4176 residues, 2.30 Å</p></td>
+</tr>
+<tr class="row-even"><td><p>huge</p></td>
+<td><p>5zju</p></td>
+<td><p>11290 residues, 2.80 Å</p></td>
+<td><p>7oyb</p></td>
+<td><p>13112</p></td>
+<td><p>15830 residues, 2.40 Å</p></td>
+</tr>
+</tbody>
+</table>
+<p>By default, executing this command brings up a warning dialog asking you not to interact with ChimeraX while
+the benchmarks are running. To skip this, use the argument <em>warningDialog false</em>.</p>
+<p>For each benchmark simulation, a timer will start at the moment of initialisation (the equivalent of a user
+pressing the “play” button). Once energy minimisation is complete, the simulation will continue until at
+least <em>minCoordUpdates</em> equilibration steps have occurred. If the elapsed time is still less than <em>maxSimTime</em>
+the simulation will continue until either <em>maxCoordUpdates</em> or <em>maxSimTime</em> is reached.</p>
+<p>An example of the output file format is below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OpenGL</span> <span class="n">version</span><span class="p">:</span> <span class="mf">3.3.0</span> <span class="n">NVIDIA</span> <span class="mf">528.24</span>
+<span class="n">OpenGL</span> <span class="n">renderer</span><span class="p">:</span> <span class="n">NVIDIA</span> <span class="n">GeForce</span> <span class="n">RTX</span> <span class="mi">3070</span> <span class="n">Laptop</span> <span class="n">GPU</span><span class="o">/</span><span class="n">PCIe</span><span class="o">/</span><span class="n">SSE2</span>
+<span class="n">OpenGL</span> <span class="n">vendor</span><span class="p">:</span> <span class="n">NVIDIA</span> <span class="n">Corporation</span>
+
+<span class="n">Manufacturer</span><span class="p">:</span> <span class="n">HP</span>
+<span class="n">Model</span><span class="p">:</span> <span class="n">HP</span> <span class="n">ZBook</span> <span class="n">Studio</span> <span class="mf">15.6</span> <span class="n">inch</span> <span class="n">G8</span> <span class="n">Mobile</span> <span class="n">Workstation</span> <span class="n">PC</span>
+<span class="n">OS</span><span class="p">:</span> <span class="n">Microsoft</span> <span class="n">Windows</span> <span class="mi">11</span> <span class="n">Pro</span> <span class="p">(</span><span class="n">Build</span> <span class="mi">22621</span><span class="p">)</span>
+<span class="n">Memory</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span><span class="mi">007</span><span class="p">,</span><span class="mi">068</span><span class="p">,</span><span class="mi">672</span>
+<span class="n">MaxProcessMemory</span><span class="p">:</span> <span class="mi">137</span><span class="p">,</span><span class="mi">438</span><span class="p">,</span><span class="mi">953</span><span class="p">,</span><span class="mi">344</span>
+<span class="n">CPU</span><span class="p">:</span> <span class="mi">16</span> <span class="mi">11</span><span class="n">th</span> <span class="n">Gen</span> <span class="n">Intel</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="n">Core</span><span class="p">(</span><span class="n">TM</span><span class="p">)</span> <span class="n">i7</span><span class="o">-</span><span class="mi">11800</span><span class="n">H</span> <span class="o">@</span> <span class="mf">2.30</span><span class="n">GHz</span>
+<span class="n">OSLanguage</span><span class="p">:</span> <span class="n">en</span><span class="o">-</span><span class="n">GB</span>
+
+<span class="n">Simulation</span> <span class="n">timesteps</span> <span class="n">per</span> <span class="n">coordinate</span> <span class="n">update</span><span class="p">:</span> <span class="mi">50</span>
+<span class="n">Nonbonded</span> <span class="n">cutoff</span> <span class="n">distance</span><span class="p">:</span> <span class="mf">1.7</span> <span class="n">nm</span>
+<span class="n">Using</span> <span class="n">implicit</span> <span class="n">solvent</span><span class="p">:</span> <span class="kc">True</span>
+<span class="n">Implicit</span> <span class="n">solvent</span> <span class="n">cutoff</span> <span class="n">distance</span><span class="p">:</span> <span class="mf">2.0</span> <span class="n">nm</span>
+<span class="n">PDB</span> <span class="n">ID</span><span class="p">:</span>       <span class="mi">3</span><span class="n">io0</span>
+<span class="o">====================</span>
+<span class="n">Selection</span> <span class="n">string</span><span class="p">:</span>     <span class="c1">#1.2</span>
+<span class="n">Simulated</span> <span class="n">atom</span> <span class="n">count</span><span class="p">:</span> <span class="mi">3351</span>
+<span class="n">Platform</span><span class="p">:</span>     <span class="n">CUDA</span>
+<span class="n">Time</span> <span class="n">to</span> <span class="n">first</span> <span class="n">coord</span> <span class="n">update</span><span class="p">:</span>   <span class="mf">2.1929705142974854</span>
+<span class="n">Minimization</span> <span class="n">time</span><span class="p">:</span>    <span class="mf">0.8542594909667969</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">coord</span> <span class="n">update</span> <span class="p">(</span><span class="n">mean</span><span class="p">):</span> <span class="mf">0.04789997107230577</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">coord</span> <span class="n">update</span> <span class="p">(</span><span class="n">std</span><span class="p">):</span>  <span class="mf">0.021273512718791954</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">x</span><span class="o">-</span><span class="n">ray</span> <span class="nb">map</span> <span class="n">recalculation</span> <span class="p">(</span><span class="n">mean</span><span class="p">):</span>      <span class="mf">0.5596075739179339</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">x</span><span class="o">-</span><span class="n">ray</span> <span class="nb">map</span> <span class="n">recalculation</span> <span class="p">(</span><span class="n">std</span><span class="p">):</span>       <span class="mf">0.2632701705724466</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">graphics</span> <span class="n">update</span> <span class="p">(</span><span class="n">mean</span><span class="p">):</span>      <span class="mf">0.04160166902151721</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">graphics</span> <span class="n">update</span> <span class="p">(</span><span class="n">std</span><span class="p">):</span>       <span class="mf">0.022757995120602312</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">graphics</span> <span class="n">update</span> <span class="p">(</span><span class="n">slowest</span><span class="p">):</span>   <span class="mf">0.27135753631591797</span>
+<span class="o">----------</span>
+<span class="n">Selection</span> <span class="n">string</span><span class="p">:</span>     <span class="c1">#1.2/A:126</span>
+<span class="n">Simulated</span> <span class="n">atom</span> <span class="n">count</span><span class="p">:</span> <span class="mi">2707</span>
+<span class="n">Platform</span><span class="p">:</span>     <span class="n">CUDA</span>
+<span class="n">Time</span> <span class="n">to</span> <span class="n">first</span> <span class="n">coord</span> <span class="n">update</span><span class="p">:</span>   <span class="mf">1.8390088081359863</span>
+<span class="n">Minimization</span> <span class="n">time</span><span class="p">:</span>    <span class="mf">0.09216737747192383</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">coord</span> <span class="n">update</span> <span class="p">(</span><span class="n">mean</span><span class="p">):</span> <span class="mf">0.04065220307983808</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">coord</span> <span class="n">update</span> <span class="p">(</span><span class="n">std</span><span class="p">):</span>  <span class="mf">0.011054394755417534</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">x</span><span class="o">-</span><span class="n">ray</span> <span class="nb">map</span> <span class="n">recalculation</span> <span class="p">(</span><span class="n">mean</span><span class="p">):</span>      <span class="mf">0.6834243403540717</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">x</span><span class="o">-</span><span class="n">ray</span> <span class="nb">map</span> <span class="n">recalculation</span> <span class="p">(</span><span class="n">std</span><span class="p">):</span>       <span class="mf">0.4560358955934349</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">graphics</span> <span class="n">update</span> <span class="p">(</span><span class="n">mean</span><span class="p">):</span>      <span class="mf">0.03488120729523587</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">graphics</span> <span class="n">update</span> <span class="p">(</span><span class="n">std</span><span class="p">):</span>       <span class="mf">0.013481108798147958</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">graphics</span> <span class="n">update</span> <span class="p">(</span><span class="n">slowest</span><span class="p">):</span>   <span class="mf">0.09042668342590332</span>
+<span class="o">----------</span>
+<span class="n">PDB</span> <span class="n">ID</span><span class="p">:</span>       <span class="mi">7</span><span class="n">rzq</span>
+<span class="o">====================</span>
+<span class="n">Selection</span> <span class="n">string</span><span class="p">:</span>     <span class="c1">#1.2</span>
+<span class="n">Simulated</span> <span class="n">atom</span> <span class="n">count</span><span class="p">:</span> <span class="mi">4913</span>
+<span class="n">Platform</span><span class="p">:</span>     <span class="n">CUDA</span>
+<span class="n">Time</span> <span class="n">to</span> <span class="n">first</span> <span class="n">coord</span> <span class="n">update</span><span class="p">:</span>   <span class="mf">2.601433038711548</span>
+<span class="n">Minimization</span> <span class="n">time</span><span class="p">:</span>    <span class="mf">1.1442956924438477</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">coord</span> <span class="n">update</span> <span class="p">(</span><span class="n">mean</span><span class="p">):</span> <span class="mf">0.048584105984476586</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">coord</span> <span class="n">update</span> <span class="p">(</span><span class="n">std</span><span class="p">):</span>  <span class="mf">0.004660827155869477</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">graphics</span> <span class="n">update</span> <span class="p">(</span><span class="n">mean</span><span class="p">):</span>      <span class="mf">0.018363032763517355</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">graphics</span> <span class="n">update</span> <span class="p">(</span><span class="n">std</span><span class="p">):</span>       <span class="mf">0.006425427330208577</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">graphics</span> <span class="n">update</span> <span class="p">(</span><span class="n">slowest</span><span class="p">):</span>   <span class="mf">0.04839634895324707</span>
+<span class="o">----------</span>
+<span class="n">Selection</span> <span class="n">string</span><span class="p">:</span>     <span class="c1">#1.2/C:959</span>
+<span class="n">Simulated</span> <span class="n">atom</span> <span class="n">count</span><span class="p">:</span> <span class="mi">1946</span>
+<span class="n">Platform</span><span class="p">:</span>     <span class="n">CUDA</span>
+<span class="n">Time</span> <span class="n">to</span> <span class="n">first</span> <span class="n">coord</span> <span class="n">update</span><span class="p">:</span>   <span class="mf">1.6841599941253662</span>
+<span class="n">Minimization</span> <span class="n">time</span><span class="p">:</span>    <span class="mf">0.11556077003479004</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">coord</span> <span class="n">update</span> <span class="p">(</span><span class="n">mean</span><span class="p">):</span> <span class="mf">0.03128157526054638</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">coord</span> <span class="n">update</span> <span class="p">(</span><span class="n">std</span><span class="p">):</span>  <span class="mf">0.0032794936655442634</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">graphics</span> <span class="n">update</span> <span class="p">(</span><span class="n">mean</span><span class="p">):</span>      <span class="mf">0.017639152119668683</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">graphics</span> <span class="n">update</span> <span class="p">(</span><span class="n">std</span><span class="p">):</span>       <span class="mf">0.004657657000208569</span>
+<span class="n">Time</span> <span class="n">per</span> <span class="n">graphics</span> <span class="n">update</span> <span class="p">(</span><span class="n">slowest</span><span class="p">):</span>   <span class="mf">0.04112887382507324</span>
+<span class="o">----------</span>
+</pre></div>
+</div>
+</section>
 <section id="isolde-restrain-distances">
-<span id="restrain-distances"></span><h2>isolde restrain distances<a class="headerlink" href="isolde.html#isolde-restrain-distances" title="Permalink to this headline">¶</a></h2>
+<span id="restrain-distances"></span><h2>isolde restrain distances<a class="headerlink" href="#isolde-restrain-distances" title="Permalink to this heading">¶</a></h2>
 <p>See <a class="reference internal" href="isolde_restrain.html#adaptive-restraint-schemes"><span class="std std-ref">Adaptive Restraint Schemes</span></a></p>
 </section>
 <section id="isolde-release-distances">
-<span id="release-distances"></span><h2>isolde release distances<a class="headerlink" href="isolde.html#isolde-release-distances" title="Permalink to this headline">¶</a></h2>
+<span id="release-distances"></span><h2>isolde release distances<a class="headerlink" href="#isolde-release-distances" title="Permalink to this heading">¶</a></h2>
 <p>See <a class="reference internal" href="isolde_restrain.html#adaptive-restraint-schemes"><span class="std std-ref">Adaptive Restraint Schemes</span></a></p>
 </section>
 <section id="isolde-adjust-distances">
-<span id="adjust-distances"></span><h2>isolde adjust distances<a class="headerlink" href="isolde.html#isolde-adjust-distances" title="Permalink to this headline">¶</a></h2>
+<span id="adjust-distances"></span><h2>isolde adjust distances<a class="headerlink" href="#isolde-adjust-distances" title="Permalink to this heading">¶</a></h2>
 <p>See <a class="reference internal" href="isolde_restrain.html#adaptive-restraint-schemes"><span class="std std-ref">Adaptive Restraint Schemes</span></a></p>
 </section>
 <section id="isolde-restrain-torsions">
-<span id="restrain-torsions"></span><h2>isolde restrain torsions<a class="headerlink" href="isolde.html#isolde-restrain-torsions" title="Permalink to this headline">¶</a></h2>
+<span id="restrain-torsions"></span><h2>isolde restrain torsions<a class="headerlink" href="#isolde-restrain-torsions" title="Permalink to this heading">¶</a></h2>
 <p>See <a class="reference internal" href="isolde_restrain.html#adaptive-dihedral-restraint-cmd"><span class="std std-ref">isolde restrain torsions</span></a></p>
 </section>
 <section id="isolde-adjust-torsions">
-<span id="adjust-torsions"></span><h2>isolde adjust torsions<a class="headerlink" href="isolde.html#isolde-adjust-torsions" title="Permalink to this headline">¶</a></h2>
+<span id="adjust-torsions"></span><h2>isolde adjust torsions<a class="headerlink" href="#isolde-adjust-torsions" title="Permalink to this heading">¶</a></h2>
 <p>See <a class="reference internal" href="isolde_restrain.html#adaptive-dihedral-restraint-cmd"><span class="std std-ref">isolde restrain torsions</span></a></p>
 </section>
 <section id="isolde-release-torsions">
-<span id="release-torsions"></span><h2>isolde release torsions<a class="headerlink" href="isolde.html#isolde-release-torsions" title="Permalink to this headline">¶</a></h2>
+<span id="release-torsions"></span><h2>isolde release torsions<a class="headerlink" href="#isolde-release-torsions" title="Permalink to this heading">¶</a></h2>
 <p>See <a class="reference internal" href="isolde_restrain.html#adaptive-dihedral-restraint-cmd"><span class="std std-ref">isolde restrain torsions</span></a></p>
 </section>
 <section id="isolde-remote-rest-start">
-<span id="remote-rest-start"></span><span id="remote-xmlrpc"></span><h2>isolde remote rest start<a class="headerlink" href="isolde.html#isolde-remote-rest-start" title="Permalink to this headline">¶</a></h2>
+<span id="remote-rest-start"></span><span id="remote-xmlrpc"></span><h2>isolde remote rest start<a class="headerlink" href="#isolde-remote-rest-start" title="Permalink to this heading">¶</a></h2>
 <p>See <a class="reference internal" href="isolde_remote.html#remote-control-cmd"><span class="std std-ref">Remote Control Options</span></a></p>
 </section>
 <section id="isolde-remote-rest-stop">
-<span id="remote-rest-stop"></span><h2>isolde remote rest stop<a class="headerlink" href="isolde.html#isolde-remote-rest-stop" title="Permalink to this headline">¶</a></h2>
+<span id="remote-rest-stop"></span><h2>isolde remote rest stop<a class="headerlink" href="#isolde-remote-rest-stop" title="Permalink to this heading">¶</a></h2>
 <p>See <a class="reference internal" href="isolde_remote.html#remote-control-cmd"><span class="std std-ref">Remote Control Options</span></a></p>
 </section>
 <section id="isolde-remote-rest-info">
-<span id="remote-rest-info"></span><h2>isolde remote rest info<a class="headerlink" href="isolde.html#isolde-remote-rest-info" title="Permalink to this headline">¶</a></h2>
+<span id="remote-rest-info"></span><h2>isolde remote rest info<a class="headerlink" href="#isolde-remote-rest-info" title="Permalink to this heading">¶</a></h2>
 <p>See <a class="reference internal" href="isolde_remote.html#remote-control-cmd"><span class="std std-ref">Remote Control Options</span></a></p>
 </section>
 <section id="isolde-remote-xmlrpc">
-<h2>isolde remote xmlrpc<a class="headerlink" href="isolde.html#isolde-remote-xmlrpc" title="Permalink to this headline">¶</a></h2>
+<h2>isolde remote xmlrpc<a class="headerlink" href="#isolde-remote-xmlrpc" title="Permalink to this heading">¶</a></h2>
 <p>See <a class="reference internal" href="isolde_remote.html#remote-control-cmd"><span class="std std-ref">Remote Control Options</span></a></p>
 </section>
 </section>
@@ -581,43 +718,44 @@ modifications/additions to the core force field.</p>
 <li class="toctree-l1"><a class="reference internal" href="../tools/ISOLDE.html">The ISOLDE GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="isolde_restrain.html">Adaptive Restraint Schemes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="isolde_remote.html">Remote Control Options</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="isolde.html#">The ISOLDE Command Line</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-tutorial">isolde tutorial</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-demo">isolde demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-start">isolde start</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-set">isolde set</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-reset-forcefield">isolde reset forcefield</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-report">isolde report</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-select">isolde select</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-sim">isolde sim</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-pepflip">isolde pepflip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-cisflip">isolde cisflip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-ignore">isolde ignore</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#id1">isolde ~ignore</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-stepto">isolde stepto</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-jumpto">isolde jumpto</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-add-aa">isolde add aa</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-add-ligand">isolde add ligand</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-add-water">isolde add water</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-replace-ligand">isolde replace ligand</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-adjust-bfactors">isolde adjust bfactors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-modify-his">isolde modify his</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-parameterise">isolde parameterise</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-shorthand">isolde shorthand</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-write-phenixrefineinput">isolde write phenixRefineInput</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-write-phenixrsrinput">isolde write phenixRsrInput</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-write-refmacrestraints">isolde write refmacRestraints</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#reset-forcefield">isolde reset forcefield</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-restrain-distances">isolde restrain distances</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-release-distances">isolde release distances</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-adjust-distances">isolde adjust distances</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-restrain-torsions">isolde restrain torsions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-adjust-torsions">isolde adjust torsions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-release-torsions">isolde release torsions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-remote-rest-start">isolde remote rest start</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-remote-rest-stop">isolde remote rest stop</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-remote-rest-info">isolde remote rest info</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isolde.html#isolde-remote-xmlrpc">isolde remote xmlrpc</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The ISOLDE Command Line</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-tutorial">isolde tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-demo">isolde demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-start">isolde start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-set">isolde set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-reset-forcefield">isolde reset forcefield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-report">isolde report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-select">isolde select</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-sim">isolde sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-pepflip">isolde pepflip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-cisflip">isolde cisflip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-ignore">isolde ignore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">isolde ~ignore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-stepto">isolde stepto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-jumpto">isolde jumpto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-add-aa">isolde add aa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-add-ligand">isolde add ligand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-add-water">isolde add water</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-replace-ligand">isolde replace ligand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-adjust-bfactors">isolde adjust bfactors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-modify-his">isolde modify his</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-parameterise">isolde parameterise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-shorthand">isolde shorthand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-write-phenixrefineinput">isolde write phenixRefineInput</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-write-phenixrsrinput">isolde write phenixRsrInput</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-write-refmacrestraints">isolde write refmacRestraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reset-forcefield">isolde reset forcefield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-benchmark">isolde benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-restrain-distances">isolde restrain distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-release-distances">isolde release distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-adjust-distances">isolde adjust distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-restrain-torsions">isolde restrain torsions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-adjust-torsions">isolde adjust torsions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-release-torsions">isolde release torsions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-remote-rest-start">isolde remote rest start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-remote-rest-stop">isolde remote rest stop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-remote-rest-info">isolde remote rest info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isolde-remote-xmlrpc">isolde remote xmlrpc</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api/isolde.html">ISOLDE Python API</a></li>
@@ -643,17 +781,17 @@ modifications/additions to the core force field.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016-2022, Tristan Croll.
+      &copy;2016-2023, Tristan Croll.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="../_sources/commands/isolde.rst.txt"

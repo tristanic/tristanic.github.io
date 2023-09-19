@@ -1,24 +1,23 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Top-Down Modelling with AlphaFold-DB Models &#8212; ISOLDE 1.4 documentation</title>
+    <title>Top-Down Modelling with AlphaFold-DB Models &#8212; ISOLDE 1.6.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/jquery.js"></script>
-    <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/external_links.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Improving Legacy Models Using AlphaFold" href="../reference_model/af2_reference.html" />
-    <link rel="prev" title="Introduction to cryo-EM model rebuilding in ISOLDE" href="../../intro/cryo_intro/cryo_intro.html" />
+    <link rel="prev" title="Dealing with severe clashes" href="../../intro/clashes/clashes.html" />
    
   <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
@@ -36,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="top-down-modelling-with-alphafold-db-models">
-<span id="alphafold-top-down-tutorial"></span><h1>Top-Down Modelling with AlphaFold-DB Models<a class="headerlink" href="from_scratch.html#top-down-modelling-with-alphafold-db-models" title="Permalink to this headline">¶</a></h1>
+<span id="alphafold-top-down-tutorial"></span><h1>Top-Down Modelling with AlphaFold-DB Models<a class="headerlink" href="#top-down-modelling-with-alphafold-db-models" title="Permalink to this heading">¶</a></h1>
 <p><strong>(NOTE: Most links on this page will only work correctly when the page is
 loaded in ChimeraX’s help viewer. You will also need to be connected to the
 Internet. Please close any open models before starting this tutorial.)</strong></p>
@@ -47,7 +46,7 @@ multi-touch touchpad is a work in progress. Known issues with the latter are
 that clipping planes will not update when zooming, and recontouring of maps is
 not possible.)</strong></p>
 <section id="tutorial-fitting-emd-9118-using-6mhz-and-alphafold">
-<h2>Tutorial: Fitting emd_9118 using 6mhz and AlphaFold<a class="headerlink" href="from_scratch.html#tutorial-fitting-emd-9118-using-6mhz-and-alphafold" title="Permalink to this headline">¶</a></h2>
+<h2>Tutorial: Fitting emd_9118 using 6mhz and AlphaFold<a class="headerlink" href="#tutorial-fitting-emd-9118-using-6mhz-and-alphafold" title="Permalink to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 </div>
 <p><strong>NOTE: This tutorial assumes that you are already familiar with the basic
@@ -313,7 +312,7 @@ alongside the predicted model. Check the “Distances” and “Torsions” chec
 restraining model chain A to template chain A. The widget should now look like
 this:</p>
 <figure class="align-default">
-<img alt="../../../_images/reference_model_widget.png" src="../../../_images/reference_model_widget.png" />
+<img alt="../../../_images/reference_model_widget1.png" src="../../../_images/reference_model_widget1.png" />
 </figure>
 <p>In this case, where the four reference chains are independent models, this step
 needs to be repeated for each model chain/reference chain combination. If you
@@ -549,7 +548,7 @@ reasonably near future - watch this space!</p>
   <li><a href="../../../isolde.html">Documentation overview</a><ul>
   <li><a href="../../../tools/ISOLDE.html">The ISOLDE GUI</a><ul>
   <li><a href="../../isolde.html">Tutorials</a><ul>
-      <li>Previous: <a href="../../intro/cryo_intro/cryo_intro.html" title="previous chapter">Introduction to cryo-EM model rebuilding in ISOLDE</a></li>
+      <li>Previous: <a href="../../intro/clashes/clashes.html" title="previous chapter">Dealing with severe clashes</a></li>
       <li>Next: <a href="../reference_model/af2_reference.html" title="next chapter">Improving Legacy Models Using AlphaFold</a></li>
   </ul></li>
   </ul></li>
@@ -565,17 +564,17 @@ reasonably near future - watch this space!</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016-2022, Tristan Croll.
+      &copy;2016-2023, Tristan Croll.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="../../../_sources/tutorials/alphafold/from_scratch/from_scratch.rst.txt"
